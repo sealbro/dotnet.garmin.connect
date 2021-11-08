@@ -10,22 +10,22 @@ namespace Garmin.Connect
     {
         private readonly GarminConnectContext _context;
 
-        private const string UrlUserSummary = "/proxy/usersummary-service/usersummary/daily/";
-        private const string UrlUserSummaryChart = "/proxy/wellness-service/wellness/dailySummaryChart/";
-        private const string UrlHeartRates = "/proxy/wellness-service/wellness/dailyHeartRate/";
-        private const string UrlSleepData = "/proxy/wellness-service/wellness/dailySleepData/";
-        private const string UrlBodyComposition = "/proxy/weight-service/weight/daterangesnapshot";
-        private const string UrlActivities = "/proxy/activitylist-service/activities/search/activities";
-        private const string UrlHydrationData = "/proxy/usersummary-service/usersummary/hydration/daily/";
-        private const string UrlActivity = "/proxy/activity-service/activity/";
-        private const string UrlPersonalRecord = "/proxy/personalrecord-service/personalrecord/";
-        private const string UrlTcxDownload = "/proxy/download-service/export/tcx/activity/";
-        private const string UrlGpxDownload = "/proxy/download-service/export/gpx/activity/";
-        private const string UrlKmlDownload = "/proxy/download-service/export/kml/activity/";
-        private const string UrlFitDownload = "/proxy/download-service/files/activity/";
-        private const string UrlCsvDownload = "/proxy/download-service/export/csv/activity/";
-        private const string UrlDeviceList = "/proxy/device-service/deviceregistration/devices";
-        private const string UrlDeviceService = "/proxy/device-service/deviceservice/";
+        private const string UserSummaryUrl = "/proxy/usersummary-service/usersummary/daily/";
+        private const string UserSummaryChartUrl = "/proxy/wellness-service/wellness/dailySummaryChart/";
+        private const string HeartRatesUrl = "/proxy/wellness-service/wellness/dailyHeartRate/";
+        private const string SleepDataUrl = "/proxy/wellness-service/wellness/dailySleepData/";
+        private const string BodyCompositionUrl = "/proxy/weight-service/weight/daterangesnapshot";
+        private const string ActivitiesUrl = "/proxy/activitylist-service/activities/search/activities";
+        private const string HydrationDataUrl = "/proxy/usersummary-service/usersummary/hydration/daily/";
+        private const string ActivityUrl = "/proxy/activity-service/activity/";
+        private const string PersonalRecordUrl = "/proxy/personalrecord-service/personalrecord/";
+        private const string TcxDownloadUrl = "/proxy/download-service/export/tcx/activity/";
+        private const string GpxDownloadUrl = "/proxy/download-service/export/gpx/activity/";
+        private const string KmlDownloadUrl = "/proxy/download-service/export/kml/activity/";
+        private const string FitDownloadUrl = "/proxy/download-service/files/activity/";
+        private const string CsvDownloadUrl = "/proxy/download-service/export/csv/activity/";
+        private const string DeviceListUrl = "/proxy/device-service/deviceregistration/devices";
+        private const string DeviceServiceUrl = "/proxy/device-service/deviceservice/";
 
         public GarminConnectClient(GarminConnectContext context)
         {
@@ -34,20 +34,20 @@ namespace Garmin.Connect
 
         public Task<GarminActivity[]> GetActivities(int start, int limit)
         {
-            var activitiesUrl = $"{UrlActivities}?start={start}&limit={limit}";
+            var activitiesUrl = $"{ActivitiesUrl}?start={start}&limit={limit}";
 
             return _context.WrapTryRetry<GarminActivity[]>(_ => activitiesUrl);
         }
 
         public Task<GarminDevice[]> GetDevices()
         {
-            return _context.WrapTryRetry<GarminDevice[]>(_ => UrlDeviceList);
+            return _context.WrapTryRetry<GarminDevice[]>(_ => DeviceListUrl);
         }
 
         public Task<GarminStepsData[]> GetWellnessStepsData(DateTime date)
         {
             return _context.WrapTryRetry<GarminStepsData[]>(displayName =>
-                $"{UrlUserSummaryChart}{displayName}?date={date:yyyy-MM-dd}");
+                $"{UserSummaryChartUrl}{displayName}?date={date:yyyy-MM-dd}");
         }
 
         public async Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate,
@@ -75,11 +75,11 @@ namespace Garmin.Connect
             while (returnData)
             {
                 var activitiesUrl =
-                    $"{UrlActivities}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
+                    $"{ActivitiesUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
 
                 var activities = await _context.WrapTryRetry<GarminActivity[]>(_ => activitiesUrl);
 
-                if (activities != null && activities.Any())
+                if (activities.Any())
                 {
                     result.AddRange(activities);
                     start += limit;
@@ -110,123 +110,124 @@ namespace Garmin.Connect
         public Task<GarminStats> GetUserSummary(DateTime date)
         {
             return _context.WrapTryRetry<GarminStats>(displayName =>
-                $"{UrlUserSummary}{displayName}?calendarDate={date:yyy-MM-dd}");
+                $"{UserSummaryUrl}{displayName}?calendarDate={date:yyy-MM-dd}");
         }
 
         public Task<GarminHr> GetWellnessHeartRates(DateTime date)
         {
             return _context.WrapTryRetry<GarminHr>(displayName =>
-                $"{UrlHeartRates}{displayName}?date={date:yyyy-MM-dd}");
+                $"{HeartRatesUrl}{displayName}?date={date:yyyy-MM-dd}");
         }
 
         public Task<GarminSleepData> GetWellnessSleepData(DateTime date)
         {
             return _context.WrapTryRetry<GarminSleepData>(displayName =>
-                $"{UrlSleepData}{displayName}?date={date:yyyy-MM-dd}");
+                $"{SleepDataUrl}{displayName}?date={date:yyyy-MM-dd}");
         }
 
         public Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate)
         {
             var bodyCompositionUrl =
-                $"{UrlBodyComposition}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+                $"{BodyCompositionUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
 
             return _context.WrapTryRetry<GarminBodyComposition>(_ => bodyCompositionUrl);
         }
 
-        public Task<GarminDeviceSettings> GetDeviceSettings(string deviceId)
+        public Task<GarminDeviceSettings> GetDeviceSettings(long deviceId)
         {
-            var devicesUrl = $"{UrlDeviceService}device-info/settings/{deviceId}";
+            var devicesUrl = $"{DeviceServiceUrl}device-info/settings/{deviceId}";
 
             return _context.WrapTryRetry<GarminDeviceSettings>(_ => devicesUrl);
         }
 
         public Task<GarminHydrationData> GetHydrationData(DateTime date)
         {
-            var hydrationUrl = $"{UrlHydrationData}{date:yyyy-MM-dd}";
+            var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
 
             return _context.WrapTryRetry<GarminHydrationData>(_ => hydrationUrl);
         }
 
-        public Task<GarminExcerciseSets> GetActivityExcerciseSets(string activityId)
+        public Task<GarminExcerciseSets> GetActivityExcerciseSets(long activityId)
         {
-            var exerciseSetsUrl = $"{UrlActivity}{activityId}";
+            var exerciseSetsUrl = $"{ActivityUrl}{activityId}";
 
             return _context.WrapTryRetry<GarminExcerciseSets>(_ => exerciseSetsUrl);
         }
 
-        public Task<GarminActivitySplits> GetActivitySplits(string activityId)
+        public Task<GarminActivitySplits> GetActivitySplits(long activityId)
         {
-            var splitsUrl = $"{UrlActivity}{activityId}/splits";
+            var splitsUrl = $"{ActivityUrl}{activityId}/splits";
 
             return _context.WrapTryRetry<GarminActivitySplits>(_ => splitsUrl);
         }
 
-        public Task<GarminSplitSummary> GetActivitySplitSummaries(string activityId)
+        public Task<GarminSplitSummary> GetActivitySplitSummaries(long activityId)
         {
-            var splitSummariesUrl = $"{UrlActivity}{activityId}/split_summaries";
+            var splitSummariesUrl = $"{ActivityUrl}{activityId}/split_summaries";
 
             return _context.WrapTryRetry<GarminSplitSummary>(_ => splitSummariesUrl);
         }
 
-        public Task<GarminActivityWeather> GetActivityWeather(string activityId)
+        public Task<GarminActivityWeather> GetActivityWeather(long activityId)
         {
-            var activityWeatherUrl = $"{UrlActivity}{activityId}/weather";
+            var activityWeatherUrl = $"{ActivityUrl}{activityId}/weather";
 
             return _context.WrapTryRetry<GarminActivityWeather>(_ => activityWeatherUrl);
         }
 
-        public Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(string activityId)
+        public Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(long activityId)
         {
-            var activityHrTimezoneUrl = $"{UrlActivity}{activityId}/hrTimeInZones";
+            var activityHrTimezoneUrl = $"{ActivityUrl}{activityId}/hrTimeInZones";
 
             return _context.WrapTryRetry<GarminHrTimeInZones[]>(_ => activityHrTimezoneUrl);
         }
 
-        public Task<GarminActivityDetails> GetActivityDetails(string activityId, int maxChartSize, int maxPolylineSize)
+        public Task<GarminActivityDetails> GetActivityDetails(long activityId, int maxChartSize,
+            int maxPolylineSize = 4000)
         {
             var queryParams = $"maxChartSize={maxChartSize}&maxPolylineSize={maxPolylineSize}";
-            var detailsUrl = $"{UrlActivity}{activityId}/details?{queryParams}";
+            var detailsUrl = $"{ActivityUrl}{activityId}/details?{queryParams}";
 
             return _context.WrapTryRetry<GarminActivityDetails>(_ => detailsUrl);
         }
 
         public Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName)
         {
-            var personalRecordsUrl = $"{UrlPersonalRecord}prs/{ownerDisplayName}";
+            var personalRecordsUrl = $"{PersonalRecordUrl}prs/{ownerDisplayName}";
 
             return _context.WrapTryRetry<GarminPersonalRecord[]>(_ => personalRecordsUrl);
         }
 
         public Task<GarminDeviceLastUsed> GetDeviceLastUsed()
         {
-            var deviceLastUsedUrl = $"{UrlDeviceService}mylastused";
+            var deviceLastUsedUrl = $"{DeviceServiceUrl}mylastused";
 
             return _context.WrapTryRetry<GarminDeviceLastUsed>(_ => deviceLastUsedUrl);
         }
 
-        public async Task<byte[]> DownloadActivity(string activityId, ActivityDownloadFormat format)
+        public async Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format)
         {
             var urls = new Dictionary<ActivityDownloadFormat, string>
             {
                 {
                     ActivityDownloadFormat.ORIGINAL,
-                    $"{UrlFitDownload}{activityId}"
+                    $"{FitDownloadUrl}{activityId}"
                 },
                 {
                     ActivityDownloadFormat.TCX,
-                    $"{UrlTcxDownload}{activityId}"
+                    $"{TcxDownloadUrl}{activityId}"
                 },
                 {
                     ActivityDownloadFormat.GPX,
-                    $"{UrlGpxDownload}{activityId}"
+                    $"{GpxDownloadUrl}{activityId}"
                 },
                 {
                     ActivityDownloadFormat.KML,
-                    $"{UrlKmlDownload}{activityId}"
+                    $"{KmlDownloadUrl}{activityId}"
                 },
                 {
                     ActivityDownloadFormat.CSV,
-                    $"{UrlCsvDownload}{activityId}"
+                    $"{CsvDownloadUrl}{activityId}"
                 }
             };
             if (!urls.ContainsKey(format))

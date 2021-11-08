@@ -18,15 +18,16 @@ namespace Garmin.Connect
     public class GarminConnectContext
     {
         private const int ExpireInMinutes = 10;
-        private readonly HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient;
         private readonly IAuthParameters _authParameters;
 
         private DateTime _lastLogin = DateTime.Now.AddMinutes(-1 * ExpireInMinutes);
 
         private string _cookies;
 
-        public GarminConnectContext(IAuthParameters authParameters)
+        public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
         {
+            _httpClient = httpClient;
             _authParameters = authParameters;
         }
 
@@ -151,35 +152,45 @@ namespace Garmin.Connect
 
             var html = await response.Content.ReadAsStringAsync();
 
-            // TODO process null exception
-            var userPreferences =
-                JsonSerializer.Deserialize<GarminUserPreferences>(ParseJson(html, "VIEWER_USERPREFERENCES"));
-            var socialProfile =
-                JsonSerializer.Deserialize<GarminSocialProfile>(ParseJson(html, "VIEWER_SOCIAL_PROFILE"));
+            var userPreferences = ParseJson<GarminUserPreferences>(html, "VIEWER_USERPREFERENCES");
+            var socialProfile = ParseJson<GarminSocialProfile>(html, "VIEWER_SOCIAL_PROFILE");
 
             return (cookies, userPreferences, socialProfile);
         }
 
         private static void RaiseForStatus(HttpResponseMessage response)
         {
-            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            switch (response.StatusCode)
             {
-                throw new GarminConnectTooManyRequestsException();
-            }
+                case HttpStatusCode.TooManyRequests:
+                    throw new GarminConnectTooManyRequestsException();
+                case HttpStatusCode.OK:
+                    return;
+                default:
+                {
+                    var url = response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new GarminConnectRequestException(response.RequestMessage?.RequestUri?.ToString(),
-                    response.StatusCode);
+                    throw new GarminConnectRequestException(url, response.StatusCode);
+                }
             }
         }
 
-        private static string ParseJson(string html, string key)
+        private static TModel ParseJson<TModel>(string html, string key)
         {
             var dataRegex = new Regex(key + @" = JSON\.parse\(\""(.*)\""\);", RegexOptions.Compiled);
             var dataMatch = dataRegex.Match(html);
 
-            return dataMatch.Success ? dataMatch.Groups[1].Value.Replace("\\\"", "\"") : null;
+            if (dataMatch.Success)
+            {
+                var json = dataMatch.Groups[1].Value.Replace("\\\"", "\"");
+                var model = JsonSerializer.Deserialize<TModel>(json);
+                if (model != null)
+                {
+                    return model;
+                }
+            }
+
+            throw new GarminConnectUnexpectedException(key);
         }
     }
 }

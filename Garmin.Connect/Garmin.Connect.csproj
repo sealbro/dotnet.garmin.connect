@@ -1,7 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>Unofficial.Garmin.Connect</PackageId>
+        <VersionPrefix>0.0.1</VersionPrefix>
+        <Authors>Pachman</Authors>
+        <Company>Not a company</Company>
+        <PackageDescription>Unofficial garmin connect client</PackageDescription>
+        <RepositoryUrl>https://github.com/pachman/dotnet.garmin.connect</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
 </Project>

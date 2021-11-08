@@ -53,7 +53,7 @@ namespace Garmin.Connect
         /// <summary>
         /// Fetch device settings for current device
         /// </summary>
-        Task<GarminDeviceSettings> GetDeviceSettings(string deviceId);
+        Task<GarminDeviceSettings> GetDeviceSettings(long deviceId);
 
         /// <summary>
         /// Fetch available devices for the current account
@@ -63,40 +63,40 @@ namespace Garmin.Connect
         /// <summary>
         /// Fetch activity split summaries
         /// </summary>
-        Task<GarminSplitSummary> GetActivitySplitSummaries(string activityId);
+        Task<GarminSplitSummary> GetActivitySplitSummaries(long activityId);
 
         /// <summary>
         /// Fetch activity details
         /// </summary>
-        Task<GarminActivityDetails> GetActivityDetails(string activityId, int maxChartSize = 2000,
+        Task<GarminActivityDetails> GetActivityDetails(long activityId, int maxChartSize = 2000,
             int maxPolylineSize = 4000);
 
         /// <summary>
         /// Fetch activity excercise sets
         /// </summary>
-        Task<GarminExcerciseSets> GetActivityExcerciseSets(string activityId);
+        Task<GarminExcerciseSets> GetActivityExcerciseSets(long activityId);
 
         /// <summary>
         /// Fetch activity weather
         /// </summary>
-        Task<GarminActivityWeather> GetActivityWeather(string activityId);
+        Task<GarminActivityWeather> GetActivityWeather(long activityId);
 
         /// <summary>
         ///  Fetch activity splits
         /// </summary>
-        Task<GarminActivitySplits> GetActivitySplits(string activityId);
+        Task<GarminActivitySplits> GetActivitySplits(long activityId);
 
         /// <summary>
         /// Fetch activity HR in timezones
         /// </summary>
-        Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(string activityId);
+        Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(long activityId);
 
         /// <summary>
         /// Downloads activity in requested format and returns the raw bytes. For
         /// "Original" will return the zip file content, up to user to extract it.
         /// "CSV" will return a csv of the splits.
         /// </summary>
-        Task<byte[]> DownloadActivity(string activityId, ActivityDownloadFormat format = ActivityDownloadFormat.TCX);
+        Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format = ActivityDownloadFormat.TCX);
 
         /// <summary>
         /// Fetch available activities
@@ -112,6 +112,6 @@ namespace Garmin.Connect
         /// (Optional) Type of activity you are searching
         /// Possible values are [cycling, running, swimming, multi_sport, fitness_equipment, hiking, walking, other]
         /// </param>
-        Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate, string activityType = null);
+        Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate, string activityType = "");
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Garmin.Connect.Auth
@@ -15,6 +16,16 @@ namespace Garmin.Connect.Auth
 
         public BasicAuthParameters(string email, string password)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException(email);
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentException(password);
+            }
+
             _email = email;
             _password = password;
         }
