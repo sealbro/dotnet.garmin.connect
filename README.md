@@ -10,12 +10,13 @@ The library has been ported from [cyberjunky/python-garminconnect](https://githu
 ## About
 
 This package allows you to request your device, activity and health data from your Garmin Connect account.
+
 See <https://connect.garmin.com/>
 
 ## Installation
 
 ```bash
-pip install garminconnect
+dotnet add package Unofficial.Garmin.Connect
 ```
 
 ## Using
@@ -38,3 +39,7 @@ Current tasks:
 - replace the `cookie` caching mechanism with a smarter one
 - replace `HttpClient` with `IHttpClientFactory`
 - add `ServiceCollection` for easier use
+
+## Thanks
+
+Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
