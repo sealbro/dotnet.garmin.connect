@@ -37,4 +37,12 @@ public class OwnerTests
 
         Assert.NotNull(personalRecords);
     }
+    
+    [Fact]
+    public async Task GetUserSettings_NotNull()
+    {
+        var userSettings = await _garmin.GetUserSettings();
+
+        Assert.NotNull(userSettings);
+    }
 }

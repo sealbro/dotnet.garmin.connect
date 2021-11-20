@@ -76,7 +76,7 @@ namespace Garmin.Connect
         {
             await ReLoginIfExpired();
 
-            var response = await GetAsync(urlBuilder(Preferences.DisplayName));
+            var response = await GetAsync(urlBuilder(Profile.DisplayName));
             var json = await response.Content.ReadAsStringAsync();
 
             // Console.WriteLine($"{url}\n{json}\n\n\n");

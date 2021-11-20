@@ -29,17 +29,9 @@ var authParameters = new BasicAuthParameters(login, password);
 var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters));
 ```
 
-## Contribution
-
-I would be grateful for any help
-
-Current tasks:
-
-- replace `object` field types with specialized ones
-- replace the `cookie` caching mechanism with a smarter one
-- replace `HttpClient` with `IHttpClientFactory`
-- add `ServiceCollection` for easier use
-
 ## Thanks
 
-Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
+- Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
+- VS Code plugin [Paste JSON as Code](https://marketplace.visualstudio.com/items?itemName=quicktype.quicktype)
+- JetBrains Rider [EAP](https://www.jetbrains.com/rider/nextversion/)
+- and [Garmin](https://connect.garmin.com) for the best devices

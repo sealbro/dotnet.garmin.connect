@@ -11,6 +11,12 @@ namespace Garmin.Connect
         Task<GarminSocialProfile> GetSocialProfile();
 
         /// <summary>
+        /// Fetch user settings
+        /// </summary>
+        /// <returns></returns>
+        Task<GarminUserSettings> GetUserSettings();
+
+        /// <summary>
         /// Fetch available activity data
         /// </summary>
         Task<GarminStats> GetUserSummary(DateTime date);

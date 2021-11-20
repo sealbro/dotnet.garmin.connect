@@ -10,6 +10,7 @@ namespace Garmin.Connect
     {
         private readonly GarminConnectContext _context;
 
+        private const string UserSettingsUrl = "/proxy/userprofile-service/userprofile/user-settings";
         private const string UserSummaryUrl = "/proxy/usersummary-service/usersummary/daily/";
         private const string UserSummaryChartUrl = "/proxy/wellness-service/wellness/dailySummaryChart/";
         private const string HeartRatesUrl = "/proxy/wellness-service/wellness/dailyHeartRate/";
@@ -105,6 +106,11 @@ namespace Garmin.Connect
             await _context.ReLoginIfExpired();
 
             return _context.Profile;
+        }
+
+        public Task<GarminUserSettings> GetUserSettings()
+        {
+            return _context.WrapTryRetry<GarminUserSettings>(_ => UserSettingsUrl);
         }
 
         public Task<GarminStats> GetUserSummary(DateTime date)

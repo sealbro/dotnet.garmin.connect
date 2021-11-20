@@ -8,16 +8,17 @@
         <PackageId>Unofficial.Garmin.Connect</PackageId>
         <PackageIcon>packageIcon.png</PackageIcon>
         <PackageIconFullPath>$(MSBuildThisFileDirectory)packageIcon.png</PackageIconFullPath>
-        <VersionPrefix>0.0.2</VersionPrefix>
+        <VersionPrefix>0.0.3</VersionPrefix>
         <Authors>Pachman</Authors>
         <Company>Not a company</Company>
         <PackageDescription>Unofficial garmin connect client</PackageDescription>
+        <PackageProjectUrl>https://github.com/pachman/dotnet.garmin.connect</PackageProjectUrl>
         <RepositoryUrl>https://github.com/pachman/dotnet.garmin.connect</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="..\LICENSE" Pack="true" PackagePath="LICENSE" />
-        <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\"/>
+        <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

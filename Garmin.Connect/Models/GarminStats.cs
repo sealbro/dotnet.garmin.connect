@@ -51,7 +51,7 @@ namespace Garmin.Connect.Models
         public long UserDailySummaryId { get; set; }
 
         [JsonPropertyName("calendarDate")]
-        public DateTimeOffset CalendarDate { get; set; }
+        public DateTime CalendarDate { get; set; }
 
         [JsonPropertyName("rule")]
         public Rule Rule { get; set; }
@@ -63,16 +63,16 @@ namespace Garmin.Connect.Models
         public long DailyStepGoal { get; set; }
 
         [JsonPropertyName("wellnessStartTimeGmt")]
-        public DateTimeOffset WellnessStartTimeGmt { get; set; }
+        public DateTime WellnessStartTimeGmt { get; set; }
 
         [JsonPropertyName("wellnessStartTimeLocal")]
-        public DateTimeOffset WellnessStartTimeLocal { get; set; }
+        public DateTime WellnessStartTimeLocal { get; set; }
 
         [JsonPropertyName("wellnessEndTimeGmt")]
-        public DateTimeOffset WellnessEndTimeGmt { get; set; }
+        public DateTime WellnessEndTimeGmt { get; set; }
 
         [JsonPropertyName("wellnessEndTimeLocal")]
-        public DateTimeOffset WellnessEndTimeLocal { get; set; }
+        public DateTime WellnessEndTimeLocal { get; set; }
 
         [JsonPropertyName("durationInMilliseconds")]
         public long DurationInMilliseconds { get; set; }
@@ -264,7 +264,7 @@ namespace Garmin.Connect.Models
         public double LatestRespirationValue { get; set; }
 
         [JsonPropertyName("latestRespirationTimeGMT")]
-        public DateTimeOffset LatestRespirationTimeGmt { get; set; }
+        public DateTime LatestRespirationTimeGmt { get; set; }
     }
 
     public class Rule

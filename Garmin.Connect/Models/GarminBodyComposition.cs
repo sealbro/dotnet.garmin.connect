@@ -12,13 +12,13 @@ namespace Garmin.Connect.Models
         public DateTime EndDate { get; set; }
 
         [JsonPropertyName("dateWeightList")]
-        public object[] DateWeightList { get; set; }
+        public GarminDateWeight[] DateWeightList { get; set; }
 
         [JsonPropertyName("totalAverage")]
-        public TotalAverage TotalAverage { get; set; }
+        public GarminTotalAverage TotalAverage { get; set; }
     }
 
-    public class TotalAverage
+    public class GarminTotalAverage
     {
         [JsonPropertyName("from")]
         public long From { get; set; }
@@ -27,22 +27,22 @@ namespace Garmin.Connect.Models
         public long Until { get; set; }
 
         [JsonPropertyName("weight")]
-        public object Weight { get; set; }
+        public double Weight { get; set; }
 
         [JsonPropertyName("bmi")]
-        public object Bmi { get; set; }
+        public double Bmi { get; set; }
 
         [JsonPropertyName("bodyFat")]
-        public object BodyFat { get; set; }
+        public double BodyFat { get; set; }
 
         [JsonPropertyName("bodyWater")]
-        public object BodyWater { get; set; }
+        public double BodyWater { get; set; }
 
         [JsonPropertyName("boneMass")]
-        public object BoneMass { get; set; }
+        public double BoneMass { get; set; }
 
         [JsonPropertyName("muscleMass")]
-        public object MuscleMass { get; set; }
+        public double MuscleMass { get; set; }
 
         [JsonPropertyName("physiqueRating")]
         public object PhysiqueRating { get; set; }
@@ -52,5 +52,53 @@ namespace Garmin.Connect.Models
 
         [JsonPropertyName("metabolicAge")]
         public object MetabolicAge { get; set; }
+    }
+
+    public class GarminDateWeight
+    {
+        [JsonPropertyName("samplePk")]
+        public long SamplePk { get; set; }
+
+        [JsonPropertyName("date")]
+        public long Date { get; set; }
+
+        [JsonPropertyName("calendarDate")]
+        public DateTimeOffset CalendarDate { get; set; }
+
+        [JsonPropertyName("weight")]
+        public double Weight { get; set; }
+
+        [JsonPropertyName("bmi")]
+        public double Bmi { get; set; }
+
+        [JsonPropertyName("bodyFat")]
+        public double BodyFat { get; set; }
+
+        [JsonPropertyName("bodyWater")]
+        public double BodyWater { get; set; }
+
+        [JsonPropertyName("boneMass")]
+        public long BoneMass { get; set; }
+
+        [JsonPropertyName("muscleMass")]
+        public long MuscleMass { get; set; }
+
+        [JsonPropertyName("physiqueRating")]
+        public object PhysiqueRating { get; set; }
+
+        [JsonPropertyName("visceralFat")]
+        public object VisceralFat { get; set; }
+
+        [JsonPropertyName("metabolicAge")]
+        public object MetabolicAge { get; set; }
+
+        [JsonPropertyName("sourceType")]
+        public string SourceType { get; set; }
+
+        [JsonPropertyName("timestampGMT")]
+        public long TimestampGmt { get; set; }
+
+        [JsonPropertyName("weightDelta")]
+        public object WeightDelta { get; set; }
     }
 }
