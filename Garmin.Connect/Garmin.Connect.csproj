@@ -8,7 +8,7 @@
         <PackageId>Unofficial.Garmin.Connect</PackageId>
         <PackageIcon>packageIcon.png</PackageIcon>
         <PackageIconFullPath>$(MSBuildThisFileDirectory)packageIcon.png</PackageIconFullPath>
-        <VersionPrefix>0.0.4</VersionPrefix>
+        <VersionPrefix>0.0.5</VersionPrefix>
         <Authors>Pachman</Authors>
         <Company>Not a company</Company>
         <PackageDescription>Unofficial garmin connect client</PackageDescription>
