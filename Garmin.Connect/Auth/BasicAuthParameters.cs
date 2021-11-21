@@ -7,6 +7,7 @@ public class BasicAuthParameters : IAuthParameters
 {
     private readonly string _email;
     private readonly string _password;
+    private readonly string _userAgent;
 
     public string Cookies { get; set; }
 
@@ -18,7 +19,11 @@ public class BasicAuthParameters : IAuthParameters
 
     public virtual string SigninUrl => "https://sso.garmin.com/sso/signin";
 
-    public BasicAuthParameters(string email, string password)
+    public BasicAuthParameters(string email, string password) : this(email, password, new StaticUserAgent())
+    {
+    }
+
+    public BasicAuthParameters(string email, string password, IUserAgent userAgent)
     {
         if (string.IsNullOrEmpty(email))
         {
@@ -32,6 +37,7 @@ public class BasicAuthParameters : IAuthParameters
 
         _email = email;
         _password = password;
+        _userAgent = userAgent.New;
     }
 
     public virtual Dictionary<string, string> GetHeaders()
@@ -40,7 +46,7 @@ public class BasicAuthParameters : IAuthParameters
         {
             {
                 "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+                _userAgent
             },
             {
                 "origin",
@@ -122,6 +128,10 @@ public class BasicAuthParameters : IAuthParameters
                 "https://static.garmincdn.com/com.garmin.connect/ui/css/gauth-custom-v1.2-min.css"
             },
             {
+                "privacyStatementUrl",
+                "https://www.garmin.com/en-US/privacy/connect/"
+            },
+            {
                 "clientId",
                 "GarminConnect"
             },
@@ -142,10 +152,6 @@ public class BasicAuthParameters : IAuthParameters
                 "false"
             },
             {
-                "usernameShown",
-                "false"
-            },
-            {
                 "displayNameShown",
                 "false"
             },
@@ -162,7 +168,71 @@ public class BasicAuthParameters : IAuthParameters
                 "false"
             },
             {
+                "socialEnabled",
+                "false"
+            },
+            {
                 "generateExtraServiceTicket",
+                "false"
+            },
+            {
+                "generateTwoExtraServiceTickets",
+                "false"
+            },
+            {
+                "globalOptInShown",
+                "true"
+            },
+            {
+                "globalOptInChecked",
+                "false"
+            },
+            {
+                "mobile",
+                "false"
+            },
+            {
+                "connectLegalTerms",
+                "true"
+            },
+            {
+                "showTermsOfUse",
+                "false"
+            },
+            {
+                "showPrivacyPolicy",
+                "false"
+            },
+            {
+                "showConnectLegalAge",
+                "false"
+            },
+            {
+                "locationPromptShown",
+                "false"
+            },
+            {
+                "showPassword",
+                "false"
+            },
+            {
+                "useCustomHeader",
+                "false"
+            },
+            {
+                "mfaRequired",
+                "false"
+            },
+            {
+                "performMFACheck",
+                "false"
+            },
+            {
+                "rememberMyBrowserShown",
+                "false"
+            },
+            {
+                "rememberMyBrowserChecked",
                 "false"
             }
         };

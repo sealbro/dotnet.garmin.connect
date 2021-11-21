@@ -103,7 +103,6 @@ public class GarminConnectContext
         var signinUrl = $"{_authParameters.SigninUrl}?{queryString}";
 
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, signinUrl);
-
         foreach (var (key, value) in headers)
         {
             httpRequestMessage.Headers.Add(key, value);
