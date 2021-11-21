@@ -6,7 +6,7 @@ on:
     - '*.*.*'
 jobs:
   build:
-    environment: publish
+    environment: nuget
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
