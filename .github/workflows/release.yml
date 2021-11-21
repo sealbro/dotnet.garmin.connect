@@ -20,5 +20,7 @@ jobs:
       shell: bash
       run: ./pack.sh
     - name: Publish to nuget
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       shell: bash
-      run: ./publish.sh ${{ secrets.NUGET_API_KEY }}
+      run: ./publish.sh $NUGET_API_KEY
