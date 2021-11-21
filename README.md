@@ -1,4 +1,4 @@
-# dotnet.garmin.connect
+# Garmin.Connect
 
 Unofficial dotnet garmin connect client
 
@@ -28,6 +28,16 @@ var authParameters = new BasicAuthParameters(login, password);
 
 var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters));
 ```
+
+## Build and publish
+
+- build `./pack.sh`
+- pack `./publish.sh`
+
+## Tests
+
+- set enviroment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
+  - JB Rider `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
 
 ## Thanks
 

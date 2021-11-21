@@ -1,11 +1,10 @@
-namespace Garmin.Connect.Models
+namespace Garmin.Connect.Models;
+
+public enum ActivityDownloadFormat
 {
-    public enum ActivityDownloadFormat
-    {
-        ORIGINAL,
-        TCX,
-        GPX,
-        KML,
-        CSV,
-    }
+    ORIGINAL,
+    TCX,
+    GPX,
+    KML,
+    CSV,
 }

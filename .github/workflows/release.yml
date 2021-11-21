@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  push:
+    tags:
+    - '*.*.*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup dotnet 6.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+    - name: Build and pack package
+      shell: bash
+      run: ./pack.sh
+    - name: Publish to nuget
+      shell: bash
+      run: ./publish.sh ${{ secrets.NUGET_API_KEY }}

@@ -1,11 +1,14 @@
 using System;
 
-namespace Garmin.Connect.Exceptions
+namespace Garmin.Connect.Exceptions;
+
+public class GarminConnectAuthenticationException : Exception
 {
-    public class GarminConnectAuthenticationException : Exception
+    public GarminConnectAuthenticationException() : base("Authentication error")
     {
-        public GarminConnectAuthenticationException() : base("Authentication error")
-        {
-        }
+    }
+
+    public GarminConnectAuthenticationException(string message) : base(message)
+    {
     }
 }

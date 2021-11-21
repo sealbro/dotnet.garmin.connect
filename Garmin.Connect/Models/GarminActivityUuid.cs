@@ -1,10 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace Garmin.Connect.Models
+namespace Garmin.Connect.Models;
+
+public class GarminActivityUuid
 {
-    public class GarminActivityUuid
-    {
-        [JsonPropertyName("uuid")]
-        public string Uuid { get; set; }
-    }
+    [JsonPropertyName("uuid")]
+    public string Uuid { get; set; }
 }

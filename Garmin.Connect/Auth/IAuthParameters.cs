@@ -1,19 +1,22 @@
 using System.Collections.Generic;
 
-namespace Garmin.Connect.Auth
+namespace Garmin.Connect.Auth;
+
+public interface IAuthParameters
 {
-    public interface IAuthParameters
-    {
-        string BaseUrl { get; }
+    string Cookies { get; set; }
 
-        string SsoUrl { get; }
+    bool NeedReLogin { get; }
 
-        string SigninUrl { get; }
+    string BaseUrl { get; }
 
-        Dictionary<string, string> GetHeaders();
+    string SsoUrl { get; }
 
-        Dictionary<string, string> GetFormParameters();
+    string SigninUrl { get; }
 
-        Dictionary<string, string> GetQueryParameters();
-    }
+    Dictionary<string, string> GetHeaders();
+
+    Dictionary<string, string> GetFormParameters();
+
+    Dictionary<string, string> GetQueryParameters();
 }

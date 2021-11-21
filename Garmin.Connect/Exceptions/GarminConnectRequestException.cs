@@ -1,19 +1,18 @@
 using System;
 using System.Net;
 
-namespace Garmin.Connect.Exceptions
+namespace Garmin.Connect.Exceptions;
+
+public class GarminConnectRequestException : Exception
 {
-    public class GarminConnectRequestException : Exception
+    public string Url { get; }
+
+    public HttpStatusCode Status { get; }
+
+    public GarminConnectRequestException(string url, HttpStatusCode status) : base(
+        $"Request [{url}] return code {(int)status} ({status.ToString()}).")
     {
-        public string Url { get; }
-
-        public HttpStatusCode Status { get; }
-
-        public GarminConnectRequestException(string url, HttpStatusCode status) : base(
-            $"Request [{url}] return code {(int)status} ({status.ToString()}).")
-        {
-            Url = url;
-            Status = status;
-        }
+        Url = url;
+        Status = status;
     }
 }
