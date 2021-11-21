@@ -12,7 +12,7 @@ PACKAGE_FILE="${files[0]}"
 echo "Chosen [$PACKAGE_FILE] to push"
 
 if [ "$NUGET_API_KEY" ]; then
-  dotnet nuget push $PACKAGE_FILE --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --source "github"
+  dotnet nuget push $PACKAGE_FILE --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
   exit 0
 else
   echo "NUGET_API_KEY was not set!"
