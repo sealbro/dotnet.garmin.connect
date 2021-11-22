@@ -4,7 +4,7 @@ Unofficial dotnet garmin connect client
 
 The library has been ported from [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect)
 
-[![CI](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/ci.yml/badge.svg)](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/ci.yml)
+[![Build](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/build.yml/badge.svg)](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/build.yml)
 [![NuGet Version](http://img.shields.io/nuget/v/Unofficial.Garmin.Connect.svg)](https://www.nuget.org/packages/Unofficial.Garmin.Connect/)
 [![NuGet Downloads](http://img.shields.io/nuget/dt/Unofficial.Garmin.Connect.svg)](https://www.nuget.org/packages/Unofficial.Garmin.Connect/)
 
