@@ -21,9 +21,9 @@ jobs:
         dotnet-version: '6.0.x'
     - name: Build and pack package
       shell: bash
-      run: ./pack.sh
+      run: ./pack.sh $RELEASE_VERSION
     - name: Publish to nuget
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       shell: bash
-      run: ./publish.sh $NUGET_API_KEY $RELEASE_VERSION
+      run: ./publish.sh $NUGET_API_KEY
