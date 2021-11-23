@@ -1,6 +1,9 @@
 #!/bin/bash
 
 NUGET_API_KEY=$1
+RELEASE_VERSION=$2
+
+echo "RELEASE_VERSION=$RELEASE_VERSION"
 
 echo "Here you see *.nupkg files:"
 cd ./output

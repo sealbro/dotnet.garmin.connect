@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -50,6 +51,8 @@ public class GarminConnectContext
         const int attempts = 3;
         var force = false;
 
+        Exception exception = null;
+        
         for (var i = 0; i < attempts; i++)
         {
             try
@@ -67,6 +70,7 @@ public class GarminConnectContext
             }
             catch (GarminConnectRequestException e)
             {
+                exception = e;
                 if (e.Status == HttpStatusCode.Forbidden)
                 {
                     force = true;
@@ -78,7 +82,7 @@ public class GarminConnectContext
             }
         }
 
-        throw new GarminConnectAuthenticationException($"Authentication fail after {attempts} attempts");
+        throw new GarminConnectAuthenticationException($"Authentication fail after {attempts} attempts", exception);
     }
 
     public async Task<T> GetAndDeserialize<T>(string url)

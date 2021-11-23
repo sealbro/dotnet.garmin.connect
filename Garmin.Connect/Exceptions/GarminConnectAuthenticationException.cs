@@ -8,7 +8,7 @@ public class GarminConnectAuthenticationException : Exception
     {
     }
 
-    public GarminConnectAuthenticationException(string message) : base(message)
+    public GarminConnectAuthenticationException(string message, Exception innerException = null) : base(message, innerException)
     {
     }
 }
