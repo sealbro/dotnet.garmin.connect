@@ -2,17 +2,17 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminFirstDayOfWeek
+public record GarminFirstDayOfWeek
 {
     [JsonPropertyName("dayId")]
-    public long DayId { get; set; }
+    public long DayId { get; init; }
 
     [JsonPropertyName("dayName")]
-    public string DayName { get; set; }
+    public string DayName { get; init; }
 
     [JsonPropertyName("sortOrder")]
-    public long SortOrder { get; set; }
+    public long SortOrder { get; init; }
 
     [JsonPropertyName("isPossibleFirstDay")]
-    public bool IsPossibleFirstDay { get; set; }
+    public bool IsPossibleFirstDay { get; init; }
 }

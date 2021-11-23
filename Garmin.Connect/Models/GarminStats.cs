@@ -3,275 +3,275 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminStats
+public record GarminStats
 {
     [JsonPropertyName("userProfileId")]
-    public long UserProfileId { get; set; }
+    public long UserProfileId { get; init; }
 
     [JsonPropertyName("totalKilocalories")]
-    public double TotalKilocalories { get; set; }
+    public double TotalKilocalories { get; init; }
 
     [JsonPropertyName("activeKilocalories")]
-    public double ActiveKilocalories { get; set; }
+    public double ActiveKilocalories { get; init; }
 
     [JsonPropertyName("bmrKilocalories")]
-    public double BmrKilocalories { get; set; }
+    public double BmrKilocalories { get; init; }
 
     [JsonPropertyName("wellnessKilocalories")]
-    public double WellnessKilocalories { get; set; }
+    public double WellnessKilocalories { get; init; }
 
     [JsonPropertyName("burnedKilocalories")]
-    public object BurnedKilocalories { get; set; }
+    public object BurnedKilocalories { get; init; }
 
     [JsonPropertyName("consumedKilocalories")]
-    public double ConsumedKilocalories { get; set; }
+    public double ConsumedKilocalories { get; init; }
 
     [JsonPropertyName("remainingKilocalories")]
-    public double RemainingKilocalories { get; set; }
+    public double RemainingKilocalories { get; init; }
 
     [JsonPropertyName("totalSteps")]
-    public long TotalSteps { get; set; }
+    public long TotalSteps { get; init; }
 
     [JsonPropertyName("netCalorieGoal")]
-    public long NetCalorieGoal { get; set; }
+    public long NetCalorieGoal { get; init; }
 
     [JsonPropertyName("totalDistanceMeters")]
-    public long TotalDistanceMeters { get; set; }
+    public long TotalDistanceMeters { get; init; }
 
     [JsonPropertyName("wellnessDistanceMeters")]
-    public long WellnessDistanceMeters { get; set; }
+    public long WellnessDistanceMeters { get; init; }
 
     [JsonPropertyName("wellnessActiveKilocalories")]
-    public double WellnessActiveKilocalories { get; set; }
+    public double WellnessActiveKilocalories { get; init; }
 
     [JsonPropertyName("netRemainingKilocalories")]
-    public double NetRemainingKilocalories { get; set; }
+    public double NetRemainingKilocalories { get; init; }
 
     [JsonPropertyName("userDailySummaryId")]
-    public long UserDailySummaryId { get; set; }
+    public long UserDailySummaryId { get; init; }
 
     [JsonPropertyName("calendarDate")]
-    public DateTime CalendarDate { get; set; }
+    public DateTime CalendarDate { get; init; }
 
     [JsonPropertyName("rule")]
-    public Rule Rule { get; set; }
+    public Rule Rule { get; init; }
 
     [JsonPropertyName("uuid")]
-    public string Uuid { get; set; }
+    public string Uuid { get; init; }
 
     [JsonPropertyName("dailyStepGoal")]
-    public long DailyStepGoal { get; set; }
+    public long DailyStepGoal { get; init; }
 
     [JsonPropertyName("wellnessStartTimeGmt")]
-    public DateTime WellnessStartTimeGmt { get; set; }
+    public DateTime WellnessStartTimeGmt { get; init; }
 
     [JsonPropertyName("wellnessStartTimeLocal")]
-    public DateTime WellnessStartTimeLocal { get; set; }
+    public DateTime WellnessStartTimeLocal { get; init; }
 
     [JsonPropertyName("wellnessEndTimeGmt")]
-    public DateTime WellnessEndTimeGmt { get; set; }
+    public DateTime WellnessEndTimeGmt { get; init; }
 
     [JsonPropertyName("wellnessEndTimeLocal")]
-    public DateTime WellnessEndTimeLocal { get; set; }
+    public DateTime WellnessEndTimeLocal { get; init; }
 
     [JsonPropertyName("durationInMilliseconds")]
-    public long DurationInMilliseconds { get; set; }
+    public long DurationInMilliseconds { get; init; }
 
     [JsonPropertyName("wellnessDescription")]
-    public object WellnessDescription { get; set; }
+    public object WellnessDescription { get; init; }
 
     [JsonPropertyName("highlyActiveSeconds")]
-    public long HighlyActiveSeconds { get; set; }
+    public long HighlyActiveSeconds { get; init; }
 
     [JsonPropertyName("activeSeconds")]
-    public long ActiveSeconds { get; set; }
+    public long ActiveSeconds { get; init; }
 
     [JsonPropertyName("sedentarySeconds")]
-    public long SedentarySeconds { get; set; }
+    public long SedentarySeconds { get; init; }
 
     [JsonPropertyName("sleepingSeconds")]
-    public long SleepingSeconds { get; set; }
+    public long SleepingSeconds { get; init; }
 
     [JsonPropertyName("includesWellnessData")]
-    public bool IncludesWellnessData { get; set; }
+    public bool IncludesWellnessData { get; init; }
 
     [JsonPropertyName("includesActivityData")]
-    public bool IncludesActivityData { get; set; }
+    public bool IncludesActivityData { get; init; }
 
     [JsonPropertyName("includesCalorieConsumedData")]
-    public bool IncludesCalorieConsumedData { get; set; }
+    public bool IncludesCalorieConsumedData { get; init; }
 
     [JsonPropertyName("privacyProtected")]
-    public bool PrivacyProtected { get; set; }
+    public bool PrivacyProtected { get; init; }
 
     [JsonPropertyName("moderateIntensityMinutes")]
-    public long ModerateIntensityMinutes { get; set; }
+    public long ModerateIntensityMinutes { get; init; }
 
     [JsonPropertyName("vigorousIntensityMinutes")]
-    public long VigorousIntensityMinutes { get; set; }
+    public long VigorousIntensityMinutes { get; init; }
 
     [JsonPropertyName("floorsAscendedInMeters")]
-    public double FloorsAscendedInMeters { get; set; }
+    public double FloorsAscendedInMeters { get; init; }
 
     [JsonPropertyName("floorsDescendedInMeters")]
-    public double FloorsDescendedInMeters { get; set; }
+    public double FloorsDescendedInMeters { get; init; }
 
     [JsonPropertyName("floorsAscended")]
-    public double FloorsAscended { get; set; }
+    public double FloorsAscended { get; init; }
 
     [JsonPropertyName("floorsDescended")]
-    public double FloorsDescended { get; set; }
+    public double FloorsDescended { get; init; }
 
     [JsonPropertyName("intensityMinutesGoal")]
-    public long IntensityMinutesGoal { get; set; }
+    public long IntensityMinutesGoal { get; init; }
 
     [JsonPropertyName("userFloorsAscendedGoal")]
-    public long UserFloorsAscendedGoal { get; set; }
+    public long UserFloorsAscendedGoal { get; init; }
 
     [JsonPropertyName("minHeartRate")]
-    public long MinHeartRate { get; set; }
+    public long MinHeartRate { get; init; }
 
     [JsonPropertyName("maxHeartRate")]
-    public long MaxHeartRate { get; set; }
+    public long MaxHeartRate { get; init; }
 
     [JsonPropertyName("restingHeartRate")]
-    public long RestingHeartRate { get; set; }
+    public long RestingHeartRate { get; init; }
 
     [JsonPropertyName("lastSevenDaysAvgRestingHeartRate")]
-    public long LastSevenDaysAvgRestingHeartRate { get; set; }
+    public long LastSevenDaysAvgRestingHeartRate { get; init; }
 
     [JsonPropertyName("source")]
-    public string Source { get; set; }
+    public string Source { get; init; }
 
     [JsonPropertyName("averageStressLevel")]
-    public long AverageStressLevel { get; set; }
+    public long AverageStressLevel { get; init; }
 
     [JsonPropertyName("maxStressLevel")]
-    public long MaxStressLevel { get; set; }
+    public long MaxStressLevel { get; init; }
 
     [JsonPropertyName("stressDuration")]
-    public long StressDuration { get; set; }
+    public long StressDuration { get; init; }
 
     [JsonPropertyName("restStressDuration")]
-    public long RestStressDuration { get; set; }
+    public long RestStressDuration { get; init; }
 
     [JsonPropertyName("activityStressDuration")]
-    public long ActivityStressDuration { get; set; }
+    public long ActivityStressDuration { get; init; }
 
     [JsonPropertyName("uncategorizedStressDuration")]
-    public long UncategorizedStressDuration { get; set; }
+    public long UncategorizedStressDuration { get; init; }
 
     [JsonPropertyName("totalStressDuration")]
-    public long TotalStressDuration { get; set; }
+    public long TotalStressDuration { get; init; }
 
     [JsonPropertyName("lowStressDuration")]
-    public long LowStressDuration { get; set; }
+    public long LowStressDuration { get; init; }
 
     [JsonPropertyName("mediumStressDuration")]
-    public long MediumStressDuration { get; set; }
+    public long MediumStressDuration { get; init; }
 
     [JsonPropertyName("highStressDuration")]
-    public long HighStressDuration { get; set; }
+    public long HighStressDuration { get; init; }
 
     [JsonPropertyName("stressPercentage")]
-    public double StressPercentage { get; set; }
+    public double StressPercentage { get; init; }
 
     [JsonPropertyName("restStressPercentage")]
-    public double RestStressPercentage { get; set; }
+    public double RestStressPercentage { get; init; }
 
     [JsonPropertyName("activityStressPercentage")]
-    public double ActivityStressPercentage { get; set; }
+    public double ActivityStressPercentage { get; init; }
 
     [JsonPropertyName("uncategorizedStressPercentage")]
-    public double UncategorizedStressPercentage { get; set; }
+    public double UncategorizedStressPercentage { get; init; }
 
     [JsonPropertyName("lowStressPercentage")]
-    public double LowStressPercentage { get; set; }
+    public double LowStressPercentage { get; init; }
 
     [JsonPropertyName("mediumStressPercentage")]
-    public double MediumStressPercentage { get; set; }
+    public double MediumStressPercentage { get; init; }
 
     [JsonPropertyName("highStressPercentage")]
-    public double HighStressPercentage { get; set; }
+    public double HighStressPercentage { get; init; }
 
     [JsonPropertyName("stressQualifier")]
-    public string StressQualifier { get; set; }
+    public string StressQualifier { get; init; }
 
     [JsonPropertyName("measurableAwakeDuration")]
-    public long MeasurableAwakeDuration { get; set; }
+    public long MeasurableAwakeDuration { get; init; }
 
     [JsonPropertyName("measurableAsleepDuration")]
-    public long MeasurableAsleepDuration { get; set; }
+    public long MeasurableAsleepDuration { get; init; }
 
     [JsonPropertyName("lastSyncTimestampGMT")]
-    public object LastSyncTimestampGmt { get; set; }
+    public object LastSyncTimestampGmt { get; init; }
 
     [JsonPropertyName("minAvgHeartRate")]
-    public long MinAvgHeartRate { get; set; }
+    public long MinAvgHeartRate { get; init; }
 
     [JsonPropertyName("maxAvgHeartRate")]
-    public long MaxAvgHeartRate { get; set; }
+    public long MaxAvgHeartRate { get; init; }
 
     [JsonPropertyName("bodyBatteryChargedValue")]
-    public long BodyBatteryChargedValue { get; set; }
+    public long BodyBatteryChargedValue { get; init; }
 
     [JsonPropertyName("bodyBatteryDrainedValue")]
-    public long BodyBatteryDrainedValue { get; set; }
+    public long BodyBatteryDrainedValue { get; init; }
 
     [JsonPropertyName("bodyBatteryHighestValue")]
-    public long BodyBatteryHighestValue { get; set; }
+    public long BodyBatteryHighestValue { get; init; }
 
     [JsonPropertyName("bodyBatteryLowestValue")]
-    public long BodyBatteryLowestValue { get; set; }
+    public long BodyBatteryLowestValue { get; init; }
 
     [JsonPropertyName("bodyBatteryMostRecentValue")]
-    public long BodyBatteryMostRecentValue { get; set; }
+    public long BodyBatteryMostRecentValue { get; init; }
 
     [JsonPropertyName("bodyBatteryVersion")]
-    public double BodyBatteryVersion { get; set; }
+    public double BodyBatteryVersion { get; init; }
 
     [JsonPropertyName("abnormalHeartRateAlertsCount")]
-    public object AbnormalHeartRateAlertsCount { get; set; }
+    public object AbnormalHeartRateAlertsCount { get; init; }
 
     [JsonPropertyName("averageSpo2")]
-    public object AverageSpo2 { get; set; }
+    public object AverageSpo2 { get; init; }
 
     [JsonPropertyName("lowestSpo2")]
-    public object LowestSpo2 { get; set; }
+    public object LowestSpo2 { get; init; }
 
     [JsonPropertyName("latestSpo2")]
-    public object LatestSpo2 { get; set; }
+    public object LatestSpo2 { get; init; }
 
     [JsonPropertyName("latestSpo2ReadingTimeGmt")]
-    public object LatestSpo2ReadingTimeGmt { get; set; }
+    public object LatestSpo2ReadingTimeGmt { get; init; }
 
     [JsonPropertyName("latestSpo2ReadingTimeLocal")]
-    public object LatestSpo2ReadingTimeLocal { get; set; }
+    public object LatestSpo2ReadingTimeLocal { get; init; }
 
     [JsonPropertyName("averageMonitoringEnvironmentAltitude")]
-    public double AverageMonitoringEnvironmentAltitude { get; set; }
+    public double AverageMonitoringEnvironmentAltitude { get; init; }
 
     [JsonPropertyName("avgWakingRespirationValue")]
-    public double AvgWakingRespirationValue { get; set; }
+    public double AvgWakingRespirationValue { get; init; }
 
     [JsonPropertyName("highestRespirationValue")]
-    public double HighestRespirationValue { get; set; }
+    public double HighestRespirationValue { get; init; }
 
     [JsonPropertyName("lowestRespirationValue")]
-    public double LowestRespirationValue { get; set; }
+    public double LowestRespirationValue { get; init; }
 
     [JsonPropertyName("latestRespirationValue")]
-    public double LatestRespirationValue { get; set; }
+    public double LatestRespirationValue { get; init; }
 
     [JsonPropertyName("latestRespirationTimeGMT")]
-    public DateTime LatestRespirationTimeGmt { get; set; }
+    public DateTime LatestRespirationTimeGmt { get; init; }
 }
 
-public class Rule
+public record Rule
 {
     [JsonPropertyName("typeId")]
-    public long TypeId { get; set; }
+    public long TypeId { get; init; }
 
     [JsonPropertyName("typeKey")]
-    public string TypeKey { get; set; }
+    public string TypeKey { get; init; }
 }

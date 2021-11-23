@@ -3,62 +3,62 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminPersonalRecord
+public record GarminPersonalRecord
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("typeId")]
-    public long TypeId { get; set; }
+    public long TypeId { get; init; }
 
     [JsonPropertyName("activityId")]
-    public long ActivityId { get; set; }
+    public long ActivityId { get; init; }
 
     [JsonPropertyName("activityName")]
-    public string ActivityName { get; set; }
+    public string ActivityName { get; init; }
 
     [JsonPropertyName("activityStartDateTimeInGMT")]
-    public long ActivityStartDateTimeInGmt { get; set; }
+    public long ActivityStartDateTimeInGmt { get; init; }
 
     [JsonPropertyName("actStartDateTimeInGMTFormatted")]
-    public DateTime? ActStartDateTimeInGmtFormatted { get; set; }
+    public DateTime? ActStartDateTimeInGmtFormatted { get; init; }
 
     [JsonPropertyName("activityStartDateTimeLocal")]
-    public long? ActivityStartDateTimeLocal { get; set; }
+    public long? ActivityStartDateTimeLocal { get; init; }
 
     [JsonPropertyName("activityStartDateTimeLocalFormatted")]
-    public DateTime? ActivityStartDateTimeLocalFormatted { get; set; }
+    public DateTime? ActivityStartDateTimeLocalFormatted { get; init; }
 
     [JsonPropertyName("value")]
-    public double Value { get; set; }
+    public double Value { get; init; }
 
     [JsonPropertyName("prStartTimeGmt")]
-    public long PrStartTimeGmt { get; set; }
+    public long PrStartTimeGmt { get; init; }
 
     [JsonPropertyName("prStartTimeGmtFormatted")]
-    public DateTime PrStartTimeGmtFormatted { get; set; }
+    public DateTime PrStartTimeGmtFormatted { get; init; }
 
     [JsonPropertyName("prStartTimeLocal")]
-    public long PrStartTimeLocal { get; set; }
+    public long PrStartTimeLocal { get; init; }
 
     [JsonPropertyName("prStartTimeLocalFormatted")]
-    public DateTime? PrStartTimeLocalFormatted { get; set; }
+    public DateTime? PrStartTimeLocalFormatted { get; init; }
 
     [JsonPropertyName("prTypeLabelKey")]
-    public string PrTypeLabelKey { get; set; }
+    public string PrTypeLabelKey { get; init; }
 
     [JsonPropertyName("poolLengthUnit")]
-    public PoolLengthUnit PoolLengthUnit { get; set; }
+    public PoolLengthUnit PoolLengthUnit { get; init; }
 }
 
-public class PoolLengthUnit
+public record PoolLengthUnit
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("key")]
-    public string Key { get; set; }
+    public string Key { get; init; }
 
     [JsonPropertyName("factor")]
-    public double Factor { get; set; }
+    public double Factor { get; init; }
 }

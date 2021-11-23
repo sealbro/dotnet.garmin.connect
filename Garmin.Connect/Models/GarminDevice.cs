@@ -2,683 +2,683 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminDevice
+public record GarminDevice
 {
     [JsonPropertyName("appSupport")]
-    public bool AppSupport { get; set; }
+    public bool AppSupport { get; init; }
 
     [JsonPropertyName("applicationKey")]
-    public string ApplicationKey { get; set; }
+    public string ApplicationKey { get; init; }
 
     [JsonPropertyName("deviceTypePk")]
-    public long DeviceTypePk { get; set; }
+    public long DeviceTypePk { get; init; }
 
     [JsonPropertyName("bestInClassVideoLink")]
-    public string BestInClassVideoLink { get; set; }
+    public string BestInClassVideoLink { get; init; }
 
     [JsonPropertyName("bluetoothClassicDevice")]
-    public bool BluetoothClassicDevice { get; set; }
+    public bool BluetoothClassicDevice { get; init; }
 
     [JsonPropertyName("bluetoothLowEnergyDevice")]
-    public bool BluetoothLowEnergyDevice { get; set; }
+    public bool BluetoothLowEnergyDevice { get; init; }
 
     [JsonPropertyName("deviceCategories")]
-    public string[] DeviceCategories { get; set; }
+    public string[] DeviceCategories { get; init; }
 
     [JsonPropertyName("deviceEmbedVideoLink")]
-    public string DeviceEmbedVideoLink { get; set; }
+    public string DeviceEmbedVideoLink { get; init; }
 
     [JsonPropertyName("deviceSettingsFile")]
-    public string DeviceSettingsFile { get; set; }
+    public string DeviceSettingsFile { get; init; }
 
     [JsonPropertyName("gcmSettingsFile")]
-    public string GcmSettingsFile { get; set; }
+    public string GcmSettingsFile { get; init; }
 
     [JsonPropertyName("deviceVideoPageLink")]
-    public string DeviceVideoPageLink { get; set; }
+    public string DeviceVideoPageLink { get; init; }
 
     [JsonPropertyName("displayOrder")]
-    public long DisplayOrder { get; set; }
+    public long DisplayOrder { get; init; }
 
     [JsonPropertyName("golfDisplayOrder")]
-    public long GolfDisplayOrder { get; set; }
+    public long GolfDisplayOrder { get; init; }
 
     [JsonPropertyName("hasOpticalHeartRate")]
-    public bool HasOpticalHeartRate { get; set; }
+    public bool HasOpticalHeartRate { get; init; }
 
     [JsonPropertyName("highlighted")]
-    public bool Highlighted { get; set; }
+    public bool Highlighted { get; init; }
 
     [JsonPropertyName("hybrid")]
-    public bool Hybrid { get; set; }
+    public bool Hybrid { get; init; }
 
     [JsonPropertyName("imageUrl")]
-    public string ImageUrl { get; set; }
+    public string ImageUrl { get; init; }
 
     [JsonPropertyName("minGCMAndroidVersion")]
-    public long MinGcmAndroidVersion { get; set; }
+    public long MinGcmAndroidVersion { get; init; }
 
     [JsonPropertyName("minGCMWindowsVersion")]
-    public long MinGcmWindowsVersion { get; set; }
+    public long MinGcmWindowsVersion { get; init; }
 
     [JsonPropertyName("minGCMiOSVersion")]
-    public long MinGcMiOsVersion { get; set; }
+    public long MinGcMiOsVersion { get; init; }
 
     [JsonPropertyName("minGolfAppiOSVersion")]
-    public long MinGolfAppiOsVersion { get; set; }
+    public long MinGolfAppiOsVersion { get; init; }
 
     [JsonPropertyName("minGolfAppAndroidVersion")]
-    public long MinGolfAppAndroidVersion { get; set; }
+    public long MinGolfAppAndroidVersion { get; init; }
 
     [JsonPropertyName("partNumber")]
-    public string PartNumber { get; set; }
+    public string PartNumber { get; init; }
 
     [JsonPropertyName("primary")]
-    public bool Primary { get; set; }
+    public bool Primary { get; init; }
 
     [JsonPropertyName("productDisplayName")]
-    public string ProductDisplayName { get; set; }
+    public string ProductDisplayName { get; init; }
 
     [JsonPropertyName("deviceTags")]
-    public object DeviceTags { get; set; }
+    public object DeviceTags { get; init; }
 
     [JsonPropertyName("productSku")]
-    public string ProductSku { get; set; }
+    public string ProductSku { get; init; }
 
     [JsonPropertyName("wasp")]
-    public bool Wasp { get; set; }
+    public bool Wasp { get; init; }
 
     [JsonPropertyName("weightScale")]
-    public bool WeightScale { get; set; }
+    public bool WeightScale { get; init; }
 
     [JsonPropertyName("wellness")]
-    public bool Wellness { get; set; }
+    public bool Wellness { get; init; }
 
     [JsonPropertyName("wifi")]
-    public bool Wifi { get; set; }
+    public bool Wifi { get; init; }
 
     [JsonPropertyName("hasPowerButton")]
-    public bool HasPowerButton { get; set; }
+    public bool HasPowerButton { get; init; }
 
     [JsonPropertyName("supportsSecondaryUsers")]
-    public bool SupportsSecondaryUsers { get; set; }
+    public bool SupportsSecondaryUsers { get; init; }
 
     [JsonPropertyName("abnormalHeartRateAlertCapable")]
-    public bool AbnormalHeartRateAlertCapable { get; set; }
+    public bool AbnormalHeartRateAlertCapable { get; init; }
 
     [JsonPropertyName("activitySummFitFileCapable")]
-    public bool ActivitySummFitFileCapable { get; set; }
+    public bool ActivitySummFitFileCapable { get; init; }
 
     [JsonPropertyName("aerobicTrainingEffectCapable")]
-    public bool AerobicTrainingEffectCapable { get; set; }
+    public bool AerobicTrainingEffectCapable { get; init; }
 
     [JsonPropertyName("alarmDaysCapable")]
-    public bool AlarmDaysCapable { get; set; }
+    public bool AlarmDaysCapable { get; init; }
 
     [JsonPropertyName("allDayStressCapable")]
-    public bool AllDayStressCapable { get; set; }
+    public bool AllDayStressCapable { get; init; }
 
     [JsonPropertyName("anaerobicTrainingEffectCapable")]
-    public bool AnaerobicTrainingEffectCapable { get; set; }
+    public bool AnaerobicTrainingEffectCapable { get; init; }
 
     [JsonPropertyName("atpWorkoutCapable")]
-    public bool AtpWorkoutCapable { get; set; }
+    public bool AtpWorkoutCapable { get; init; }
 
     [JsonPropertyName("bodyBatteryCapable")]
-    public bool BodyBatteryCapable { get; set; }
+    public bool BodyBatteryCapable { get; init; }
 
     [JsonPropertyName("brickWorkoutCapable")]
-    public bool BrickWorkoutCapable { get; set; }
+    public bool BrickWorkoutCapable { get; init; }
 
     [JsonPropertyName("cardioCapable")]
-    public bool CardioCapable { get; set; }
+    public bool CardioCapable { get; init; }
 
     [JsonPropertyName("cardioOptionCapable")]
-    public bool CardioOptionCapable { get; set; }
+    public bool CardioOptionCapable { get; init; }
 
     [JsonPropertyName("cardioSportsCapable")]
-    public bool CardioSportsCapable { get; set; }
+    public bool CardioSportsCapable { get; init; }
 
     [JsonPropertyName("cardioWorkoutCapable")]
-    public bool CardioWorkoutCapable { get; set; }
+    public bool CardioWorkoutCapable { get; init; }
 
     [JsonPropertyName("cellularCapable")]
-    public bool CellularCapable { get; set; }
+    public bool CellularCapable { get; init; }
 
     [JsonPropertyName("changeLogCapable")]
-    public bool ChangeLogCapable { get; set; }
+    public bool ChangeLogCapable { get; init; }
 
     [JsonPropertyName("contactManagementCapable")]
-    public bool ContactManagementCapable { get; set; }
+    public bool ContactManagementCapable { get; init; }
 
     [JsonPropertyName("courseCapable")]
-    public bool CourseCapable { get; set; }
+    public bool CourseCapable { get; init; }
 
     [JsonPropertyName("courseFileType")]
-    public string CourseFileType { get; set; }
+    public string CourseFileType { get; init; }
 
     [JsonPropertyName("coursePromptCapable")]
-    public bool CoursePromptCapable { get; set; }
+    public bool CoursePromptCapable { get; init; }
 
     [JsonPropertyName("customIntensityMinutesCapable")]
-    public bool CustomIntensityMinutesCapable { get; set; }
+    public bool CustomIntensityMinutesCapable { get; init; }
 
     [JsonPropertyName("customWorkoutCapable")]
-    public bool CustomWorkoutCapable { get; set; }
+    public bool CustomWorkoutCapable { get; init; }
 
     [JsonPropertyName("cyclingSegmentCapable")]
-    public bool CyclingSegmentCapable { get; set; }
+    public bool CyclingSegmentCapable { get; init; }
 
     [JsonPropertyName("cyclingSportsCapable")]
-    public bool CyclingSportsCapable { get; set; }
+    public bool CyclingSportsCapable { get; init; }
 
     [JsonPropertyName("cyclingWorkoutCapable")]
-    public bool CyclingWorkoutCapable { get; set; }
+    public bool CyclingWorkoutCapable { get; init; }
 
     [JsonPropertyName("defaultSettingCapable")]
-    public bool DefaultSettingCapable { get; set; }
+    public bool DefaultSettingCapable { get; init; }
 
     [JsonPropertyName("deviceSettingCapable")]
-    public bool DeviceSettingCapable { get; set; }
+    public bool DeviceSettingCapable { get; init; }
 
     [JsonPropertyName("deviceSettingFileType")]
-    public object DeviceSettingFileType { get; set; }
+    public object DeviceSettingFileType { get; init; }
 
     [JsonPropertyName("displayFieldsExtCapable")]
-    public bool DisplayFieldsExtCapable { get; set; }
+    public bool DisplayFieldsExtCapable { get; init; }
 
     [JsonPropertyName("divingCapable")]
-    public bool DivingCapable { get; set; }
+    public bool DivingCapable { get; init; }
 
     [JsonPropertyName("ellipticalOptionCapable")]
-    public bool EllipticalOptionCapable { get; set; }
+    public bool EllipticalOptionCapable { get; init; }
 
     [JsonPropertyName("floorsClimbedGoalCapable")]
-    public bool FloorsClimbedGoalCapable { get; set; }
+    public bool FloorsClimbedGoalCapable { get; init; }
 
     [JsonPropertyName("ftpCapable")]
-    public bool FtpCapable { get; set; }
+    public bool FtpCapable { get; init; }
 
     [JsonPropertyName("gcj02CourseCapable")]
-    public bool Gcj02CourseCapable { get; set; }
+    public bool Gcj02CourseCapable { get; init; }
 
     [JsonPropertyName("glonassCapable")]
-    public bool GlonassCapable { get; set; }
+    public bool GlonassCapable { get; init; }
 
     [JsonPropertyName("goalCapable")]
-    public bool GoalCapable { get; set; }
+    public bool GoalCapable { get; init; }
 
     [JsonPropertyName("goalFileType")]
-    public string GoalFileType { get; set; }
+    public string GoalFileType { get; init; }
 
     [JsonPropertyName("golfAppSyncCapable")]
-    public bool GolfAppSyncCapable { get; set; }
+    public bool GolfAppSyncCapable { get; init; }
 
     [JsonPropertyName("gpsRouteCapable")]
-    public bool GpsRouteCapable { get; set; }
+    public bool GpsRouteCapable { get; init; }
 
     [JsonPropertyName("handednessCapable")]
-    public bool HandednessCapable { get; set; }
+    public bool HandednessCapable { get; init; }
 
     [JsonPropertyName("hrZoneCapable")]
-    public bool HrZoneCapable { get; set; }
+    public bool HrZoneCapable { get; init; }
 
     [JsonPropertyName("hrvStressCapable")]
-    public bool HrvStressCapable { get; set; }
+    public bool HrvStressCapable { get; init; }
 
     [JsonPropertyName("intensityMinutesGoalCapable")]
-    public bool IntensityMinutesGoalCapable { get; set; }
+    public bool IntensityMinutesGoalCapable { get; init; }
 
     [JsonPropertyName("lactateThresholdCapable")]
-    public bool LactateThresholdCapable { get; set; }
+    public bool LactateThresholdCapable { get; init; }
 
     [JsonPropertyName("languageSettingCapable")]
-    public bool LanguageSettingCapable { get; set; }
+    public bool LanguageSettingCapable { get; init; }
 
     [JsonPropertyName("languageSettingFileType")]
-    public object LanguageSettingFileType { get; set; }
+    public object LanguageSettingFileType { get; init; }
 
     [JsonPropertyName("lowHrAlertCapable")]
-    public bool LowHrAlertCapable { get; set; }
+    public bool LowHrAlertCapable { get; init; }
 
     [JsonPropertyName("maxHRCapable")]
-    public bool MaxHrCapable { get; set; }
+    public bool MaxHrCapable { get; init; }
 
     [JsonPropertyName("maxWorkoutCount")]
-    public long MaxWorkoutCount { get; set; }
+    public long MaxWorkoutCount { get; init; }
 
     [JsonPropertyName("metricsFitFileReceiveCapable")]
-    public bool MetricsFitFileReceiveCapable { get; set; }
+    public bool MetricsFitFileReceiveCapable { get; init; }
 
     [JsonPropertyName("metricsUploadCapable")]
-    public bool MetricsUploadCapable { get; set; }
+    public bool MetricsUploadCapable { get; init; }
 
     [JsonPropertyName("militaryTimeCapable")]
-    public bool MilitaryTimeCapable { get; set; }
+    public bool MilitaryTimeCapable { get; init; }
 
     [JsonPropertyName("moderateIntensityMinutesGoalCapable")]
-    public bool ModerateIntensityMinutesGoalCapable { get; set; }
+    public bool ModerateIntensityMinutesGoalCapable { get; init; }
 
     [JsonPropertyName("nfcCapable")]
-    public bool NfcCapable { get; set; }
+    public bool NfcCapable { get; init; }
 
     [JsonPropertyName("otherOptionCapable")]
-    public bool OtherOptionCapable { get; set; }
+    public bool OtherOptionCapable { get; init; }
 
     [JsonPropertyName("otherSportsCapable")]
-    public bool OtherSportsCapable { get; set; }
+    public bool OtherSportsCapable { get; init; }
 
     [JsonPropertyName("personalRecordCapable")]
-    public bool PersonalRecordCapable { get; set; }
+    public bool PersonalRecordCapable { get; init; }
 
     [JsonPropertyName("personalRecordFileType")]
-    public string PersonalRecordFileType { get; set; }
+    public string PersonalRecordFileType { get; init; }
 
     [JsonPropertyName("poolSwimOptionCapable")]
-    public bool PoolSwimOptionCapable { get; set; }
+    public bool PoolSwimOptionCapable { get; init; }
 
     [JsonPropertyName("powerCurveCapable")]
-    public bool PowerCurveCapable { get; set; }
+    public bool PowerCurveCapable { get; init; }
 
     [JsonPropertyName("powerZonesCapable")]
-    public bool PowerZonesCapable { get; set; }
+    public bool PowerZonesCapable { get; init; }
 
     [JsonPropertyName("pulseOxAllDayCapable")]
-    public bool PulseOxAllDayCapable { get; set; }
+    public bool PulseOxAllDayCapable { get; init; }
 
     [JsonPropertyName("pulseOxOnDemandCapable")]
-    public bool PulseOxOnDemandCapable { get; set; }
+    public bool PulseOxOnDemandCapable { get; init; }
 
     [JsonPropertyName("pulseOxSleepCapable")]
-    public bool PulseOxSleepCapable { get; set; }
+    public bool PulseOxSleepCapable { get; init; }
 
     [JsonPropertyName("remCapable")]
-    public bool RemCapable { get; set; }
+    public bool RemCapable { get; init; }
 
     [JsonPropertyName("reminderAlarmCapable")]
-    public bool ReminderAlarmCapable { get; set; }
+    public bool ReminderAlarmCapable { get; init; }
 
     [JsonPropertyName("reorderablePagesCapable")]
-    public bool ReorderablePagesCapable { get; set; }
+    public bool ReorderablePagesCapable { get; init; }
 
     [JsonPropertyName("restingHRCapable")]
-    public bool RestingHrCapable { get; set; }
+    public bool RestingHrCapable { get; init; }
 
     [JsonPropertyName("rideOptionsCapable")]
-    public bool RideOptionsCapable { get; set; }
+    public bool RideOptionsCapable { get; init; }
 
     [JsonPropertyName("runOptionIndoorCapable")]
-    public bool RunOptionIndoorCapable { get; set; }
+    public bool RunOptionIndoorCapable { get; init; }
 
     [JsonPropertyName("runOptionsCapable")]
-    public bool RunOptionsCapable { get; set; }
+    public bool RunOptionsCapable { get; init; }
 
     [JsonPropertyName("runningSegmentCapable")]
-    public bool RunningSegmentCapable { get; set; }
+    public bool RunningSegmentCapable { get; init; }
 
     [JsonPropertyName("runningSportsCapable")]
-    public bool RunningSportsCapable { get; set; }
+    public bool RunningSportsCapable { get; init; }
 
     [JsonPropertyName("runningWorkoutCapable")]
-    public bool RunningWorkoutCapable { get; set; }
+    public bool RunningWorkoutCapable { get; init; }
 
     [JsonPropertyName("scheduleCapable")]
-    public bool ScheduleCapable { get; set; }
+    public bool ScheduleCapable { get; init; }
 
     [JsonPropertyName("scheduleFileType")]
-    public string ScheduleFileType { get; set; }
+    public string ScheduleFileType { get; init; }
 
     [JsonPropertyName("segmentCapable")]
-    public bool SegmentCapable { get; set; }
+    public bool SegmentCapable { get; init; }
 
     [JsonPropertyName("segmentPointCapable")]
-    public bool SegmentPointCapable { get; set; }
+    public bool SegmentPointCapable { get; init; }
 
     [JsonPropertyName("settingCapable")]
-    public bool SettingCapable { get; set; }
+    public bool SettingCapable { get; init; }
 
     [JsonPropertyName("settingFileType")]
-    public string SettingFileType { get; set; }
+    public string SettingFileType { get; init; }
 
     [JsonPropertyName("sleepTimeCapable")]
-    public bool SleepTimeCapable { get; set; }
+    public bool SleepTimeCapable { get; init; }
 
     [JsonPropertyName("smallFitFileOnlyCapable")]
-    public bool SmallFitFileOnlyCapable { get; set; }
+    public bool SmallFitFileOnlyCapable { get; init; }
 
     [JsonPropertyName("sportCapable")]
-    public bool SportCapable { get; set; }
+    public bool SportCapable { get; init; }
 
     [JsonPropertyName("sportFileType")]
-    public string SportFileType { get; set; }
+    public string SportFileType { get; init; }
 
     [JsonPropertyName("stairStepperOptionCapable")]
-    public bool StairStepperOptionCapable { get; set; }
+    public bool StairStepperOptionCapable { get; init; }
 
     [JsonPropertyName("strengthOptionsCapable")]
-    public bool StrengthOptionsCapable { get; set; }
+    public bool StrengthOptionsCapable { get; init; }
 
     [JsonPropertyName("strengthWorkoutCapable")]
-    public bool StrengthWorkoutCapable { get; set; }
+    public bool StrengthWorkoutCapable { get; init; }
 
     [JsonPropertyName("supportedHrZones")]
-    public string[] SupportedHrZones { get; set; }
+    public string[] SupportedHrZones { get; init; }
 
     [JsonPropertyName("swimWorkoutCapable")]
-    public bool SwimWorkoutCapable { get; set; }
+    public bool SwimWorkoutCapable { get; init; }
 
     [JsonPropertyName("trainingPlanCapable")]
-    public bool TrainingPlanCapable { get; set; }
+    public bool TrainingPlanCapable { get; init; }
 
     [JsonPropertyName("trainingStatusCapable")]
-    public bool TrainingStatusCapable { get; set; }
+    public bool TrainingStatusCapable { get; init; }
 
     [JsonPropertyName("trainingStatusPauseCapable")]
-    public bool TrainingStatusPauseCapable { get; set; }
+    public bool TrainingStatusPauseCapable { get; init; }
 
     [JsonPropertyName("userProfileCapable")]
-    public bool UserProfileCapable { get; set; }
+    public bool UserProfileCapable { get; init; }
 
     [JsonPropertyName("userProfileFileType")]
-    public object UserProfileFileType { get; set; }
+    public object UserProfileFileType { get; init; }
 
     [JsonPropertyName("userTcxExportCapable")]
-    public bool UserTcxExportCapable { get; set; }
+    public bool UserTcxExportCapable { get; init; }
 
     [JsonPropertyName("vo2MaxBikeCapable")]
-    public bool Vo2MaxBikeCapable { get; set; }
+    public bool Vo2MaxBikeCapable { get; init; }
 
     [JsonPropertyName("vo2MaxRunCapable")]
-    public bool Vo2MaxRunCapable { get; set; }
+    public bool Vo2MaxRunCapable { get; init; }
 
     [JsonPropertyName("walkOptionCapable")]
-    public bool WalkOptionCapable { get; set; }
+    public bool WalkOptionCapable { get; init; }
 
     [JsonPropertyName("walkingSportsCapable")]
-    public bool WalkingSportsCapable { get; set; }
+    public bool WalkingSportsCapable { get; init; }
 
     [JsonPropertyName("weatherAlertsCapable")]
-    public bool WeatherAlertsCapable { get; set; }
+    public bool WeatherAlertsCapable { get; init; }
 
     [JsonPropertyName("weatherSettingsCapable")]
-    public bool WeatherSettingsCapable { get; set; }
+    public bool WeatherSettingsCapable { get; init; }
 
     [JsonPropertyName("workoutCapable")]
-    public bool WorkoutCapable { get; set; }
+    public bool WorkoutCapable { get; init; }
 
     [JsonPropertyName("workoutFileType")]
-    public string WorkoutFileType { get; set; }
+    public string WorkoutFileType { get; init; }
 
     [JsonPropertyName("yogaCapable")]
-    public bool YogaCapable { get; set; }
+    public bool YogaCapable { get; init; }
 
     [JsonPropertyName("yogaOptionCapable")]
-    public bool YogaOptionCapable { get; set; }
+    public bool YogaOptionCapable { get; init; }
 
     [JsonPropertyName("heatAndAltitudeAcclimationCapable")]
-    public bool HeatAndAltitudeAcclimationCapable { get; set; }
+    public bool HeatAndAltitudeAcclimationCapable { get; init; }
 
     [JsonPropertyName("trainingLoadBalanceCapable")]
-    public bool TrainingLoadBalanceCapable { get; set; }
+    public bool TrainingLoadBalanceCapable { get; init; }
 
     [JsonPropertyName("indoorTrackOptionsCapable")]
-    public bool IndoorTrackOptionsCapable { get; set; }
+    public bool IndoorTrackOptionsCapable { get; init; }
 
     [JsonPropertyName("indoorBikeOptionsCapable")]
-    public bool IndoorBikeOptionsCapable { get; set; }
+    public bool IndoorBikeOptionsCapable { get; init; }
 
     [JsonPropertyName("indoorWalkOptionsCapable")]
-    public bool IndoorWalkOptionsCapable { get; set; }
+    public bool IndoorWalkOptionsCapable { get; init; }
 
     [JsonPropertyName("trainingEffectLabelCapable")]
-    public bool TrainingEffectLabelCapable { get; set; }
+    public bool TrainingEffectLabelCapable { get; init; }
 
     [JsonPropertyName("pacebandCapable")]
-    public bool PacebandCapable { get; set; }
+    public bool PacebandCapable { get; init; }
 
     [JsonPropertyName("respirationCapable")]
-    public bool RespirationCapable { get; set; }
+    public bool RespirationCapable { get; init; }
 
     [JsonPropertyName("openWaterSwimOptionCapable")]
-    public bool OpenWaterSwimOptionCapable { get; set; }
+    public bool OpenWaterSwimOptionCapable { get; init; }
 
     [JsonPropertyName("phoneVerificationCheckRequired")]
-    public bool PhoneVerificationCheckRequired { get; set; }
+    public bool PhoneVerificationCheckRequired { get; init; }
 
     [JsonPropertyName("weightGoalCapable")]
-    public bool WeightGoalCapable { get; set; }
+    public bool WeightGoalCapable { get; init; }
 
     [JsonPropertyName("yogaWorkoutCapable")]
-    public bool YogaWorkoutCapable { get; set; }
+    public bool YogaWorkoutCapable { get; init; }
 
     [JsonPropertyName("pilatesWorkoutCapable")]
-    public bool PilatesWorkoutCapable { get; set; }
+    public bool PilatesWorkoutCapable { get; init; }
 
     [JsonPropertyName("connectedGPSCapable")]
-    public bool ConnectedGpsCapable { get; set; }
+    public bool ConnectedGpsCapable { get; init; }
 
     [JsonPropertyName("diveAppSyncCapable")]
-    public bool DiveAppSyncCapable { get; set; }
+    public bool DiveAppSyncCapable { get; init; }
 
     [JsonPropertyName("golfLiveScoringCapable")]
-    public bool GolfLiveScoringCapable { get; set; }
+    public bool GolfLiveScoringCapable { get; init; }
 
     [JsonPropertyName("bloodEfficiencySleepCapable")]
-    public bool BloodEfficiencySleepCapable { get; set; }
+    public bool BloodEfficiencySleepCapable { get; init; }
 
     [JsonPropertyName("bloodEfficiencyAllDayCapable")]
-    public bool BloodEfficiencyAllDayCapable { get; set; }
+    public bool BloodEfficiencyAllDayCapable { get; init; }
 
     [JsonPropertyName("bloodEfficiencyOnDemandCapable")]
-    public bool BloodEfficiencyOnDemandCapable { get; set; }
+    public bool BloodEfficiencyOnDemandCapable { get; init; }
 
     [JsonPropertyName("solarPanelUtilizationCapable")]
-    public bool SolarPanelUtilizationCapable { get; set; }
+    public bool SolarPanelUtilizationCapable { get; init; }
 
     [JsonPropertyName("sweatLossCapable")]
-    public bool SweatLossCapable { get; set; }
+    public bool SweatLossCapable { get; init; }
 
     [JsonPropertyName("diveAlertCapable")]
-    public bool DiveAlertCapable { get; set; }
+    public bool DiveAlertCapable { get; init; }
 
     [JsonPropertyName("requiresInitialDeviceNickname")]
-    public bool RequiresInitialDeviceNickname { get; set; }
+    public bool RequiresInitialDeviceNickname { get; init; }
 
     [JsonPropertyName("defaultSettingsHbaseMigrated")]
-    public bool DefaultSettingsHbaseMigrated { get; set; }
+    public bool DefaultSettingsHbaseMigrated { get; init; }
 
     [JsonPropertyName("sleepScoreCapable")]
-    public bool SleepScoreCapable { get; set; }
+    public bool SleepScoreCapable { get; init; }
 
     [JsonPropertyName("fitnessAgeV2Capable")]
-    public bool FitnessAgeV2Capable { get; set; }
+    public bool FitnessAgeV2Capable { get; init; }
 
     [JsonPropertyName("intensityMinutesV2Capable")]
-    public bool IntensityMinutesV2Capable { get; set; }
+    public bool IntensityMinutesV2Capable { get; init; }
 
     [JsonPropertyName("collapsibleControlMenuCapable")]
-    public bool CollapsibleControlMenuCapable { get; set; }
+    public bool CollapsibleControlMenuCapable { get; init; }
 
     [JsonPropertyName("measurementUnitSettingCapable")]
-    public bool MeasurementUnitSettingCapable { get; set; }
+    public bool MeasurementUnitSettingCapable { get; init; }
 
     [JsonPropertyName("onDeviceSleepCalculationCapable")]
-    public bool OnDeviceSleepCalculationCapable { get; set; }
+    public bool OnDeviceSleepCalculationCapable { get; init; }
 
     [JsonPropertyName("hiitWorkoutCapable")]
-    public bool HiitWorkoutCapable { get; set; }
+    public bool HiitWorkoutCapable { get; init; }
 
     [JsonPropertyName("runningHeartRateZoneCapable")]
-    public bool RunningHeartRateZoneCapable { get; set; }
+    public bool RunningHeartRateZoneCapable { get; init; }
 
     [JsonPropertyName("cyclingHeartRateZoneCapable")]
-    public bool CyclingHeartRateZoneCapable { get; set; }
+    public bool CyclingHeartRateZoneCapable { get; init; }
 
     [JsonPropertyName("swimmingHeartRateZoneCapable")]
-    public bool SwimmingHeartRateZoneCapable { get; set; }
+    public bool SwimmingHeartRateZoneCapable { get; init; }
 
     [JsonPropertyName("defaultHeartRateZoneCapable")]
-    public bool DefaultHeartRateZoneCapable { get; set; }
+    public bool DefaultHeartRateZoneCapable { get; init; }
 
     [JsonPropertyName("cyclingPowerZonesCapable")]
-    public bool CyclingPowerZonesCapable { get; set; }
+    public bool CyclingPowerZonesCapable { get; init; }
 
     [JsonPropertyName("xcSkiPowerZonesCapable")]
-    public bool XcSkiPowerZonesCapable { get; set; }
+    public bool XcSkiPowerZonesCapable { get; init; }
 
     [JsonPropertyName("swimAlgorithmCapable")]
-    public bool SwimAlgorithmCapable { get; set; }
+    public bool SwimAlgorithmCapable { get; init; }
 
     [JsonPropertyName("benchmarkExerciseCapable")]
-    public bool BenchmarkExerciseCapable { get; set; }
+    public bool BenchmarkExerciseCapable { get; init; }
 
     [JsonPropertyName("spectatorMessagingCapable")]
-    public bool SpectatorMessagingCapable { get; set; }
+    public bool SpectatorMessagingCapable { get; init; }
 
     [JsonPropertyName("ecgCapable")]
-    public bool EcgCapable { get; set; }
+    public bool EcgCapable { get; init; }
 
     [JsonPropertyName("lteLiveEventSharingCapable")]
-    public bool LteLiveEventSharingCapable { get; set; }
+    public bool LteLiveEventSharingCapable { get; init; }
 
     [JsonPropertyName("sleepFitFileReceiveCapable")]
-    public bool SleepFitFileReceiveCapable { get; set; }
+    public bool SleepFitFileReceiveCapable { get; init; }
 
     [JsonPropertyName("secondaryWorkoutStepTargetCapable")]
-    public bool SecondaryWorkoutStepTargetCapable { get; set; }
+    public bool SecondaryWorkoutStepTargetCapable { get; init; }
 
     [JsonPropertyName("assistancePlusCapable")]
-    public bool AssistancePlusCapable { get; set; }
+    public bool AssistancePlusCapable { get; init; }
 
     [JsonPropertyName("powerGuidanceCapable")]
-    public bool PowerGuidanceCapable { get; set; }
+    public bool PowerGuidanceCapable { get; init; }
 
     [JsonPropertyName("airIntegrationCapable")]
-    public bool AirIntegrationCapable { get; set; }
+    public bool AirIntegrationCapable { get; init; }
 
     [JsonPropertyName("healthSnapshotCapable")]
-    public bool HealthSnapshotCapable { get; set; }
+    public bool HealthSnapshotCapable { get; init; }
 
     [JsonPropertyName("racePredictionsRunCapable")]
-    public bool RacePredictionsRunCapable { get; set; }
+    public bool RacePredictionsRunCapable { get; init; }
 
     [JsonPropertyName("vivohubCompatible")]
-    public bool VivohubCompatible { get; set; }
+    public bool VivohubCompatible { get; init; }
 
     [JsonPropertyName("stepsTrueUpChartCapable")]
-    public bool StepsTrueUpChartCapable { get; set; }
+    public bool StepsTrueUpChartCapable { get; init; }
 
     [JsonPropertyName("sportingEventCapable")]
-    public bool SportingEventCapable { get; set; }
+    public bool SportingEventCapable { get; init; }
 
     [JsonPropertyName("solarChargeCapable")]
-    public bool SolarChargeCapable { get; set; }
+    public bool SolarChargeCapable { get; init; }
 
     [JsonPropertyName("realTimeSettingsCapable")]
-    public bool RealTimeSettingsCapable { get; set; }
+    public bool RealTimeSettingsCapable { get; init; }
 
     [JsonPropertyName("emergencyCallingCapable")]
-    public bool EmergencyCallingCapable { get; set; }
+    public bool EmergencyCallingCapable { get; init; }
 
     [JsonPropertyName("personalRepRecordCapable")]
-    public bool PersonalRepRecordCapable { get; set; }
+    public bool PersonalRepRecordCapable { get; init; }
 
     [JsonPropertyName("hrvStatusCapable")]
-    public bool HrvStatusCapable { get; set; }
+    public bool HrvStatusCapable { get; init; }
 
     [JsonPropertyName("trainingReadinessCapable")]
-    public bool TrainingReadinessCapable { get; set; }
+    public bool TrainingReadinessCapable { get; init; }
 
     [JsonPropertyName("publicBetaSoftwareCapable")]
-    public bool PublicBetaSoftwareCapable { get; set; }
+    public bool PublicBetaSoftwareCapable { get; init; }
 
     [JsonPropertyName("workoutAudioPromptsCapable")]
-    public bool WorkoutAudioPromptsCapable { get; set; }
+    public bool WorkoutAudioPromptsCapable { get; init; }
 
     [JsonPropertyName("actualStepRecordingCapable")]
-    public bool ActualStepRecordingCapable { get; set; }
+    public bool ActualStepRecordingCapable { get; init; }
 
     [JsonPropertyName("groupTrack2Capable")]
-    public bool GroupTrack2Capable { get; set; }
+    public bool GroupTrack2Capable { get; init; }
 
     [JsonPropertyName("golfAppPairingCapable")]
-    public bool GolfAppPairingCapable { get; set; }
+    public bool GolfAppPairingCapable { get; init; }
 
     [JsonPropertyName("localWindConditionsCapable")]
-    public bool LocalWindConditionsCapable { get; set; }
+    public bool LocalWindConditionsCapable { get; init; }
 
     [JsonPropertyName("multipleGolfCourseCapable")]
-    public bool MultipleGolfCourseCapable { get; set; }
+    public bool MultipleGolfCourseCapable { get; init; }
 
     [JsonPropertyName("beaconTrackingCapable")]
-    public bool BeaconTrackingCapable { get; set; }
+    public bool BeaconTrackingCapable { get; init; }
 
     [JsonPropertyName("batteryStatusCapable")]
-    public bool BatteryStatusCapable { get; set; }
+    public bool BatteryStatusCapable { get; init; }
 
     [JsonPropertyName("datasource")]
-    public string Datasource { get; set; }
+    public string Datasource { get; init; }
 
     [JsonPropertyName("deviceStatus")]
-    public string DeviceStatus { get; set; }
+    public string DeviceStatus { get; init; }
 
     [JsonPropertyName("registeredDate")]
-    public long RegisteredDate { get; set; }
+    public long RegisteredDate { get; init; }
 
     [JsonPropertyName("actualProductSku")]
-    public string ActualProductSku { get; set; }
+    public string ActualProductSku { get; init; }
 
     [JsonPropertyName("vivohubConfigurable")]
-    public object VivohubConfigurable { get; set; }
+    public object VivohubConfigurable { get; init; }
 
     [JsonPropertyName("serialNumber")]
-    public string SerialNumber { get; set; }
+    public string SerialNumber { get; init; }
 
     [JsonPropertyName("shortName")]
-    public object ShortName { get; set; }
+    public object ShortName { get; init; }
 
     [JsonPropertyName("displayName")]
-    public string DisplayName { get; set; }
+    public string DisplayName { get; init; }
 
     [JsonPropertyName("unitId")]
-    public long UnitId { get; set; }
+    public long UnitId { get; init; }
 
     [JsonPropertyName("deviceId")]
-    public long DeviceId { get; set; }
+    public long DeviceId { get; init; }
 
     [JsonPropertyName("wifiSetup")]
-    public bool WifiSetup { get; set; }
+    public bool WifiSetup { get; init; }
 
     [JsonPropertyName("currentFirmwareVersionMajor")]
-    public long CurrentFirmwareVersionMajor { get; set; }
+    public long CurrentFirmwareVersionMajor { get; init; }
 
     [JsonPropertyName("currentFirmwareVersionMinor")]
-    public long CurrentFirmwareVersionMinor { get; set; }
+    public long CurrentFirmwareVersionMinor { get; init; }
 
     [JsonPropertyName("activeInd")]
-    public long ActiveInd { get; set; }
+    public long ActiveInd { get; init; }
 
     [JsonPropertyName("primaryActivityTrackerIndicator")]
-    public bool PrimaryActivityTrackerIndicator { get; set; }
+    public bool PrimaryActivityTrackerIndicator { get; init; }
 
     [JsonPropertyName("currentFirmwareVersion")]
-    public string CurrentFirmwareVersion { get; set; }
+    public string CurrentFirmwareVersion { get; init; }
 
     [JsonPropertyName("isPrimaryUser")]
-    public bool IsPrimaryUser { get; set; }
+    public bool IsPrimaryUser { get; init; }
 
     [JsonPropertyName("corporateDevice")]
-    public bool CorporateDevice { get; set; }
+    public bool CorporateDevice { get; init; }
 
     [JsonPropertyName("prePairedWithHRM")]
-    public bool PrePairedWithHrm { get; set; }
+    public bool PrePairedWithHrm { get; init; }
 
     [JsonPropertyName("unRetirable")]
-    public bool UnRetirable { get; set; }
+    public bool UnRetirable { get; init; }
 
     [JsonPropertyName("otherAssociation")]
-    public bool OtherAssociation { get; set; }
+    public bool OtherAssociation { get; init; }
 
     [JsonPropertyName("minCustomIntensityMinutesVersion")]
-    public string MinCustomIntensityMinutesVersion { get; set; }
+    public string MinCustomIntensityMinutesVersion { get; init; }
 }

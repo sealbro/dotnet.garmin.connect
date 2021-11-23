@@ -2,68 +2,68 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminActivityWeather
+public record GarminActivityWeather
 {
         [JsonPropertyName("issueDate")]
-        public string IssueDate { get; set; }
+        public string IssueDate { get; init; }
 
         [JsonPropertyName("temp")]
-        public long Temp { get; set; }
+        public long Temp { get; init; }
 
         [JsonPropertyName("apparentTemp")]
-        public long ApparentTemp { get; set; }
+        public long ApparentTemp { get; init; }
 
         [JsonPropertyName("dewPoint")]
-        public long DewPoint { get; set; }
+        public long DewPoint { get; init; }
 
         [JsonPropertyName("relativeHumidity")]
-        public long RelativeHumidity { get; set; }
+        public long RelativeHumidity { get; init; }
 
         [JsonPropertyName("windDirection")]
-        public long WindDirection { get; set; }
+        public long WindDirection { get; init; }
 
         [JsonPropertyName("windDirectionCompassPoint")]
-        public string WindDirectionCompassPoint { get; set; }
+        public string WindDirectionCompassPoint { get; init; }
 
         [JsonPropertyName("windSpeed")]
-        public long WindSpeed { get; set; }
+        public long WindSpeed { get; init; }
 
         [JsonPropertyName("windGust")]
-        public string WindGust { get; set; }
+        public string WindGust { get; init; }
 
         [JsonPropertyName("latitude")]
-        public double Latitude { get; set; }
+        public double Latitude { get; init; }
 
         [JsonPropertyName("longitude")]
-        public double Longitude { get; set; }
+        public double Longitude { get; init; }
 
         [JsonPropertyName("weatherStationDTO")]
-        public WeatherStationDto WeatherStationDto { get; set; }
+        public WeatherStationDto WeatherStationDto { get; init; }
 
         [JsonPropertyName("weatherTypeDTO")]
-        public WeatherTypeDto WeatherTypeDto { get; set; }
+        public WeatherTypeDto WeatherTypeDto { get; init; }
 }
 
-public class WeatherStationDto
+public record WeatherStationDto
 {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string Id { get; init; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; init; }
 
         [JsonPropertyName("timezone")]
-        public string Timezone { get; set; }
+        public string Timezone { get; init; }
 }
 
-public class WeatherTypeDto
+public record WeatherTypeDto
 {
         [JsonPropertyName("weatherTypePk")]
-        public string WeatherTypePk { get; set; }
+        public string WeatherTypePk { get; init; }
 
         [JsonPropertyName("desc")]
-        public string Desc { get; set; }
+        public string Desc { get; init; }
 
         [JsonPropertyName("image")]
-        public string Image { get; set; }
+        public string Image { get; init; }
 }

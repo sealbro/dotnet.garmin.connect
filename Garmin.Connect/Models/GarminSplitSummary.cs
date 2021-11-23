@@ -2,14 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminSplitSummary
+public record GarminSplitSummary
 {
     [JsonPropertyName("activityId")]
-    public long ActivityId { get; set; }
+    public long ActivityId { get; init; }
 
     [JsonPropertyName("activityUUID")]
-    public GarminActivityUuid ActivityUuid { get; set; }
+    public GarminActivityUuid ActivityUuid { get; init; }
 
     [JsonPropertyName("splitSummaries")]
-    public object[] SplitSummaries { get; set; }
+    public object[] SplitSummaries { get; init; }
 }

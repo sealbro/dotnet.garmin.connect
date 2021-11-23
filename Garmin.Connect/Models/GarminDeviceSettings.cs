@@ -2,402 +2,402 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminDeviceSettings
+public record GarminDeviceSettings
 {
     [JsonPropertyName("deviceId")]
-    public long DeviceId { get; set; }
+    public long DeviceId { get; init; }
 
     [JsonPropertyName("timeFormat")]
-    public string TimeFormat { get; set; }
+    public string TimeFormat { get; init; }
 
     [JsonPropertyName("dateFormat")]
-    public string DateFormat { get; set; }
+    public string DateFormat { get; init; }
 
     [JsonPropertyName("measurementUnits")]
-    public string MeasurementUnits { get; set; }
+    public string MeasurementUnits { get; init; }
 
     [JsonPropertyName("allUnits")]
-    public string AllUnits { get; set; }
+    public string AllUnits { get; init; }
 
     [JsonPropertyName("visibleScreens")]
-    public object VisibleScreens { get; set; }
+    public object VisibleScreens { get; init; }
 
     [JsonPropertyName("enabledScreens")]
-    public object EnabledScreens { get; set; }
+    public object EnabledScreens { get; init; }
 
     [JsonPropertyName("screenLists")]
-    public object ScreenLists { get; set; }
+    public object ScreenLists { get; init; }
 
     [JsonPropertyName("isVivohubEnabled")]
-    public object IsVivohubEnabled { get; set; }
+    public object IsVivohubEnabled { get; init; }
 
     [JsonPropertyName("alarms")]
-    public object[] Alarms { get; set; }
+    public object[] Alarms { get; init; }
 
     [JsonPropertyName("supportedAlarmModes")]
-    public object SupportedAlarmModes { get; set; }
+    public object SupportedAlarmModes { get; init; }
 
     [JsonPropertyName("multipleAlarmEnabled")]
-    public bool MultipleAlarmEnabled { get; set; }
+    public bool MultipleAlarmEnabled { get; init; }
 
     [JsonPropertyName("maxAlarm")]
-    public object MaxAlarm { get; set; }
+    public object MaxAlarm { get; init; }
 
     [JsonPropertyName("activityTracking")]
-    public object ActivityTracking { get; set; }
+    public object ActivityTracking { get; init; }
 
     [JsonPropertyName("keyTonesEnabled")]
-    public object KeyTonesEnabled { get; set; }
+    public object KeyTonesEnabled { get; init; }
 
     [JsonPropertyName("keyVibrationEnabled")]
-    public object KeyVibrationEnabled { get; set; }
+    public object KeyVibrationEnabled { get; init; }
 
     [JsonPropertyName("alertTonesEnabled")]
-    public object AlertTonesEnabled { get; set; }
+    public object AlertTonesEnabled { get; init; }
 
     [JsonPropertyName("userNoticeTonesEnabled")]
-    public object UserNoticeTonesEnabled { get; set; }
+    public object UserNoticeTonesEnabled { get; init; }
 
     [JsonPropertyName("glonassEnabled")]
-    public object GlonassEnabled { get; set; }
+    public object GlonassEnabled { get; init; }
 
     [JsonPropertyName("turnPromptEnabled")]
-    public object TurnPromptEnabled { get; set; }
+    public object TurnPromptEnabled { get; init; }
 
     [JsonPropertyName("segmentPromptEnabled")]
-    public object SegmentPromptEnabled { get; set; }
+    public object SegmentPromptEnabled { get; init; }
 
     [JsonPropertyName("supportedLanguages")]
-    public SupportedLanguage[] SupportedLanguages { get; set; }
+    public SupportedLanguage[] SupportedLanguages { get; init; }
 
     [JsonPropertyName("language")]
-    public long Language { get; set; }
+    public long Language { get; init; }
 
     [JsonPropertyName("supportedAudioPromptDialects")]
-    public object SupportedAudioPromptDialects { get; set; }
+    public object SupportedAudioPromptDialects { get; init; }
 
     [JsonPropertyName("defaultPage")]
-    public object DefaultPage { get; set; }
+    public object DefaultPage { get; init; }
 
     [JsonPropertyName("displayOrientation")]
-    public object DisplayOrientation { get; set; }
+    public object DisplayOrientation { get; init; }
 
     [JsonPropertyName("mountingSide")]
-    public object MountingSide { get; set; }
+    public object MountingSide { get; init; }
 
     [JsonPropertyName("backlightMode")]
-    public object BacklightMode { get; set; }
+    public object BacklightMode { get; init; }
 
     [JsonPropertyName("backlightSetting")]
-    public object BacklightSetting { get; set; }
+    public object BacklightSetting { get; init; }
 
     [JsonPropertyName("customWheelSize")]
-    public object CustomWheelSize { get; set; }
+    public object CustomWheelSize { get; init; }
 
     [JsonPropertyName("gestureMode")]
-    public object GestureMode { get; set; }
+    public object GestureMode { get; init; }
 
     [JsonPropertyName("goalAnimation")]
-    public object GoalAnimation { get; set; }
+    public object GoalAnimation { get; init; }
 
     [JsonPropertyName("autoSyncStepsBeforeSync")]
-    public object AutoSyncStepsBeforeSync { get; set; }
+    public object AutoSyncStepsBeforeSync { get; init; }
 
     [JsonPropertyName("autoSyncMinutesBeforeSync")]
-    public object AutoSyncMinutesBeforeSync { get; set; }
+    public object AutoSyncMinutesBeforeSync { get; init; }
 
     [JsonPropertyName("bandOrientation")]
-    public object BandOrientation { get; set; }
+    public object BandOrientation { get; init; }
 
     [JsonPropertyName("screenOrientation")]
-    public object ScreenOrientation { get; set; }
+    public object ScreenOrientation { get; init; }
 
     [JsonPropertyName("duringActivity")]
-    public object DuringActivity { get; set; }
+    public object DuringActivity { get; init; }
 
     [JsonPropertyName("phoneVibrationEnabled")]
-    public object PhoneVibrationEnabled { get; set; }
+    public object PhoneVibrationEnabled { get; init; }
 
     [JsonPropertyName("connectIQ")]
-    public ConnectIq ConnectIq { get; set; }
+    public ConnectIq ConnectIq { get; init; }
 
     [JsonPropertyName("opticalHeartRateEnabled")]
-    public object OpticalHeartRateEnabled { get; set; }
+    public object OpticalHeartRateEnabled { get; init; }
 
     [JsonPropertyName("autoUploadEnabled")]
-    public bool AutoUploadEnabled { get; set; }
+    public bool AutoUploadEnabled { get; init; }
 
     [JsonPropertyName("bleConnectionAlertEnabled")]
-    public object BleConnectionAlertEnabled { get; set; }
+    public object BleConnectionAlertEnabled { get; init; }
 
     [JsonPropertyName("phoneNotificationMode")]
-    public object PhoneNotificationMode { get; set; }
+    public object PhoneNotificationMode { get; init; }
 
     [JsonPropertyName("lactateThresholdAutoDetectEnabled")]
-    public object LactateThresholdAutoDetectEnabled { get; set; }
+    public object LactateThresholdAutoDetectEnabled { get; init; }
 
     [JsonPropertyName("wiFiAutoUploadEnabled")]
-    public object WiFiAutoUploadEnabled { get; set; }
+    public object WiFiAutoUploadEnabled { get; init; }
 
     [JsonPropertyName("blueToothEnabled")]
-    public object BlueToothEnabled { get; set; }
+    public object BlueToothEnabled { get; init; }
 
     [JsonPropertyName("smartNotificationsStatus")]
-    public object SmartNotificationsStatus { get; set; }
+    public object SmartNotificationsStatus { get; init; }
 
     [JsonPropertyName("smartNotificationsSound")]
-    public object SmartNotificationsSound { get; set; }
+    public object SmartNotificationsSound { get; init; }
 
     [JsonPropertyName("dndEnabled")]
-    public object DndEnabled { get; set; }
+    public object DndEnabled { get; init; }
 
     [JsonPropertyName("distanceUnit")]
-    public object DistanceUnit { get; set; }
+    public object DistanceUnit { get; init; }
 
     [JsonPropertyName("paceSpeedUnit")]
-    public object PaceSpeedUnit { get; set; }
+    public object PaceSpeedUnit { get; init; }
 
     [JsonPropertyName("elevationUnit")]
-    public object ElevationUnit { get; set; }
+    public object ElevationUnit { get; init; }
 
     [JsonPropertyName("weightUnit")]
-    public object WeightUnit { get; set; }
+    public object WeightUnit { get; init; }
 
     [JsonPropertyName("heightUnit")]
-    public object HeightUnit { get; set; }
+    public object HeightUnit { get; init; }
 
     [JsonPropertyName("temperatureUnit")]
-    public object TemperatureUnit { get; set; }
+    public object TemperatureUnit { get; init; }
 
     [JsonPropertyName("runningFormat")]
-    public object RunningFormat { get; set; }
+    public object RunningFormat { get; init; }
 
     [JsonPropertyName("cyclingFormat")]
-    public object CyclingFormat { get; set; }
+    public object CyclingFormat { get; init; }
 
     [JsonPropertyName("hikingFormat")]
-    public object HikingFormat { get; set; }
+    public object HikingFormat { get; init; }
 
     [JsonPropertyName("strengthFormat")]
-    public object StrengthFormat { get; set; }
+    public object StrengthFormat { get; init; }
 
     [JsonPropertyName("cardioFormat")]
-    public object CardioFormat { get; set; }
+    public object CardioFormat { get; init; }
 
     [JsonPropertyName("xcSkiFormat")]
-    public object XcSkiFormat { get; set; }
+    public object XcSkiFormat { get; init; }
 
     [JsonPropertyName("otherFormat")]
-    public object OtherFormat { get; set; }
+    public object OtherFormat { get; init; }
 
     [JsonPropertyName("startOfWeek")]
-    public string StartOfWeek { get; set; }
+    public string StartOfWeek { get; init; }
 
     [JsonPropertyName("dataRecording")]
-    public object DataRecording { get; set; }
+    public object DataRecording { get; init; }
 
     [JsonPropertyName("soundVibrationEnabled")]
-    public object SoundVibrationEnabled { get; set; }
+    public object SoundVibrationEnabled { get; init; }
 
     [JsonPropertyName("soundInAppOnlyEnabled")]
-    public object SoundInAppOnlyEnabled { get; set; }
+    public object SoundInAppOnlyEnabled { get; init; }
 
     [JsonPropertyName("backlightKeysAndAlertsEnabled")]
-    public object BacklightKeysAndAlertsEnabled { get; set; }
+    public object BacklightKeysAndAlertsEnabled { get; init; }
 
     [JsonPropertyName("backlightWristTurnEnabled")]
-    public object BacklightWristTurnEnabled { get; set; }
+    public object BacklightWristTurnEnabled { get; init; }
 
     [JsonPropertyName("backlightTimeout")]
-    public object BacklightTimeout { get; set; }
+    public object BacklightTimeout { get; init; }
 
     [JsonPropertyName("supportedBacklightTimeouts")]
-    public object SupportedBacklightTimeouts { get; set; }
+    public object SupportedBacklightTimeouts { get; init; }
 
     [JsonPropertyName("screenTimeout")]
-    public object ScreenTimeout { get; set; }
+    public object ScreenTimeout { get; init; }
 
     [JsonPropertyName("colorTheme")]
-    public object ColorTheme { get; set; }
+    public object ColorTheme { get; init; }
 
     [JsonPropertyName("autoActivityDetect")]
-    public object AutoActivityDetect { get; set; }
+    public object AutoActivityDetect { get; init; }
 
     [JsonPropertyName("sleep")]
-    public object Sleep { get; set; }
+    public object Sleep { get; init; }
 
     [JsonPropertyName("screenMode")]
-    public object ScreenMode { get; set; }
+    public object ScreenMode { get; init; }
 
     [JsonPropertyName("watchFace")]
-    public object WatchFace { get; set; }
+    public object WatchFace { get; init; }
 
     [JsonPropertyName("watchFaceItemList")]
-    public object WatchFaceItemList { get; set; }
+    public object WatchFaceItemList { get; init; }
 
     [JsonPropertyName("multipleSupportedWatchFace")]
-    public MultipleSupportedWatchFace MultipleSupportedWatchFace { get; set; }
+    public MultipleSupportedWatchFace MultipleSupportedWatchFace { get; init; }
 
     [JsonPropertyName("supportedScreenModes")]
-    public object SupportedScreenModes { get; set; }
+    public object SupportedScreenModes { get; init; }
 
     [JsonPropertyName("supportedWatchFaces")]
-    public object SupportedWatchFaces { get; set; }
+    public object SupportedWatchFaces { get; init; }
 
     [JsonPropertyName("supportedWatchFaceColors")]
-    public object SupportedWatchFaceColors { get; set; }
+    public object SupportedWatchFaceColors { get; init; }
 
     [JsonPropertyName("autoSyncFrequency")]
-    public object AutoSyncFrequency { get; set; }
+    public object AutoSyncFrequency { get; init; }
 
     [JsonPropertyName("supportedBacklightSettings")]
-    public object SupportedBacklightSettings { get; set; }
+    public object SupportedBacklightSettings { get; init; }
 
     [JsonPropertyName("supportedColorThemes")]
-    public object SupportedColorThemes { get; set; }
+    public object SupportedColorThemes { get; init; }
 
     [JsonPropertyName("disableLastEnabledScreen")]
-    public object DisableLastEnabledScreen { get; set; }
+    public object DisableLastEnabledScreen { get; init; }
 
     [JsonPropertyName("nickname")]
-    public object Nickname { get; set; }
+    public object Nickname { get; init; }
 
     [JsonPropertyName("avatar")]
-    public object Avatar { get; set; }
+    public object Avatar { get; init; }
 
     [JsonPropertyName("controlsMenuList")]
-    public object ControlsMenuList { get; set; }
+    public object ControlsMenuList { get; init; }
 
     [JsonPropertyName("customUserText")]
-    public object CustomUserText { get; set; }
+    public object CustomUserText { get; init; }
 
     [JsonPropertyName("metricsFileTrueupEnabled")]
-    public bool MetricsFileTrueupEnabled { get; set; }
+    public bool MetricsFileTrueupEnabled { get; init; }
 
     [JsonPropertyName("metricsUploadCapable")]
-    public object MetricsUploadCapable { get; set; }
+    public object MetricsUploadCapable { get; init; }
 
     [JsonPropertyName("relaxRemindersEnabled")]
-    public object RelaxRemindersEnabled { get; set; }
+    public object RelaxRemindersEnabled { get; init; }
 
     [JsonPropertyName("smartNotificationTimeout")]
-    public object SmartNotificationTimeout { get; set; }
+    public object SmartNotificationTimeout { get; init; }
 
     [JsonPropertyName("intensityMinutesCalcMethod")]
-    public object IntensityMinutesCalcMethod { get; set; }
+    public object IntensityMinutesCalcMethod { get; init; }
 
     [JsonPropertyName("moderateIntensityMinutesHrZone")]
-    public object ModerateIntensityMinutesHrZone { get; set; }
+    public object ModerateIntensityMinutesHrZone { get; init; }
 
     [JsonPropertyName("vigorousIntensityMinutesHrZone")]
-    public object VigorousIntensityMinutesHrZone { get; set; }
+    public object VigorousIntensityMinutesHrZone { get; init; }
 
     [JsonPropertyName("keepUserNamePrivate")]
-    public object KeepUserNamePrivate { get; set; }
+    public object KeepUserNamePrivate { get; init; }
 
     [JsonPropertyName("audioPromptLapEnabled")]
-    public object AudioPromptLapEnabled { get; set; }
+    public object AudioPromptLapEnabled { get; init; }
 
     [JsonPropertyName("audioPromptSpeedPaceEnabled")]
-    public object AudioPromptSpeedPaceEnabled { get; set; }
+    public object AudioPromptSpeedPaceEnabled { get; init; }
 
     [JsonPropertyName("audioPromptSpeedPaceType")]
-    public object AudioPromptSpeedPaceType { get; set; }
+    public object AudioPromptSpeedPaceType { get; init; }
 
     [JsonPropertyName("audioPromptSpeedPaceFrequency")]
-    public object AudioPromptSpeedPaceFrequency { get; set; }
+    public object AudioPromptSpeedPaceFrequency { get; init; }
 
     [JsonPropertyName("audioPromptSpeedPaceDuration")]
-    public object AudioPromptSpeedPaceDuration { get; set; }
+    public object AudioPromptSpeedPaceDuration { get; init; }
 
     [JsonPropertyName("audioPromptHeartRateEnabled")]
-    public object AudioPromptHeartRateEnabled { get; set; }
+    public object AudioPromptHeartRateEnabled { get; init; }
 
     [JsonPropertyName("audioPromptHeartRateType")]
-    public object AudioPromptHeartRateType { get; set; }
+    public object AudioPromptHeartRateType { get; init; }
 
     [JsonPropertyName("audioPromptHeartRateFrequency")]
-    public object AudioPromptHeartRateFrequency { get; set; }
+    public object AudioPromptHeartRateFrequency { get; init; }
 
     [JsonPropertyName("audioPromptHeartRateDuration")]
-    public object AudioPromptHeartRateDuration { get; set; }
+    public object AudioPromptHeartRateDuration { get; init; }
 
     [JsonPropertyName("audioPromptDialectType")]
-    public object AudioPromptDialectType { get; set; }
+    public object AudioPromptDialectType { get; init; }
 
     [JsonPropertyName("audioPromptActivityAlertsEnabled")]
-    public object AudioPromptActivityAlertsEnabled { get; set; }
+    public object AudioPromptActivityAlertsEnabled { get; init; }
 
     [JsonPropertyName("audioPromptPowerEnabled")]
-    public object AudioPromptPowerEnabled { get; set; }
+    public object AudioPromptPowerEnabled { get; init; }
 
     [JsonPropertyName("audioPromptPowerType")]
-    public object AudioPromptPowerType { get; set; }
+    public object AudioPromptPowerType { get; init; }
 
     [JsonPropertyName("audioPromptPowerFrequency")]
-    public object AudioPromptPowerFrequency { get; set; }
+    public object AudioPromptPowerFrequency { get; init; }
 
     [JsonPropertyName("audioPromptPowerDuration")]
-    public object AudioPromptPowerDuration { get; set; }
+    public object AudioPromptPowerDuration { get; init; }
 
     [JsonPropertyName("weightOnlyModeEnabled")]
-    public object WeightOnlyModeEnabled { get; set; }
+    public object WeightOnlyModeEnabled { get; init; }
 
     [JsonPropertyName("phoneNotificationPrivacyMode")]
-    public object PhoneNotificationPrivacyMode { get; set; }
+    public object PhoneNotificationPrivacyMode { get; init; }
 
     [JsonPropertyName("diveAlerts")]
-    public object DiveAlerts { get; set; }
+    public object DiveAlerts { get; init; }
 
     [JsonPropertyName("liveEventSharingEnabled")]
-    public object LiveEventSharingEnabled { get; set; }
+    public object LiveEventSharingEnabled { get; init; }
 
     [JsonPropertyName("liveTrackEnabled")]
-    public object LiveTrackEnabled { get; set; }
+    public object LiveTrackEnabled { get; init; }
 
     [JsonPropertyName("liveEventSharingEndTimestamp")]
-    public object LiveEventSharingEndTimestamp { get; set; }
+    public object LiveEventSharingEndTimestamp { get; init; }
 
     [JsonPropertyName("liveEventSharingMsgContents")]
-    public object LiveEventSharingMsgContents { get; set; }
+    public object LiveEventSharingMsgContents { get; init; }
 
     [JsonPropertyName("liveEventSharingTargetDistance")]
-    public object LiveEventSharingTargetDistance { get; set; }
+    public object LiveEventSharingTargetDistance { get; init; }
 
     [JsonPropertyName("liveEventSharingMsgTriggers")]
-    public object LiveEventSharingMsgTriggers { get; set; }
+    public object LiveEventSharingMsgTriggers { get; init; }
 
     [JsonPropertyName("liveEventSharingTriggerDistance")]
-    public object LiveEventSharingTriggerDistance { get; set; }
+    public object LiveEventSharingTriggerDistance { get; init; }
 
     [JsonPropertyName("liveEventSharingTriggerTime")]
-    public object LiveEventSharingTriggerTime { get; set; }
+    public object LiveEventSharingTriggerTime { get; init; }
 
     [JsonPropertyName("dbDrivenDefaults")]
-    public object DbDrivenDefaults { get; set; }
+    public object DbDrivenDefaults { get; init; }
 
     [JsonPropertyName("schoolMode")]
-    public object SchoolMode { get; set; }
+    public object SchoolMode { get; init; }
 
     [JsonPropertyName("vivohubEnabled")]
-    public object VivohubEnabled { get; set; }
+    public object VivohubEnabled { get; init; }
 }
 
-public class ConnectIq
+public record ConnectIq
 {
     [JsonPropertyName("autoUpdate")]
-    public bool AutoUpdate { get; set; }
+    public bool AutoUpdate { get; init; }
 }
 
-public class MultipleSupportedWatchFace
+public record MultipleSupportedWatchFace
 {
 }
 
-public class SupportedLanguage
+public record SupportedLanguage
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; init; }
 }

@@ -3,224 +3,224 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminSleepData
+public record GarminSleepData
 {
     [JsonPropertyName("dailySleepDTO")]
-    public DailySleepDto DailySleepDto { get; set; }
+    public DailySleepDto DailySleepDto { get; init; }
 
     [JsonPropertyName("sleepMovement")]
-    public Sleep[] SleepMovement { get; set; }
+    public Sleep[] SleepMovement { get; init; }
 
     [JsonPropertyName("remSleepData")]
-    public bool RemSleepData { get; set; }
+    public bool RemSleepData { get; init; }
 
     [JsonPropertyName("sleepLevels")]
-    public Sleep[] SleepLevels { get; set; }
+    public Sleep[] SleepLevels { get; init; }
 
     [JsonPropertyName("wellnessEpochRespirationDataDTOList")]
-    public WellnessEpochRespirationDataDtoList[] WellnessEpochRespirationDataDtoList { get; set; }
+    public WellnessEpochRespirationDataDtoList[] WellnessEpochRespirationDataDtoList { get; init; }
 
     [JsonPropertyName("sleepStress")]
-    public SleepStress[] SleepStress { get; set; }
+    public SleepStress[] SleepStress { get; init; }
 }
 
-public class DailySleepDto
+public record DailySleepDto
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("userProfilePK")]
-    public long UserProfilePk { get; set; }
+    public long UserProfilePk { get; init; }
 
     [JsonPropertyName("calendarDate")]
-    public DateTimeOffset CalendarDate { get; set; }
+    public DateTimeOffset CalendarDate { get; init; }
 
     [JsonPropertyName("sleepTimeSeconds")]
-    public long SleepTimeSeconds { get; set; }
+    public long SleepTimeSeconds { get; init; }
 
     [JsonPropertyName("napTimeSeconds")]
-    public long NapTimeSeconds { get; set; }
+    public long NapTimeSeconds { get; init; }
 
     [JsonPropertyName("sleepWindowConfirmed")]
-    public bool SleepWindowConfirmed { get; set; }
+    public bool SleepWindowConfirmed { get; init; }
 
     [JsonPropertyName("sleepWindowConfirmationType")]
-    public string SleepWindowConfirmationType { get; set; }
+    public string SleepWindowConfirmationType { get; init; }
 
     [JsonPropertyName("sleepStartTimestampGMT")]
-    public long SleepStartTimestampGmt { get; set; }
+    public long SleepStartTimestampGmt { get; init; }
 
     [JsonPropertyName("sleepEndTimestampGMT")]
-    public long SleepEndTimestampGmt { get; set; }
+    public long SleepEndTimestampGmt { get; init; }
 
     [JsonPropertyName("sleepStartTimestampLocal")]
-    public long SleepStartTimestampLocal { get; set; }
+    public long SleepStartTimestampLocal { get; init; }
 
     [JsonPropertyName("sleepEndTimestampLocal")]
-    public long SleepEndTimestampLocal { get; set; }
+    public long SleepEndTimestampLocal { get; init; }
 
     [JsonPropertyName("autoSleepStartTimestampGMT")]
-    public object AutoSleepStartTimestampGmt { get; set; }
+    public object AutoSleepStartTimestampGmt { get; init; }
 
     [JsonPropertyName("autoSleepEndTimestampGMT")]
-    public object AutoSleepEndTimestampGmt { get; set; }
+    public object AutoSleepEndTimestampGmt { get; init; }
 
     [JsonPropertyName("sleepQualityTypePK")]
-    public object SleepQualityTypePk { get; set; }
+    public object SleepQualityTypePk { get; init; }
 
     [JsonPropertyName("sleepResultTypePK")]
-    public object SleepResultTypePk { get; set; }
+    public object SleepResultTypePk { get; init; }
 
     [JsonPropertyName("unmeasurableSleepSeconds")]
-    public long UnmeasurableSleepSeconds { get; set; }
+    public long UnmeasurableSleepSeconds { get; init; }
 
     [JsonPropertyName("deepSleepSeconds")]
-    public long DeepSleepSeconds { get; set; }
+    public long DeepSleepSeconds { get; init; }
 
     [JsonPropertyName("lightSleepSeconds")]
-    public long LightSleepSeconds { get; set; }
+    public long LightSleepSeconds { get; init; }
 
     [JsonPropertyName("remSleepSeconds")]
-    public long RemSleepSeconds { get; set; }
+    public long RemSleepSeconds { get; init; }
 
     [JsonPropertyName("awakeSleepSeconds")]
-    public long AwakeSleepSeconds { get; set; }
+    public long AwakeSleepSeconds { get; init; }
 
     [JsonPropertyName("deviceRemCapable")]
-    public bool DeviceRemCapable { get; set; }
+    public bool DeviceRemCapable { get; init; }
 
     [JsonPropertyName("retro")]
-    public bool Retro { get; set; }
+    public bool Retro { get; init; }
 
     [JsonPropertyName("sleepFromDevice")]
-    public bool SleepFromDevice { get; set; }
+    public bool SleepFromDevice { get; init; }
 
     [JsonPropertyName("averageRespirationValue")]
-    public double AverageRespirationValue { get; set; }
+    public double AverageRespirationValue { get; init; }
 
     [JsonPropertyName("lowestRespirationValue")]
-    public double LowestRespirationValue { get; set; }
+    public double LowestRespirationValue { get; init; }
 
     [JsonPropertyName("highestRespirationValue")]
-    public double HighestRespirationValue { get; set; }
+    public double HighestRespirationValue { get; init; }
 
     [JsonPropertyName("awakeCount")]
-    public long AwakeCount { get; set; }
+    public long AwakeCount { get; init; }
 
     [JsonPropertyName("avgSleepStress")]
-    public double AvgSleepStress { get; set; }
+    public double AvgSleepStress { get; init; }
 
     [JsonPropertyName("ageGroup")]
-    public string AgeGroup { get; set; }
+    public string AgeGroup { get; init; }
 
     [JsonPropertyName("sleepScoreFeedback")]
-    public string SleepScoreFeedback { get; set; }
+    public string SleepScoreFeedback { get; init; }
 
     [JsonPropertyName("sleepScoreInsight")]
-    public string SleepScoreInsight { get; set; }
+    public string SleepScoreInsight { get; init; }
 
     [JsonPropertyName("sleepScores")]
-    public SleepScores SleepScores { get; set; }
+    public SleepScores SleepScores { get; init; }
 }
 
-public class SleepScores
+public record SleepScores
 {
     [JsonPropertyName("totalDuration")]
-    public AwakeCount TotalDuration { get; set; }
+    public AwakeCount TotalDuration { get; init; }
 
     [JsonPropertyName("stress")]
-    public AwakeCount Stress { get; set; }
+    public AwakeCount Stress { get; init; }
 
     [JsonPropertyName("awakeCount")]
-    public AwakeCount AwakeCount { get; set; }
+    public AwakeCount AwakeCount { get; init; }
 
     [JsonPropertyName("overall")]
-    public Overall Overall { get; set; }
+    public Overall Overall { get; init; }
 
     [JsonPropertyName("remPercentage")]
-    public Percentage RemPercentage { get; set; }
+    public Percentage RemPercentage { get; init; }
 
     [JsonPropertyName("restlessness")]
-    public Restlessness Restlessness { get; set; }
+    public Restlessness Restlessness { get; init; }
 
     [JsonPropertyName("lightPercentage")]
-    public Percentage LightPercentage { get; set; }
+    public Percentage LightPercentage { get; init; }
 
     [JsonPropertyName("deepPercentage")]
-    public Percentage DeepPercentage { get; set; }
+    public Percentage DeepPercentage { get; init; }
 }
 
-public class AwakeCount
+public record AwakeCount
 {
     [JsonPropertyName("qualifierKey")]
-    public string QualifierKey { get; set; }
+    public string QualifierKey { get; init; }
 
     [JsonPropertyName("optimalStart")]
-    public double OptimalStart { get; set; }
+    public double OptimalStart { get; init; }
 
     [JsonPropertyName("optimalEnd")]
-    public double OptimalEnd { get; set; }
+    public double OptimalEnd { get; init; }
 }
 
-public class Percentage
+public record Percentage
 {
     [JsonPropertyName("qualifierKey")]
-    public string QualifierKey { get; set; }
+    public string QualifierKey { get; init; }
 
     [JsonPropertyName("optimalStart")]
-    public double OptimalStart { get; set; }
+    public double OptimalStart { get; init; }
 
     [JsonPropertyName("optimalEnd")]
-    public double OptimalEnd { get; set; }
+    public double OptimalEnd { get; init; }
 
     [JsonPropertyName("idealStartInSeconds")]
-    public double IdealStartInSeconds { get; set; }
+    public double IdealStartInSeconds { get; init; }
 
     [JsonPropertyName("idealEndInSeconds")]
-    public double IdealEndInSeconds { get; set; }
+    public double IdealEndInSeconds { get; init; }
 }
 
-public class Overall
+public record Overall
 {
     [JsonPropertyName("value")]
-    public long Value { get; set; }
+    public long Value { get; init; }
 
     [JsonPropertyName("qualifierKey")]
-    public string QualifierKey { get; set; }
+    public string QualifierKey { get; init; }
 }
 
-public class Restlessness
+public record Restlessness
 {
     [JsonPropertyName("qualifierKey")]
-    public string QualifierKey { get; set; }
+    public string QualifierKey { get; init; }
 }
 
-public class Sleep
+public record Sleep
 {
     [JsonPropertyName("startGMT")]
-    public DateTimeOffset StartGmt { get; set; }
+    public DateTimeOffset StartGmt { get; init; }
 
     [JsonPropertyName("endGMT")]
-    public DateTimeOffset EndGmt { get; set; }
+    public DateTimeOffset EndGmt { get; init; }
 
     [JsonPropertyName("activityLevel")]
-    public double ActivityLevel { get; set; }
+    public double ActivityLevel { get; init; }
 }
 
-public class SleepStress
+public record SleepStress
 {
     [JsonPropertyName("value")]
-    public long Value { get; set; }
+    public long Value { get; init; }
 
     [JsonPropertyName("startGMT")]
-    public long StartGmt { get; set; }
+    public long StartGmt { get; init; }
 }
 
-public class WellnessEpochRespirationDataDtoList
+public record WellnessEpochRespirationDataDtoList
 {
     [JsonPropertyName("startTimeGMT")]
-    public long StartTimeGmt { get; set; }
+    public long StartTimeGmt { get; init; }
 
     [JsonPropertyName("respirationValue")]
-    public double RespirationValue { get; set; }
+    public double RespirationValue { get; init; }
 }

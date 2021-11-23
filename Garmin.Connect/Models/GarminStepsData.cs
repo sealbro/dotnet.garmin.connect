@@ -3,23 +3,23 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminStepsData
+public record GarminStepsData
 {
     [JsonPropertyName("startGMT")]
-    public DateTime StartGmt { get; set; }
+    public DateTime StartGmt { get; init; }
 
     [JsonPropertyName("endGMT")]
-    public DateTime EndGmt { get; set; }
+    public DateTime EndGmt { get; init; }
 
     [JsonPropertyName("steps")]
-    public long Steps { get; set; }
+    public long Steps { get; init; }
 
     [JsonPropertyName("primaryActivityLevel")]
-    public string PrimaryActivityLevel { get; set; }
+    public string PrimaryActivityLevel { get; init; }
 
     /// <summary>
     /// [active, sedentary, sleeping]
     /// </summary>
     [JsonPropertyName("activityLevelConstant")]
-    public bool ActivityLevelConstant { get; set; }
+    public bool ActivityLevelConstant { get; init; }
 }

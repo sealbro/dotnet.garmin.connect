@@ -2,131 +2,131 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminActivityDetails
+public record GarminActivityDetails
 {
     [JsonPropertyName("activityId")]
-    public long ActivityId { get; set; }
+    public long ActivityId { get; init; }
 
     [JsonPropertyName("measurementCount")]
-    public long MeasurementCount { get; set; }
+    public long MeasurementCount { get; init; }
 
     [JsonPropertyName("metricsCount")]
-    public long MetricsCount { get; set; }
+    public long MetricsCount { get; init; }
 
     [JsonPropertyName("metricDescriptors")]
-    public MetricDescriptor[] MetricDescriptors { get; set; }
+    public MetricDescriptor[] MetricDescriptors { get; init; }
 
     [JsonPropertyName("activityDetailMetrics")]
-    public ActivityDetailMetric[] ActivityDetailMetrics { get; set; }
+    public ActivityDetailMetric[] ActivityDetailMetrics { get; init; }
 
     [JsonPropertyName("geoPolylineDTO")]
-    public GeoPolylineDto GeoPolylineDto { get; set; }
+    public GeoPolylineDto GeoPolylineDto { get; init; }
 
     [JsonPropertyName("heartRateDTOs")]
-    public object HeartRateDtOs { get; set; }
+    public object HeartRateDtOs { get; init; }
 
     [JsonPropertyName("detailsAvailable")]
-    public bool DetailsAvailable { get; set; }
+    public bool DetailsAvailable { get; init; }
 }
 
-public class ActivityDetailMetric
+public record ActivityDetailMetric
 {
     [JsonPropertyName("metrics")]
-    public double[] Metrics { get; set; }
+    public double[] Metrics { get; init; }
 }
 
-public class GeoPolylineDto
+public record GeoPolylineDto
 {
     [JsonPropertyName("startPoint")]
-    public EndPoint StartPoint { get; set; }
+    public EndPoint StartPoint { get; init; }
 
     [JsonPropertyName("endPoint")]
-    public EndPoint EndPoint { get; set; }
+    public EndPoint EndPoint { get; init; }
 
     [JsonPropertyName("minLat")]
-    public double MinLat { get; set; }
+    public double MinLat { get; init; }
 
     [JsonPropertyName("maxLat")]
-    public double MaxLat { get; set; }
+    public double MaxLat { get; init; }
 
     [JsonPropertyName("minLon")]
-    public double MinLon { get; set; }
+    public double MinLon { get; init; }
 
     [JsonPropertyName("maxLon")]
-    public double MaxLon { get; set; }
+    public double MaxLon { get; init; }
 
     [JsonPropertyName("polyline")]
-    public EndPoint[] Polyline { get; set; }
+    public EndPoint[] Polyline { get; init; }
 }
 
-public class EndPoint
+public record EndPoint
 {
     [JsonPropertyName("lat")]
-    public double Lat { get; set; }
+    public double Lat { get; init; }
 
     [JsonPropertyName("lon")]
-    public double Lon { get; set; }
+    public double Lon { get; init; }
 
     [JsonPropertyName("altitude")]
-    public object Altitude { get; set; }
+    public object Altitude { get; init; }
 
     [JsonPropertyName("time")]
-    public long Time { get; set; }
+    public long Time { get; init; }
 
     [JsonPropertyName("timerStart")]
-    public bool TimerStart { get; set; }
+    public bool TimerStart { get; init; }
 
     [JsonPropertyName("timerStop")]
-    public bool TimerStop { get; set; }
+    public bool TimerStop { get; init; }
 
     [JsonPropertyName("distanceFromPreviousPoint")]
-    public object DistanceFromPreviousPoint { get; set; }
+    public object DistanceFromPreviousPoint { get; init; }
         
     [JsonPropertyName("distanceInMeters")]
-    public object DistanceInMeters { get; set; }
+    public object DistanceInMeters { get; init; }
 
     [JsonPropertyName("speed")]
-    public double Speed { get; set; }
+    public double Speed { get; init; }
 
     [JsonPropertyName("cumulativeAscent")]
-    public object CumulativeAscent { get; set; }
+    public object CumulativeAscent { get; init; }
         
     [JsonPropertyName("cumulativeDescent")]
-    public object CumulativeDescent { get; set; }
+    public object CumulativeDescent { get; init; }
 
     [JsonPropertyName("extendedCoordinate")]
-    public bool ExtendedCoordinate { get; set; }
+    public bool ExtendedCoordinate { get; init; }
 
     [JsonPropertyName("valid")]
-    public bool Valid { get; set; }
+    public bool Valid { get; init; }
 }
 
-public class MetricDescriptor
+public record MetricDescriptor
 {
     [JsonPropertyName("metricsIndex")]
-    public long MetricsIndex { get; set; }
+    public long MetricsIndex { get; init; }
 
     [JsonPropertyName("key")]
-    public string Key { get; set; }
+    public string Key { get; init; }
 
     [JsonPropertyName("unit")]
-    public Unit Unit { get; set; }
+    public Unit Unit { get; init; }
 
     [JsonPropertyName("appID")]
-    public string AppId { get; set; }
+    public string AppId { get; init; }
 
     [JsonPropertyName("developerFieldNumber")]
-    public long DeveloperFieldNumber { get; set; }
+    public long DeveloperFieldNumber { get; init; }
 }
 
-public class Unit
+public record Unit
 {
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("key")]
-    public string Key { get; set; }
+    public string Key { get; init; }
 
     [JsonPropertyName("factor")]
-    public double Factor { get; set; }
+    public double Factor { get; init; }
 }

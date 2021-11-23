@@ -14,19 +14,17 @@ public class ChinaAuthParameters : BasicAuthParameters
     {
     }
 
-    public override Dictionary<string, string> GetHeaders()
-    {
-        var headers = base.GetHeaders();
-        headers["origin"] = "https://sso.garmin.cn";
+    public override IReadOnlyDictionary<string, string> GetHeaders() =>
+        new Dictionary<string, string>(base.GetHeaders())
+        {
+            {
+                "origin", "https://sso.garmin.cn"
+            }
+        };
 
-        return headers;
-    }
-
-    public override Dictionary<string, string> GetQueryParameters()
-    {
-        var queryParams = base.GetQueryParameters();
-        queryParams["cssUrl"] = "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css";
-
-        return queryParams;
-    }
+    public override IReadOnlyDictionary<string, string> GetQueryParameters() =>
+        new Dictionary<string, string>(base.GetQueryParameters())
+        {
+            { "cssUrl", "https://static.garmincdn.cn/cn.garmin.connect/ui/css/gauth-custom-v1.2-min.css" }
+        };
 }

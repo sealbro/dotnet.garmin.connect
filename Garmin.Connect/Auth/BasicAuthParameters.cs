@@ -40,7 +40,7 @@ public class BasicAuthParameters : IAuthParameters
         _userAgent = userAgent.New;
     }
 
-    public virtual Dictionary<string, string> GetHeaders()
+    public virtual IReadOnlyDictionary<string, string> GetHeaders()
     {
         return new Dictionary<string, string>
         {
@@ -49,13 +49,17 @@ public class BasicAuthParameters : IAuthParameters
                 _userAgent
             },
             {
+                "accept",
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+            },
+            {
                 "origin",
                 "https://sso.garmin.com"
             }
         };
     }
 
-    public virtual Dictionary<string, string> GetFormParameters()
+    public virtual IReadOnlyDictionary<string, string> GetFormParameters()
     {
         var data = new Dictionary<string, string>
         {
@@ -69,15 +73,7 @@ public class BasicAuthParameters : IAuthParameters
             },
             {
                 "embed",
-                "true"
-            },
-            {
-                "lt",
-                "e1s1"
-            },
-            {
-                "_eventId",
-                "submit"
+                "false"
             },
             {
                 "displayNameRequired",
@@ -87,7 +83,7 @@ public class BasicAuthParameters : IAuthParameters
         return data;
     }
 
-    public virtual Dictionary<string, string> GetQueryParameters()
+    public virtual IReadOnlyDictionary<string, string> GetQueryParameters()
     {
         var queryParams = new Dictionary<string, string>
         {

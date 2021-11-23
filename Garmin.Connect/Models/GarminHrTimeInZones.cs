@@ -2,14 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public class GarminHrTimeInZones
+public record GarminHrTimeInZones
 {
     [JsonPropertyName("zoneNumber")]
-    public long ZoneNumber { get; set; }
+    public long ZoneNumber { get; init; }
 
     [JsonPropertyName("secsInZone")]
-    public double SecsInZone { get; set; }
+    public double SecsInZone { get; init; }
 
     [JsonPropertyName("zoneLowBoundary")]
-    public long ZoneLowBoundary { get; set; }
+    public long ZoneLowBoundary { get; init; }
 }

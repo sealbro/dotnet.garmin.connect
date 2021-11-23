@@ -14,9 +14,9 @@ public interface IAuthParameters
 
     string SigninUrl { get; }
 
-    Dictionary<string, string> GetHeaders();
+    IReadOnlyDictionary<string, string> GetHeaders();
 
-    Dictionary<string, string> GetFormParameters();
+    IReadOnlyDictionary<string, string> GetFormParameters();
 
-    Dictionary<string, string> GetQueryParameters();
+    IReadOnlyDictionary<string, string> GetQueryParameters();
 }

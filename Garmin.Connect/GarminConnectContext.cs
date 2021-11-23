@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -18,6 +19,9 @@ public class GarminConnectContext
 {
     private readonly HttpClient _httpClient;
     private readonly IAuthParameters _authParameters;
+
+    private readonly Regex _csrfRegex = new Regex(@"name=""_csrf""\s+value=""(\w+)""", RegexOptions.Compiled);
+    private readonly Regex _responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
     {
@@ -91,7 +95,7 @@ public class GarminConnectContext
     private async Task<(string authUrl, string cookies)> GetAuthCookies()
     {
         var queryParams = _authParameters.GetQueryParameters();
-        var fromParams = _authParameters.GetFormParameters();
+        var formParams = _authParameters.GetFormParameters();
         var headers = _authParameters.GetHeaders();
 
         var queryString = HttpUtility.ParseQueryString("");
@@ -108,7 +112,11 @@ public class GarminConnectContext
             httpRequestMessage.Headers.Add(key, value);
         }
 
-        await _httpClient.SendAsync(httpRequestMessage);
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
+        RaiseForStatus(responseMessage);
+
+        var htmlAuth = await responseMessage.Content.ReadAsStringAsync();
+        var csrf = _csrfRegex.Match(htmlAuth).Groups[1].Value;
 
         httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, signinUrl);
         foreach (var (key, value) in headers)
@@ -116,14 +124,13 @@ public class GarminConnectContext
             httpRequestMessage.Headers.Add(key, value);
         }
 
-        httpRequestMessage.Content = new FormUrlEncodedContent(fromParams);
+        httpRequestMessage.Content = new FormUrlEncodedContent(new Dictionary<string, string>(formParams) { {"_csrf",csrf} });
         var response = await _httpClient.SendAsync(httpRequestMessage);
-
         RaiseForStatus(response);
 
         var html = await response.Content.ReadAsStringAsync();
-        var responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
-        var responseUrlMatch = responseUrlRegex.Match(html);
+
+        var responseUrlMatch = _responseUrlRegex.Match(html);
         if (!responseUrlMatch.Success)
         {
             throw new GarminConnectAuthenticationException();
