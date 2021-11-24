@@ -21,6 +21,8 @@ public class GarminConnectContext
     private readonly HttpClient _httpClient;
     private readonly IAuthParameters _authParameters;
 
+    private const int Attempts = 3;
+    private const int DelayAfterFailAuth = 300;
     private readonly Regex _csrfRegex = new Regex(@"name=""_csrf""\s+value=""(\w+)""", RegexOptions.Compiled);
     private readonly Regex _responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
 
@@ -48,12 +50,10 @@ public class GarminConnectContext
 
     public async Task<HttpResponseMessage> MakeHttpGet(string url)
     {
-        const int attempts = 3;
         var force = false;
-
         Exception exception = null;
-        
-        for (var i = 0; i < attempts; i++)
+
+        for (var i = 0; i < Attempts; i++)
         {
             try
             {
@@ -68,21 +68,22 @@ public class GarminConnectContext
 
                 return response;
             }
-            catch (GarminConnectRequestException e)
+            catch (GarminConnectRequestException ex)
             {
-                exception = e;
-                if (e.Status == HttpStatusCode.Forbidden)
+                exception = ex;
+                if (ex.Status == HttpStatusCode.Forbidden)
                 {
+                    await Task.Delay(DelayAfterFailAuth);
                     force = true;
                     continue;
                 }
 
-                Debug.WriteLine(e.Message);
+                Debug.WriteLine(ex.Message);
                 throw;
             }
         }
 
-        throw new GarminConnectAuthenticationException($"Authentication fail after {attempts} attempts", exception);
+        throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
 
     public async Task<T> GetAndDeserialize<T>(string url)
@@ -181,9 +182,8 @@ public class GarminConnectContext
                 return;
             default:
             {
-                var url = response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
-
-                throw new GarminConnectRequestException(url, response.StatusCode);
+                var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}";
+                throw new GarminConnectRequestException(message, response.StatusCode);
             }
         }
     }

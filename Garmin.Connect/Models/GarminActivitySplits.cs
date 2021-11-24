@@ -144,11 +144,50 @@ public record LapDto
     public long LapIndex { get; init; }
 
     [JsonPropertyName("lengthDTOs")]
-    public object[] LengthDtOs { get; init; }
+    public LengthDto[] LengthDtOs { get; init; }
 
     [JsonPropertyName("connectIQMeasurement")]
     public GarminConnectIqMeasurement[] ConnectIqMeasurement { get; init; }
 
     [JsonPropertyName("messageIndex")]
     public long MessageIndex { get; init; }
+}
+
+public record LengthDto
+{
+    [JsonPropertyName("startTimeGMT")]
+    public DateTime StartTimeGmt { get; init; }
+
+    [JsonPropertyName("distance")]
+    public double Distance { get; init; }
+
+    [JsonPropertyName("duration")]
+    public double Duration { get; init; }
+
+    [JsonPropertyName("averageSpeed")]
+    public double? AverageSpeed { get; init; }
+
+    [JsonPropertyName("maxSpeed")]
+    public double MaxSpeed { get; init; }
+
+    [JsonPropertyName("calories")]
+    public double Calories { get; init; }
+
+    [JsonPropertyName("averageHR")]
+    public double AverageHr { get; init; }
+
+    [JsonPropertyName("maxHR")]
+    public double MaxHr { get; init; }
+
+    [JsonPropertyName("totalNumberOfStrokes")]
+    public long? TotalNumberOfStrokes { get; init; }
+
+    [JsonPropertyName("averageSWOLF")]
+    public double AverageSwolf { get; init; }
+
+    [JsonPropertyName("lengthIndex")]
+    public long LengthIndex { get; init; }
+
+    [JsonPropertyName("swimStroke")]
+    public string SwimStroke { get; init; }
 }

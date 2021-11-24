@@ -45,13 +45,13 @@ public record GarminTotalAverage
     public double MuscleMass { get; init; }
 
     [JsonPropertyName("physiqueRating")]
-    public object PhysiqueRating { get; init; }
+    public double PhysiqueRating { get; init; }
 
     [JsonPropertyName("visceralFat")]
-    public object VisceralFat { get; init; }
+    public double VisceralFat { get; init; }
 
     [JsonPropertyName("metabolicAge")]
-    public object MetabolicAge { get; init; }
+    public double MetabolicAge { get; init; }
 }
 
 public record GarminDateWeight
@@ -84,13 +84,13 @@ public record GarminDateWeight
     public long MuscleMass { get; init; }
 
     [JsonPropertyName("physiqueRating")]
-    public object PhysiqueRating { get; init; }
+    public double PhysiqueRating { get; init; }
 
     [JsonPropertyName("visceralFat")]
-    public object VisceralFat { get; init; }
+    public double VisceralFat { get; init; }
 
     [JsonPropertyName("metabolicAge")]
-    public object MetabolicAge { get; init; }
+    public double MetabolicAge { get; init; }
 
     [JsonPropertyName("sourceType")]
     public string SourceType { get; init; }
@@ -99,5 +99,5 @@ public record GarminDateWeight
     public long TimestampGmt { get; init; }
 
     [JsonPropertyName("weightDelta")]
-    public object WeightDelta { get; init; }
+    public double WeightDelta { get; init; }
 }

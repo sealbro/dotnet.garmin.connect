@@ -12,20 +12,20 @@ public record GarminHydrationData
     public DateTime CalendarDate { get; init; }
 
     [JsonPropertyName("valueInML")]
-    public object ValueInMl { get; init; }
+    public int ValueInMl { get; init; }
 
     [JsonPropertyName("goalInML")]
     public double GoalInMl { get; init; }
 
     [JsonPropertyName("dailyAverageinML")]
-    public object DailyAverageinMl { get; init; }
+    public double DailyAverageinMl { get; init; }
 
     [JsonPropertyName("lastEntryTimestampLocal")]
-    public object LastEntryTimestampLocal { get; init; }
+    public DateTime? LastEntryTimestampLocal { get; init; }
 
     [JsonPropertyName("sweatLossInML")]
-    public object SweatLossInMl { get; init; }
+    public double SweatLossInMl { get; init; }
 
     [JsonPropertyName("activityIntakeInML")]
-    public object ActivityIntakeInMl { get; init; }
+    public double ActivityIntakeInMl { get; init; }
 }
