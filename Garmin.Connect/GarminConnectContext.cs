@@ -190,7 +190,7 @@ public class GarminConnectContext
 
     private static TModel ParseJson<TModel>(string html, string key)
     {
-        var dataRegex = new Regex(key + @" = JSON\.parse\(\""(.*)\""\);", RegexOptions.Compiled);
+        var dataRegex = new Regex($@"window\.{key} = (.*);", RegexOptions.Compiled);
         var dataMatch = dataRegex.Match(html);
 
         if (dataMatch.Success)
