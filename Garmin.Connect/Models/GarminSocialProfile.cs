@@ -45,7 +45,7 @@ public record GarminSocialProfile
     public string PersonalWebsite { get; init; }
 
     [JsonPropertyName("motivation")]
-    public long Motivation { get; init; }
+    public long? Motivation { get; init; }
 
     [JsonPropertyName("bio")]
     public object Bio { get; init; }
