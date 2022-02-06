@@ -46,7 +46,7 @@ public record GarminGear
 
     [JsonPropertyName("dateEnd")]
     [JsonConverter(typeof(DateTimeConverter))]
-    public DateTime DateEnd { get; init; }
+    public DateTime? DateEnd { get; init; }
 
     [JsonPropertyName("maximumMeters")]
     public double MaximumMeters { get; init; }
@@ -73,5 +73,5 @@ public record GarminGearType
     public DateTime CreateDate { get; init; }
 
     [JsonPropertyName("updateData")]
-    public DateTime UpdateData { get; init; }
+    public DateTime? UpdateData { get; init; }
 }

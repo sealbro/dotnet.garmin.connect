@@ -15,10 +15,7 @@ internal class DateTimeConverter : JsonConverter<DateTime>
 
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        string dateTimeString = GetRawString( reader );
-        return dateTimeString == "null"
-          ? DateTime.MinValue
-          : DateTime.ParseExact( dateTimeString, Formats, CultureInfo.InvariantCulture, DateTimeStyles.None );
+        return DateTime.ParseExact( GetRawString( reader ), Formats, CultureInfo.InvariantCulture, DateTimeStyles.None );
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
