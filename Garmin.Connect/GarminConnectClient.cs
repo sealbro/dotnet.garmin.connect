@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Garmin.Connect.Models;
 
 namespace Garmin.Connect;
@@ -64,7 +65,7 @@ public class GarminConnectClient : IGarminConnectClient
 
         // mimicking the behavior of the web interface that fetches 20 activities at a time
         // and automatically loads more on scroll
-        if ( !string.IsNullOrEmpty(activityType) )
+        if (!string.IsNullOrEmpty(activityType))
         {
             activitySlug = "&activityType=" + activityType;
         }
@@ -76,14 +77,14 @@ public class GarminConnectClient : IGarminConnectClient
         var result = new List<GarminActivity>();
 
         var returnData = true;
-        while ( returnData )
+        while (returnData)
         {
             var activitiesUrl =
                 $"{ActivitiesUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
 
             var activities = await _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl);
 
-            if ( activities.Any() )
+            if (activities.Any())
             {
                 result.AddRange(activities);
                 start += limit;
@@ -99,7 +100,7 @@ public class GarminConnectClient : IGarminConnectClient
 
     public async Task<GarminUserPreferences> GetPreferences()
     {
-        if ( _context.Preferences is null )
+        if (_context.Preferences is null)
         {
             await _context.ReLoginIfExpired();
         }
@@ -109,7 +110,7 @@ public class GarminConnectClient : IGarminConnectClient
 
     public async Task<GarminSocialProfile> GetSocialProfile()
     {
-        if ( _context.Profile is null )
+        if (_context.Profile is null)
         {
             await _context.ReLoginIfExpired();
         }
@@ -251,7 +252,7 @@ public class GarminConnectClient : IGarminConnectClient
                 $"{CsvDownloadUrl}{activityId}"
             }
         };
-        if ( !urls.ContainsKey(format) )
+        if (!urls.ContainsKey(format))
         {
             throw new ArgumentException($"Unexpected value {format} for dl_fmt");
         }
