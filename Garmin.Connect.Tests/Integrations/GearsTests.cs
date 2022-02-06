@@ -14,13 +14,13 @@ public class GearsTests
 
     private readonly IGarminConnectClient _garmin;
 
-    public GearsTests ()
+    public GearsTests()
     {
         _garmin = LazyClient.Garmin.Value;
     }
 
     [Fact]
-    public async Task GetGearTypes_NotNull ()
+    public async Task GetGearTypes_NotNull()
     {
         var gearTypes = await _garmin.GetGearTypes();
 
@@ -29,7 +29,7 @@ public class GearsTests
     }
 
     [Fact]
-    public async Task GetUserGears_NotNull ()
+    public async Task GetUserGears_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
         var userGears = await _garmin.GetUserGears(garminActivities[0].OwnerId);
@@ -39,7 +39,7 @@ public class GearsTests
     }
 
     [Fact]
-    public async Task GetActivityGears_NotNull ()
+    public async Task GetActivityGears_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityGears = await _garmin.GetActivityGears(garminActivities[0].ActivityId);

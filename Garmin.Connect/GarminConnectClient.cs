@@ -29,7 +29,7 @@ public class GarminConnectClient : IGarminConnectClient
     private const string DeviceServiceUrl = "/proxy/device-service/deviceservice/";
     private const string GearUrl = "/proxy/gear-service/gear/";
 
-    public GarminConnectClient (GarminConnectContext context)
+    public GarminConnectClient(GarminConnectContext context)
     {
         _context = context;
     }
@@ -64,7 +64,7 @@ public class GarminConnectClient : IGarminConnectClient
 
         // mimicking the behavior of the web interface that fetches 20 activities at a time
         // and automatically loads more on scroll
-        if (!string.IsNullOrEmpty(activityType))
+        if ( !string.IsNullOrEmpty(activityType) )
         {
             activitySlug = "&activityType=" + activityType;
         }
@@ -76,14 +76,14 @@ public class GarminConnectClient : IGarminConnectClient
         var result = new List<GarminActivity>();
 
         var returnData = true;
-        while (returnData)
+        while ( returnData )
         {
             var activitiesUrl =
                 $"{ActivitiesUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
 
             var activities = await _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl);
 
-            if (activities.Any())
+            if ( activities.Any() )
             {
                 result.AddRange(activities);
                 start += limit;
@@ -99,7 +99,7 @@ public class GarminConnectClient : IGarminConnectClient
 
     public async Task<GarminUserPreferences> GetPreferences()
     {
-        if (_context.Preferences is null)
+        if ( _context.Preferences is null )
         {
             await _context.ReLoginIfExpired();
         }
@@ -109,7 +109,7 @@ public class GarminConnectClient : IGarminConnectClient
 
     public async Task<GarminSocialProfile> GetSocialProfile()
     {
-        if (_context.Profile is null)
+        if ( _context.Profile is null )
         {
             await _context.ReLoginIfExpired();
         }
@@ -251,7 +251,7 @@ public class GarminConnectClient : IGarminConnectClient
                 $"{CsvDownloadUrl}{activityId}"
             }
         };
-        if (!urls.ContainsKey(format))
+        if ( !urls.ContainsKey(format) )
         {
             throw new ArgumentException($"Unexpected value {format} for dl_fmt");
         }
@@ -263,24 +263,24 @@ public class GarminConnectClient : IGarminConnectClient
         return await response.Content.ReadAsByteArrayAsync();
     }
 
-    public Task<GarminGearType[]> GetGearTypes ()
+    public Task<GarminGearType[]> GetGearTypes()
     {
         string gearTypesUrl = $"{GearUrl}types";
 
-        return _context.GetAndDeserialize<GarminGearType[]>( gearTypesUrl );
+        return _context.GetAndDeserialize<GarminGearType[]>(gearTypesUrl);
     }
 
-    public Task<GarminGear[]> GetUserGears ( long userId )
+    public Task<GarminGear[]> GetUserGears(long userId)
     {
         string userGearsUrl = $"{GearUrl}filterGear?userProfilePk={userId}";
 
-        return _context.GetAndDeserialize<GarminGear[]>( userGearsUrl );
+        return _context.GetAndDeserialize<GarminGear[]>(userGearsUrl);
     }
 
-    public Task<GarminGear[]> GetActivityGears ( long activityId )
+    public Task<GarminGear[]> GetActivityGears(long activityId)
     {
         string activityGearsUrl = $"{GearUrl}filterGear?activityId={activityId}";
 
-        return _context.GetAndDeserialize<GarminGear[]>( activityGearsUrl );
+        return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl);
     }
 }
