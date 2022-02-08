@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Garmin.Connect.Models;
 
 namespace Garmin.Connect;
@@ -27,6 +28,7 @@ public class GarminConnectClient : IGarminConnectClient
     private const string CsvDownloadUrl = "/proxy/download-service/export/csv/activity/";
     private const string DeviceListUrl = "/proxy/device-service/deviceregistration/devices";
     private const string DeviceServiceUrl = "/proxy/device-service/deviceservice/";
+    private const string GearUrl = "/proxy/gear-service/gear/";
 
     public GarminConnectClient(GarminConnectContext context)
     {
@@ -260,5 +262,26 @@ public class GarminConnectClient : IGarminConnectClient
         var response = await _context.MakeHttpGet(url);
 
         return await response.Content.ReadAsByteArrayAsync();
+    }
+
+    public Task<GarminGearType[]> GetGearTypes()
+    {
+        string gearTypesUrl = $"{GearUrl}types";
+
+        return _context.GetAndDeserialize<GarminGearType[]>(gearTypesUrl);
+    }
+
+    public Task<GarminGear[]> GetUserGears(long userId)
+    {
+        string userGearsUrl = $"{GearUrl}filterGear?userProfilePk={userId}";
+
+        return _context.GetAndDeserialize<GarminGear[]>(userGearsUrl);
+    }
+
+    public Task<GarminGear[]> GetActivityGears(long activityId)
+    {
+        string activityGearsUrl = $"{GearUrl}filterGear?activityId={activityId}";
+
+        return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl);
     }
 }

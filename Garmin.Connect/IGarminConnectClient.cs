@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+
 using Garmin.Connect.Models;
 
 namespace Garmin.Connect;
@@ -118,4 +119,19 @@ public interface IGarminConnectClient
     /// Possible values are [cycling, running, swimming, multi_sport, fitness_equipment, hiking, walking, other]
     /// </param>
     Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate, string activityType = "");
+
+    /// <summary>
+    /// Fetch gear types.
+    /// </summary>
+    Task<GarminGearType[]> GetGearTypes();
+
+    /// <summary>
+    /// Fetch user gears.
+    /// </summary>
+    Task<GarminGear[]> GetUserGears(long userId);
+
+    /// <summary>
+    /// Fetch activity gears.
+    /// </summary>
+    Task<GarminGear[]> GetActivityGears(long activityId);
 }
