@@ -12,7 +12,7 @@ public record GarminHydrationData
     public DateTime CalendarDate { get; init; }
 
     [JsonPropertyName("valueInML")]
-    public int ValueInMl { get; init; }
+    public double ValueInMl { get; init; }
 
     [JsonPropertyName("goalInML")]
     public double GoalInMl { get; init; }
