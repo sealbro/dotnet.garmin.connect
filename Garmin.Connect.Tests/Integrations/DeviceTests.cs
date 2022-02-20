@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
+[Collection("Garmin Integrations")]
 public class DeviceTests
 {
     private readonly Lazy<Task<GarminDevice[]>> _lazyDevices = new(() => LazyClient.Garmin.Value.GetDevices());

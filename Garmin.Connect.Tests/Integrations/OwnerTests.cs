@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
+[Collection("Garmin Integrations")]
 public class OwnerTests
 {
     private readonly IGarminConnectClient _garmin;

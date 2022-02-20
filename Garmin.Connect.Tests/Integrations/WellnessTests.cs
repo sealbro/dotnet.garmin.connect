@@ -1,11 +1,10 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Garmin.Connect.Auth;
 using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
+[Collection("Garmin Integrations")]
 public class WellnessTests
 {
     private readonly IGarminConnectClient _garmin;

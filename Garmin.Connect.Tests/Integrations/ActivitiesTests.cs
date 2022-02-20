@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
+[Collection("Garmin Integrations")]
 public class ActivitiesTests
 {
     private readonly Lazy<Task<GarminActivity[]>> _lazyActivities =
