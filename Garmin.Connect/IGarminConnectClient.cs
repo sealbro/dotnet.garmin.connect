@@ -138,11 +138,11 @@ public interface IGarminConnectClient
     /// <summary>
     /// Sets user's weight in grams.
     /// </summary>
-    public Task SetUserWeight(double weight);
+    Task SetUserWeight(double weight);
 
     /// <summary>
     /// Sets user's sleep and wake times.
     /// Null values set default time.
     /// </summary>
-    public Task SetUserSleepTimes(long? sleepTime, long? wakeTime);
+    Task SetUserSleepTimes(long? sleepTime, long? wakeTime);
 }
