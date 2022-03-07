@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -283,5 +284,29 @@ public class GarminConnectClient : IGarminConnectClient
         string activityGearsUrl = $"{GearUrl}filterGear?activityId={activityId}";
 
         return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl);
+    }
+
+    public Task SetUserWeight(double weight)
+    {
+        dynamic garminUserSettings = new ExpandoObject();
+        garminUserSettings.userData = new ExpandoObject();
+        garminUserSettings.userData.weight = weight;
+        return _context.Put(UserSettingsUrl, garminUserSettings);
+    }
+
+    public Task SetUserSleepTimes(long? sleepTime, long? wakeTime)
+    {
+        dynamic garminUserSettings = new ExpandoObject();
+        garminUserSettings.userSleep = new ExpandoObject();
+
+        garminUserSettings.userSleep.defaultSleepTime = sleepTime == null;
+        if (!garminUserSettings.userSleep.defaultSleepTime)
+            garminUserSettings.userSleep.sleepTime = sleepTime;
+
+        garminUserSettings.userSleep.defaultWakeTime = wakeTime == null;
+        if (!garminUserSettings.userSleep.defaultWakeTime)
+            garminUserSettings.userSleep.wakeTime = wakeTime;
+
+        return _context.Put(UserSettingsUrl, garminUserSettings);
     }
 }
