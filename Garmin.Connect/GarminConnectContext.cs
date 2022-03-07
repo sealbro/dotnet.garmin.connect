@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -86,6 +87,43 @@ public class GarminConnectContext
         throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
 
+    public async Task<HttpResponseMessage> MakeHttpPut(string url, object value)
+    {
+        var force = false;
+        Exception exception = null;
+
+        for (var i = 0; i < Attempts; i++)
+        {
+            try
+            {
+                await ReLoginIfExpired(force);
+
+                HttpContent content = JsonContent.Create(value);
+                content.Headers.Add("Cookie", _authParameters.Cookies);
+                var response = await _httpClient.PutAsync($"{_authParameters.BaseUrl}{ url}", content);
+
+                RaiseForStatus(response, true);
+
+                return response;
+            }
+            catch (GarminConnectRequestException ex)
+            {
+                exception = ex;
+                if (ex.Status == HttpStatusCode.Forbidden)
+                {
+                    await Task.Delay(DelayAfterFailAuth);
+                    force = true;
+                    continue;
+                }
+
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
+    }
+
     public async Task<T> GetAndDeserialize<T>(string url)
     {
         var response = await MakeHttpGet(url);
@@ -95,6 +133,11 @@ public class GarminConnectContext
         // return default;
 
         return GarminSerializer.To<T>(json);
+    }
+
+    public async Task Put(string url, object value)
+    {
+        await MakeHttpPut(url, value);
     }
 
     private async Task<(string authUrl, string cookies)> GetAuthCookies()
@@ -172,10 +215,16 @@ public class GarminConnectContext
         return (cookies, userPreferences, socialProfile);
     }
 
-    private static void RaiseForStatus(HttpResponseMessage response)
+    private static void RaiseForStatus(HttpResponseMessage response, bool allowNoContent = false)
     {
         switch (response.StatusCode)
         {
+            case HttpStatusCode.NoContent:
+                if (allowNoContent)
+                    goto case HttpStatusCode.OK;
+                else
+                    goto default;
+
             case HttpStatusCode.TooManyRequests:
                 throw new GarminConnectTooManyRequestsException();
             case HttpStatusCode.OK:
