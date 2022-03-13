@@ -78,9 +78,9 @@ public interface IGarminConnectClient
         int maxPolylineSize = 4000);
 
     /// <summary>
-    /// Fetch activity excercise sets
+    /// Fetch activity exercise sets
     /// </summary>
-    Task<GarminExcerciseSets> GetActivityExcerciseSets(long activityId);
+    Task<GarminExerciseSets> GetActivityExerciseSets(long activityId);
 
     /// <summary>
     /// Fetch activity weather

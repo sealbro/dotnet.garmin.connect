@@ -170,11 +170,11 @@ public class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
     }
 
-    public Task<GarminExcerciseSets> GetActivityExcerciseSets(long activityId)
+    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId)
     {
         var exerciseSetsUrl = $"{ActivityUrl}{activityId}";
 
-        return _context.GetAndDeserialize<GarminExcerciseSets>(exerciseSetsUrl);
+        return _context.GetAndDeserialize<GarminExerciseSets>(exerciseSetsUrl);
     }
 
     public Task<GarminActivitySplits> GetActivitySplits(long activityId)
@@ -291,7 +291,7 @@ public class GarminConnectClient : IGarminConnectClient
         dynamic garminUserSettings = new ExpandoObject();
         garminUserSettings.userData = new ExpandoObject();
         garminUserSettings.userData.weight = weight;
-        return _context.Put(UserSettingsUrl, garminUserSettings);
+        return _context.MakeHttpPut(UserSettingsUrl, garminUserSettings);
     }
 
     public Task SetUserSleepTimes(long? sleepTime, long? wakeTime)
@@ -307,6 +307,6 @@ public class GarminConnectClient : IGarminConnectClient
         if (!garminUserSettings.userSleep.defaultWakeTime)
             garminUserSettings.userSleep.wakeTime = wakeTime;
 
-        return _context.Put(UserSettingsUrl, garminUserSettings);
+        return _context.MakeHttpPut( UserSettingsUrl, garminUserSettings);
     }
 }
