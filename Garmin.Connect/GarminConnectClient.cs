@@ -307,6 +307,6 @@ public class GarminConnectClient : IGarminConnectClient
         if (!garminUserSettings.userSleep.defaultWakeTime)
             garminUserSettings.userSleep.wakeTime = wakeTime;
 
-        return _context.MakeHttpPut( UserSettingsUrl, garminUserSettings);
+        return _context.MakeHttpPut(UserSettingsUrl, garminUserSettings);
     }
 }
