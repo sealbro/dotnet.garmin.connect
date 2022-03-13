@@ -138,7 +138,7 @@ public class GarminConnectContext
             httpRequestMessage.Headers.Add(key, value);
         }
 
-        httpRequestMessage.Content = new FormUrlEncodedContent(new Dictionary<string, string>(formParams) { {"_csrf", csrf} });
+        httpRequestMessage.Content = new FormUrlEncodedContent(new Dictionary<string, string>(formParams) { {"_csrf",csrf} });
         var response = await _httpClient.SendAsync(httpRequestMessage);
         RaiseForStatus(response);
 
