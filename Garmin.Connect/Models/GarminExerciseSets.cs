@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Models;
 
-public record GarminExcerciseSets
+public record GarminExerciseSets
 {
     [JsonPropertyName("activityId")]
     public long ActivityId { get; init; }

@@ -51,14 +51,14 @@ public class ActivitiesTests
     }
 
     [Fact]
-    public async Task GetActivityExcerciseSets_NotNull()
+    public async Task GetActivityExerciseSets_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
-        var garminExcerciseSets = await _garmin.GetActivityExcerciseSets(activityId);
+        var garminExerciseSets = await _garmin.GetActivityExerciseSets(activityId);
 
-        Assert.NotNull(garminExcerciseSets);
+        Assert.NotNull(garminExerciseSets);
     }
 
     [Fact]

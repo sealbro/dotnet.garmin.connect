@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -48,7 +49,24 @@ public class GarminConnectContext
 
     public GarminUserPreferences Preferences { get; private set; }
 
-    public async Task<HttpResponseMessage> MakeHttpGet(string url)
+    public async Task<T> GetAndDeserialize<T>(string url)
+    {
+        var response = await MakeHttpGet(url);
+        var json = await response.Content.ReadAsStringAsync();
+
+        // Console.WriteLine($"{url}\n{json}\n\n\n");
+        // return default;
+
+        return GarminSerializer.To<T>(json);
+    }
+ 
+    public Task<HttpResponseMessage> MakeHttpGet(string url) =>
+        MakeHttpRequest(url, HttpMethod.Get);
+
+    public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body) =>
+        MakeHttpRequest(url, HttpMethod.Put, JsonContent.Create(body));
+
+    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method, HttpContent content = null)
     {
         var force = false;
         Exception exception = null;
@@ -59,9 +77,10 @@ public class GarminConnectContext
             {
                 await ReLoginIfExpired(force);
 
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_authParameters.BaseUrl}{url}");
-
+                var httpRequestMessage = new HttpRequestMessage(method, $"{_authParameters.BaseUrl}{url}");
                 httpRequestMessage.Headers.Add("Cookie", _authParameters.Cookies);
+                httpRequestMessage.Content = content;
+
                 var response = await _httpClient.SendAsync(httpRequestMessage);
 
                 RaiseForStatus(response);
@@ -85,18 +104,7 @@ public class GarminConnectContext
 
         throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
-
-    public async Task<T> GetAndDeserialize<T>(string url)
-    {
-        var response = await MakeHttpGet(url);
-        var json = await response.Content.ReadAsStringAsync();
-
-        // Console.WriteLine($"{url}\n{json}\n\n\n");
-        // return default;
-
-        return GarminSerializer.To<T>(json);
-    }
-
+    
     private async Task<(string authUrl, string cookies)> GetAuthCookies()
     {
         var queryParams = _authParameters.GetQueryParameters();
@@ -178,6 +186,7 @@ public class GarminConnectContext
         {
             case HttpStatusCode.TooManyRequests:
                 throw new GarminConnectTooManyRequestsException();
+            case HttpStatusCode.NoContent:
             case HttpStatusCode.OK:
                 return;
             default:

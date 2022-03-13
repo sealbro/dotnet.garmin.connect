@@ -169,11 +169,11 @@ public class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
     }
 
-    public Task<GarminExcerciseSets> GetActivityExcerciseSets(long activityId)
+    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId)
     {
         var exerciseSetsUrl = $"{ActivityUrl}{activityId}";
 
-        return _context.GetAndDeserialize<GarminExcerciseSets>(exerciseSetsUrl);
+        return _context.GetAndDeserialize<GarminExerciseSets>(exerciseSetsUrl);
     }
 
     public Task<GarminActivitySplits> GetActivitySplits(long activityId)
