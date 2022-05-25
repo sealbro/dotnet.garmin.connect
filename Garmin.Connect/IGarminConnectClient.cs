@@ -112,8 +112,8 @@ public interface IGarminConnectClient
     /// <summary>
     /// Fetch available activities between specific dates
     /// </summary>
-    /// <param name="startDate"></param>
-    /// <param name="endDate"></param>
+    /// <param name="startDate">Start date of range when activities were</param>
+    /// <param name="endDate">End date of range when activities were</param>
     /// <param name="activityType">
     /// (Optional) Type of activity you are searching
     /// Possible values are [cycling, running, swimming, multi_sport, fitness_equipment, hiking, walking, other]
@@ -134,4 +134,15 @@ public interface IGarminConnectClient
     /// Fetch activity gears.
     /// </summary>
     Task<GarminGear[]> GetActivityGears(long activityId);
+
+    /// <summary>
+    /// [Experimental] Sets user's weight in grams.
+    /// </summary>
+    Task SetUserWeight(double weight);
+
+    /// <summary>
+    /// [Experimental] Sets user's sleep and wake times.
+    /// Null values set default time.
+    /// </summary>
+    Task SetUserSleepTimes(long? sleepTime, long? wakeTime);
 }

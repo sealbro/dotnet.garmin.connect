@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Garmin.Connect.Models;
 
 namespace Garmin.Connect;
 
-public class GarminConnectClient : IGarminConnectClient
+public partial class GarminConnectClient : IGarminConnectClient
 {
     private readonly GarminConnectContext _context;
 
@@ -35,24 +34,13 @@ public class GarminConnectClient : IGarminConnectClient
         _context = context;
     }
 
+    #region Activities
+
     public Task<GarminActivity[]> GetActivities(int start, int limit)
     {
         var activitiesUrl = $"{ActivitiesUrl}?start={start}&limit={limit}";
 
         return _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl);
-    }
-
-    public Task<GarminDevice[]> GetDevices()
-    {
-        return _context.GetAndDeserialize<GarminDevice[]>(DeviceListUrl);
-    }
-
-    public async Task<GarminStepsData[]> GetWellnessStepsData(DateTime date)
-    {
-        var profile = await GetSocialProfile();
-
-        return await _context.GetAndDeserialize<GarminStepsData[]>(
-            $"{UserSummaryChartUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
     }
 
     public async Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate,
@@ -96,77 +84,6 @@ public class GarminConnectClient : IGarminConnectClient
         }
 
         return result.ToArray();
-    }
-
-    public async Task<GarminUserPreferences> GetPreferences()
-    {
-        if (_context.Preferences is null)
-        {
-            await _context.ReLoginIfExpired();
-        }
-
-        return _context.Preferences;
-    }
-
-    public async Task<GarminSocialProfile> GetSocialProfile()
-    {
-        if (_context.Profile is null)
-        {
-            await _context.ReLoginIfExpired();
-        }
-
-        return _context.Profile;
-    }
-
-    public Task<GarminUserSettings> GetUserSettings()
-    {
-        return _context.GetAndDeserialize<GarminUserSettings>(UserSettingsUrl);
-    }
-
-    public async Task<GarminStats> GetUserSummary(DateTime date)
-    {
-        var profile = await GetSocialProfile();
-
-        return await _context.GetAndDeserialize<GarminStats>(
-            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyy-MM-dd}");
-    }
-
-    public async Task<GarminHr> GetWellnessHeartRates(DateTime date)
-    {
-        var profile = await GetSocialProfile();
-
-        return await _context.GetAndDeserialize<GarminHr>(
-            $"{HeartRatesUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
-    }
-
-    public async Task<GarminSleepData> GetWellnessSleepData(DateTime date)
-    {
-        var profile = await GetSocialProfile();
-
-        return await _context.GetAndDeserialize<GarminSleepData>(
-            $"{SleepDataUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
-    }
-
-    public Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate)
-    {
-        var bodyCompositionUrl =
-            $"{BodyCompositionUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
-
-        return _context.GetAndDeserialize<GarminBodyComposition>(bodyCompositionUrl);
-    }
-
-    public Task<GarminDeviceSettings> GetDeviceSettings(long deviceId)
-    {
-        var devicesUrl = $"{DeviceServiceUrl}device-info/settings/{deviceId}";
-
-        return _context.GetAndDeserialize<GarminDeviceSettings>(devicesUrl);
-    }
-
-    public Task<GarminHydrationData> GetHydrationData(DateTime date)
-    {
-        var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
-
-        return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
     }
 
     public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId)
@@ -213,20 +130,6 @@ public class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminActivityDetails>(detailsUrl);
     }
 
-    public Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName)
-    {
-        var personalRecordsUrl = $"{PersonalRecordUrl}prs/{ownerDisplayName}";
-
-        return _context.GetAndDeserialize<GarminPersonalRecord[]>(personalRecordsUrl);
-    }
-
-    public Task<GarminDeviceLastUsed> GetDeviceLastUsed()
-    {
-        var deviceLastUsedUrl = $"{DeviceServiceUrl}mylastused";
-
-        return _context.GetAndDeserialize<GarminDeviceLastUsed>(deviceLastUsedUrl);
-    }
-
     public async Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format)
     {
         var urls = new Dictionary<ActivityDownloadFormat, string>
@@ -264,9 +167,36 @@ public class GarminConnectClient : IGarminConnectClient
         return await response.Content.ReadAsByteArrayAsync();
     }
 
+    #endregion
+
+    #region Device
+
+    public Task<GarminDevice[]> GetDevices()
+    {
+        return _context.GetAndDeserialize<GarminDevice[]>(DeviceListUrl);
+    }
+
+    public Task<GarminDeviceSettings> GetDeviceSettings(long deviceId)
+    {
+        var devicesUrl = $"{DeviceServiceUrl}device-info/settings/{deviceId}";
+
+        return _context.GetAndDeserialize<GarminDeviceSettings>(devicesUrl);
+    }
+
+    public Task<GarminDeviceLastUsed> GetDeviceLastUsed()
+    {
+        const string deviceLastUsedUrl = $"{DeviceServiceUrl}mylastused";
+
+        return _context.GetAndDeserialize<GarminDeviceLastUsed>(deviceLastUsedUrl);
+    }
+
+    #endregion
+
+    #region MyRegion
+
     public Task<GarminGearType[]> GetGearTypes()
     {
-        string gearTypesUrl = $"{GearUrl}types";
+        const string gearTypesUrl = $"{GearUrl}types";
 
         return _context.GetAndDeserialize<GarminGearType[]>(gearTypesUrl);
     }
@@ -284,4 +214,93 @@ public class GarminConnectClient : IGarminConnectClient
 
         return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl);
     }
+
+    #endregion
+
+    #region Owner
+
+    public async Task<GarminUserPreferences> GetPreferences()
+    {
+        if (_context.Preferences is null)
+        {
+            await _context.ReLoginIfExpired();
+        }
+
+        return _context.Preferences;
+    }
+
+    public async Task<GarminSocialProfile> GetSocialProfile()
+    {
+        if (_context.Profile is null)
+        {
+            await _context.ReLoginIfExpired();
+        }
+
+        return _context.Profile;
+    }
+
+    public Task<GarminUserSettings> GetUserSettings()
+    {
+        return _context.GetAndDeserialize<GarminUserSettings>(UserSettingsUrl);
+    }
+
+    public Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName)
+    {
+        var personalRecordsUrl = $"{PersonalRecordUrl}prs/{ownerDisplayName}";
+
+        return _context.GetAndDeserialize<GarminPersonalRecord[]>(personalRecordsUrl);
+    }
+
+    #endregion
+
+    #region Wellness
+
+    public async Task<GarminStepsData[]> GetWellnessStepsData(DateTime date)
+    {
+        var profile = await GetSocialProfile();
+
+        return await _context.GetAndDeserialize<GarminStepsData[]>(
+            $"{UserSummaryChartUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+    }
+
+    public async Task<GarminStats> GetUserSummary(DateTime date)
+    {
+        var profile = await GetSocialProfile();
+
+        return await _context.GetAndDeserialize<GarminStats>(
+            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyy-MM-dd}");
+    }
+
+    public async Task<GarminHr> GetWellnessHeartRates(DateTime date)
+    {
+        var profile = await GetSocialProfile();
+
+        return await _context.GetAndDeserialize<GarminHr>(
+            $"{HeartRatesUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+    }
+
+    public async Task<GarminSleepData> GetWellnessSleepData(DateTime date)
+    {
+        var profile = await GetSocialProfile();
+
+        return await _context.GetAndDeserialize<GarminSleepData>(
+            $"{SleepDataUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+    }
+
+    public Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate)
+    {
+        var bodyCompositionUrl =
+            $"{BodyCompositionUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminBodyComposition>(bodyCompositionUrl);
+    }
+
+    public Task<GarminHydrationData> GetHydrationData(DateTime date)
+    {
+        var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
+    }
+
+    #endregion
 }
