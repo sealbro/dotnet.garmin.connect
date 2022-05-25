@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -38,12 +39,52 @@ public class OwnerTests
 
         Assert.NotNull(personalRecords);
     }
-    
+
     [Fact]
     public async Task GetUserSettings_NotNull()
     {
         var userSettings = await _garmin.GetUserSettings();
 
         Assert.NotNull(userSettings);
+    }
+
+    [Fact]
+    public async Task SetUserWeight()
+    {
+        var userSettingsOriginal = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsOriginal);
+
+        await _garmin.SetUserWeight(userSettingsOriginal.UserData.Weight + 1000);
+        var userSettingsUpdated = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsUpdated);
+        Assert.True(Math.Round(userSettingsOriginal.UserData.Weight + 1000) == Math.Round(userSettingsUpdated.UserData.Weight));
+
+        await _garmin.SetUserWeight(userSettingsOriginal.UserData.Weight);
+        var userSettingsBackToOriginal = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsBackToOriginal);
+        Assert.True(Math.Round(userSettingsOriginal.UserData.Weight) == Math.Round(userSettingsBackToOriginal.UserData.Weight));
+    }
+
+    [Fact]
+    public async Task SetUserSleepTimes()
+    {
+        var userSettingsOriginal = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsOriginal);
+
+        await _garmin.SetUserSleepTimes(1, 2);
+        var userSettingsUpdated = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsUpdated);
+        Assert.True(!userSettingsUpdated.UserSleep.DefaultSleepTime);
+        Assert.True(userSettingsUpdated.UserSleep.SleepTime == 1);
+        Assert.True(!userSettingsUpdated.UserSleep.DefaultWakeTime);
+        Assert.True(userSettingsUpdated.UserSleep.WakeTime == 2);
+
+        await _garmin.SetUserSleepTimes(userSettingsOriginal.UserSleep.DefaultSleepTime ? null : userSettingsOriginal.UserSleep.SleepTime, userSettingsOriginal.UserSleep.DefaultWakeTime ? null : userSettingsOriginal.UserSleep.WakeTime);
+        var userSettingsBackToOriginal = await _garmin.GetUserSettings();
+        Assert.NotNull(userSettingsBackToOriginal);
+        Assert.True(userSettingsOriginal.UserSleep.DefaultSleepTime == userSettingsBackToOriginal.UserSleep.DefaultSleepTime);
+        Assert.True(userSettingsOriginal.UserSleep.DefaultSleepTime || userSettingsOriginal.UserSleep.SleepTime == userSettingsBackToOriginal.UserSleep.SleepTime);
+        Assert.True(userSettingsOriginal.UserSleep.DefaultWakeTime == userSettingsBackToOriginal.UserSleep.DefaultWakeTime);
+        Assert.True(userSettingsOriginal.UserSleep.DefaultWakeTime || userSettingsOriginal.UserSleep.WakeTime == userSettingsBackToOriginal.UserSleep.WakeTime);
     }
 }

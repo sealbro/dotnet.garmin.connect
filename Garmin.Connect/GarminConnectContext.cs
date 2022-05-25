@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+
 using Garmin.Connect.Auth;
 using Garmin.Connect.Converters;
 using Garmin.Connect.Exceptions;
@@ -59,7 +60,7 @@ public class GarminConnectContext
 
         return GarminSerializer.To<T>(json);
     }
- 
+
     public Task<HttpResponseMessage> MakeHttpGet(string url) =>
         MakeHttpRequest(url, HttpMethod.Get);
 
@@ -104,7 +105,7 @@ public class GarminConnectContext
 
         throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
-    
+
     private async Task<(string authUrl, string cookies)> GetAuthCookies()
     {
         var queryParams = _authParameters.GetQueryParameters();

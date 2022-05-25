@@ -134,4 +134,15 @@ public interface IGarminConnectClient
     /// Fetch activity gears.
     /// </summary>
     Task<GarminGear[]> GetActivityGears(long activityId);
+
+    /// <summary>
+    /// Sets user's weight in grams.
+    /// </summary>
+    Task SetUserWeight(double weight);
+
+    /// <summary>
+    /// Sets user's sleep and wake times.
+    /// Null values set default time.
+    /// </summary>
+    Task SetUserSleepTimes(long? sleepTime, long? wakeTime);
 }
