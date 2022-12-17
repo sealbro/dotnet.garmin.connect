@@ -15,6 +15,8 @@ public class BasicAuthParameters : IAuthParameters
 
     public virtual string BaseUrl => "https://connect.garmin.com";
 
+    public virtual string ExchangeUrl => "https://connect.garmin.com/modern/di-oauth/exchange";
+
     public virtual string SsoUrl => "https://sso.garmin.com/sso";
 
     public virtual string SigninUrl => "https://sso.garmin.com/sso/signin";
