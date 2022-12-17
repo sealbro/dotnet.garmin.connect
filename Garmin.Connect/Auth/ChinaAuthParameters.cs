@@ -6,6 +6,8 @@ public class ChinaAuthParameters : BasicAuthParameters
 {
     public override string BaseUrl => "https://connect.garmin.cn";
 
+    public override string ExchangeUrl => "https://connect.garmin.cn/modern/di-oauth/exchange";
+
     public override string SsoUrl => "https://sso.garmin.cn/sso";
 
     public override string SigninUrl => "https://sso.garmin.com/cn/signin";

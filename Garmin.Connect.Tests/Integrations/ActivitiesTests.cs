@@ -32,7 +32,7 @@ public class ActivitiesTests
     public async Task GetActivitiesByDate_NotNull()
     {
         var activitiesByDate =
-            await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-7), DateTime.Now.AddDays(-2), "running");
+            await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "running");
 
         Assert.NotNull(activitiesByDate);
         Assert.NotEmpty(activitiesByDate);

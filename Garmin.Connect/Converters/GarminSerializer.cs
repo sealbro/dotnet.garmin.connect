@@ -15,7 +15,7 @@ internal static class GarminSerializer
         Options.Converters.Add(new NullBoolConverter());
     }
 
-    public static TModel To<TModel>(string json)
+    public static TModel To<TModel>(byte[] json)
     {
         return JsonSerializer.Deserialize<TModel>(json, Options);
     }

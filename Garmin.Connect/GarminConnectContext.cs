@@ -27,6 +27,8 @@ public class GarminConnectContext
     private const int DelayAfterFailAuth = 300;
     private readonly Regex _csrfRegex = new Regex(@"name=""_csrf""\s+value=""(\w+)""", RegexOptions.Compiled);
     private readonly Regex _responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
+    private DateTime _tokenExpire = DateTime.Now;
+    private string _tokenCached;
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
     {
@@ -38,6 +40,8 @@ public class GarminConnectContext
     {
         if (force || _authParameters.NeedReLogin)
         {
+            _tokenExpire = DateTime.Now;
+
             var (cookies, preferences, profile) = await Login();
 
             _authParameters.Cookies = cookies;
@@ -53,7 +57,7 @@ public class GarminConnectContext
     public async Task<T> GetAndDeserialize<T>(string url)
     {
         var response = await MakeHttpGet(url);
-        var json = await response.Content.ReadAsStringAsync();
+        var json = await response.Content.ReadAsByteArrayAsync();
 
         // Console.WriteLine($"{url}\n{json}\n\n\n");
         // return default;
@@ -78,8 +82,12 @@ public class GarminConnectContext
             {
                 await ReLoginIfExpired(force);
 
+                var bearerToken = await GetBearerToken();
+
                 var httpRequestMessage = new HttpRequestMessage(method, $"{_authParameters.BaseUrl}{url}");
-                httpRequestMessage.Headers.Add("Cookie", _authParameters.Cookies);
+                httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
+                httpRequestMessage.Headers.Add("authorization", $"Bearer {bearerToken}");
+                httpRequestMessage.Headers.Add("di-backend", "connectapi.garmin.com");
                 httpRequestMessage.Content = content;
 
                 var response = await _httpClient.SendAsync(httpRequestMessage);
@@ -162,6 +170,28 @@ public class GarminConnectContext
         return (responseUrl, sb.ToString());
     }
 
+    private async Task<string> GetBearerToken()
+    {
+        if (DateTime.Now < _tokenExpire)
+        {
+            return _tokenCached;
+        }
+
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, _authParameters.ExchangeUrl);
+        httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
+
+        var response = await _httpClient.SendAsync(httpRequestMessage);
+
+        RaiseForStatus(response);
+
+        var bearerToken = GarminSerializer.To<BearerToken>(await response.Content.ReadAsByteArrayAsync());
+
+        _tokenCached = bearerToken.AccessToken;
+        _tokenExpire = DateTime.Now.AddSeconds(bearerToken.ExpireIn - 60);
+
+        return _tokenCached;
+    }
+    
     private async Task<(string cookies, GarminUserPreferences preferences, GarminSocialProfile profile)> Login()
     {
         var (authUrl, cookies) = await GetAuthCookies();

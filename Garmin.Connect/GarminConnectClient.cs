@@ -10,24 +10,24 @@ public partial class GarminConnectClient : IGarminConnectClient
 {
     private readonly GarminConnectContext _context;
 
-    private const string UserSettingsUrl = "/proxy/userprofile-service/userprofile/user-settings";
-    private const string UserSummaryUrl = "/proxy/usersummary-service/usersummary/daily/";
-    private const string UserSummaryChartUrl = "/proxy/wellness-service/wellness/dailySummaryChart/";
-    private const string HeartRatesUrl = "/proxy/wellness-service/wellness/dailyHeartRate/";
-    private const string SleepDataUrl = "/proxy/wellness-service/wellness/dailySleepData/";
-    private const string BodyCompositionUrl = "/proxy/weight-service/weight/daterangesnapshot";
-    private const string ActivitiesUrl = "/proxy/activitylist-service/activities/search/activities";
-    private const string HydrationDataUrl = "/proxy/usersummary-service/usersummary/hydration/daily/";
-    private const string ActivityUrl = "/proxy/activity-service/activity/";
-    private const string PersonalRecordUrl = "/proxy/personalrecord-service/personalrecord/";
-    private const string TcxDownloadUrl = "/proxy/download-service/export/tcx/activity/";
-    private const string GpxDownloadUrl = "/proxy/download-service/export/gpx/activity/";
-    private const string KmlDownloadUrl = "/proxy/download-service/export/kml/activity/";
-    private const string FitDownloadUrl = "/proxy/download-service/files/activity/";
-    private const string CsvDownloadUrl = "/proxy/download-service/export/csv/activity/";
-    private const string DeviceListUrl = "/proxy/device-service/deviceregistration/devices";
-    private const string DeviceServiceUrl = "/proxy/device-service/deviceservice/";
-    private const string GearUrl = "/proxy/gear-service/gear/";
+    private const string UserSettingsUrl = "/userprofile-service/userprofile/user-settings";
+    private const string UserSummaryUrl = "/usersummary-service/usersummary/daily/";
+    private const string UserSummaryChartUrl = "/wellness-service/wellness/dailySummaryChart/";
+    private const string HeartRatesUrl = "/wellness-service/wellness/dailyHeartRate/";
+    private const string SleepDataUrl = "/wellness-service/wellness/dailySleepData/";
+    private const string BodyCompositionUrl = "/weight-service/weight/daterangesnapshot";
+    private const string ActivitiesUrl = "/activitylist-service/activities/search/activities";
+    private const string HydrationDataUrl = "/usersummary-service/usersummary/hydration/daily/";
+    private const string ActivityUrl = "/activity-service/activity/";
+    private const string PersonalRecordUrl = "/personalrecord-service/personalrecord/";
+    private const string TcxDownloadUrl = "/download-service/export/tcx/activity/";
+    private const string GpxDownloadUrl = "/download-service/export/gpx/activity/";
+    private const string KmlDownloadUrl = "/download-service/export/kml/activity/";
+    private const string FitDownloadUrl = "/download-service/files/activity/";
+    private const string CsvDownloadUrl = "/download-service/export/csv/activity/";
+    private const string DeviceListUrl = "/device-service/deviceregistration/devices";
+    private const string DeviceServiceUrl = "/device-service/deviceservice/";
+    private const string GearUrl = "/gear-service/gear/";
 
     public GarminConnectClient(GarminConnectContext context)
     {

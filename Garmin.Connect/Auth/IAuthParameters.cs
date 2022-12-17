@@ -14,6 +14,8 @@ public interface IAuthParameters
 
     string SigninUrl { get; }
 
+    string ExchangeUrl { get; }
+
     IReadOnlyDictionary<string, string> GetHeaders();
 
     IReadOnlyDictionary<string, string> GetFormParameters();
