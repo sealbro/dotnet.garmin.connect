@@ -99,7 +99,7 @@ public class GarminConnectContext
             catch (GarminConnectRequestException ex)
             {
                 exception = ex;
-                if (ex.Status == HttpStatusCode.Forbidden)
+                if (ex.Status == HttpStatusCode.Unauthorized)
                 {
                     await Task.Delay(DelayAfterFailAuth);
                     force = true;
