@@ -13,29 +13,21 @@ public class OwnerTests
     {
         _garmin = LazyClient.Garmin.Value;
     }
-
-    [Fact]
-    public async Task GetPreferences_NotNull()
-    {
-        var preferences = await _garmin.GetPreferences();
-
-        Assert.NotNull(preferences);
-        Assert.NotNull(preferences.DisplayName);
-    }
-
+   
     [Fact]
     public async Task GetSocialProfile_NotNull()
     {
         var profile = await _garmin.GetSocialProfile();
-
+    
         Assert.NotNull(profile);
+        Assert.NotNull(profile.DisplayName);
     }
 
     [Fact]
     public async Task GetPersonalRecord_NotNull()
     {
-        var preferences = await _garmin.GetPreferences();
-        var personalRecords = await _garmin.GetPersonalRecord(preferences.DisplayName);
+        var socialProfile = await _garmin.GetSocialProfile();
+        var personalRecords = await _garmin.GetPersonalRecord(socialProfile.DisplayName);
 
         Assert.NotNull(personalRecords);
     }

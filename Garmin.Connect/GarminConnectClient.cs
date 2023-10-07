@@ -10,6 +10,8 @@ public partial class GarminConnectClient : IGarminConnectClient
 {
     private readonly GarminConnectContext _context;
 
+    private const string UserProfileUrl = "/userprofile-service/socialProfile";
+    private const string UserPreferencesUrl = "/userprofile-service/preferences";
     private const string UserSettingsUrl = "/userprofile-service/userprofile/user-settings";
     private const string UserSummaryUrl = "/usersummary-service/usersummary/daily/";
     private const string UserSummaryChartUrl = "/wellness-service/wellness/dailySummaryChart/";
@@ -219,21 +221,11 @@ public partial class GarminConnectClient : IGarminConnectClient
 
     #region Owner
 
-    public async Task<GarminUserPreferences> GetPreferences()
-    {
-        if (_context.Preferences is null)
-        {
-            await _context.ReLoginIfExpired();
-        }
-
-        return _context.Preferences;
-    }
-
     public async Task<GarminSocialProfile> GetSocialProfile()
     {
         if (_context.Profile is null)
         {
-            await _context.ReLoginIfExpired();
+            _context.Profile = await _context.GetAndDeserialize<GarminSocialProfile>(UserProfileUrl);
         }
 
         return _context.Profile;

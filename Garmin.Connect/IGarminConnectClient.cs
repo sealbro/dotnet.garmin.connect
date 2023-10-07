@@ -7,7 +7,6 @@ namespace Garmin.Connect;
 
 public interface IGarminConnectClient
 {
-    Task<GarminUserPreferences> GetPreferences();
 
     Task<GarminSocialProfile> GetSocialProfile();
 

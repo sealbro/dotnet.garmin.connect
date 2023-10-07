@@ -7,25 +7,24 @@ public class BasicAuthParameters : IAuthParameters
 {
     private readonly string _email;
     private readonly string _password;
-    private readonly string _userAgent;
+    private readonly IUserAgent _userAgent;
 
+
+    public string UserAgent => _userAgent.New;
+
+    public string Domain => "garmin.com";
     public string Cookies { get; set; }
+    public string Csrf { get; set; }
 
-    public bool NeedReLogin => string.IsNullOrEmpty(Cookies);
+    public virtual string BaseUrl => $"https://connect.{Domain}";
 
-    public virtual string BaseUrl => "https://connect.garmin.com";
-
-    public virtual string ExchangeUrl => "https://connect.garmin.com/modern/di-oauth/exchange";
-
-    public virtual string SsoUrl => "https://sso.garmin.com/sso";
-
-    public virtual string SigninUrl => "https://sso.garmin.com/sso/signin";
+    public ConsumerCredentials ConsumerCredentials { get; }
 
     public BasicAuthParameters(string email, string password) : this(email, password, new StaticUserAgent())
     {
     }
 
-    public BasicAuthParameters(string email, string password, IUserAgent userAgent)
+    public BasicAuthParameters(string email, string password, IUserAgent userAgent, ConsumerCredentials consumerCredentials = null)
     {
         if (string.IsNullOrEmpty(email))
         {
@@ -39,48 +38,40 @@ public class BasicAuthParameters : IAuthParameters
 
         _email = email;
         _password = password;
-        _userAgent = userAgent.New;
+        _userAgent = userAgent;
+        ConsumerCredentials = consumerCredentials;
     }
 
     public virtual IReadOnlyDictionary<string, string> GetHeaders()
     {
-        return new Dictionary<string, string>
+        var headers = new Dictionary<string, string>
         {
             {
                 "User-Agent",
-                _userAgent
-            },
-            {
-                "accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+                UserAgent
             },
             {
                 "origin",
-                "https://sso.garmin.com"
+                $"https://sso.{Domain}"
             }
         };
+        
+        if (!string.IsNullOrEmpty(Cookies))
+        {
+            headers.Add("cookie", Cookies);
+        }
+        
+        return headers;
     }
 
     public virtual IReadOnlyDictionary<string, string> GetFormParameters()
     {
         var data = new Dictionary<string, string>
         {
-            {
-                "username",
-                _email
-            },
-            {
-                "password",
-                _password
-            },
-            {
-                "embed",
-                "false"
-            },
-            {
-                "displayNameRequired",
-                "false"
-            }
+            { "embed", "true" },
+            { "_csrf", Csrf },
+            { "username", _email },
+            { "password", _password }
         };
         return data;
     }
@@ -89,150 +80,8 @@ public class BasicAuthParameters : IAuthParameters
     {
         var queryParams = new Dictionary<string, string>
         {
-            {
-                "webhost",
-                BaseUrl
-            },
-            {
-                "service",
-                BaseUrl
-            },
-            {
-                "source",
-                SigninUrl
-            },
-            {
-                "redirectAfterAccountLoginUrl",
-                BaseUrl
-            },
-            {
-                "redirectAfterAccountCreationUrl",
-                BaseUrl
-            },
-            {
-                "gauthHost",
-                SsoUrl
-            },
-            {
-                "locale",
-                "en_US"
-            },
-            {
-                "id",
-                "gauth-widget"
-            },
-            {
-                "cssUrl",
-                "https://static.garmincdn.com/com.garmin.connect/ui/css/gauth-custom-v1.2-min.css"
-            },
-            {
-                "privacyStatementUrl",
-                "https://www.garmin.com/en-US/privacy/connect/"
-            },
-            {
-                "clientId",
-                "GarminConnect"
-            },
-            {
-                "rememberMeShown",
-                "true"
-            },
-            {
-                "rememberMeChecked",
-                "false"
-            },
-            {
-                "createAccountShown",
-                "true"
-            },
-            {
-                "openCreateAccount",
-                "false"
-            },
-            {
-                "displayNameShown",
-                "false"
-            },
-            {
-                "consumeServiceTicket",
-                "false"
-            },
-            {
-                "initialFocus",
-                "true"
-            },
-            {
-                "embedWidget",
-                "false"
-            },
-            {
-                "socialEnabled",
-                "false"
-            },
-            {
-                "generateExtraServiceTicket",
-                "false"
-            },
-            {
-                "generateTwoExtraServiceTickets",
-                "false"
-            },
-            {
-                "globalOptInShown",
-                "true"
-            },
-            {
-                "globalOptInChecked",
-                "false"
-            },
-            {
-                "mobile",
-                "false"
-            },
-            {
-                "connectLegalTerms",
-                "true"
-            },
-            {
-                "showTermsOfUse",
-                "false"
-            },
-            {
-                "showPrivacyPolicy",
-                "false"
-            },
-            {
-                "showConnectLegalAge",
-                "false"
-            },
-            {
-                "locationPromptShown",
-                "false"
-            },
-            {
-                "showPassword",
-                "false"
-            },
-            {
-                "useCustomHeader",
-                "false"
-            },
-            {
-                "mfaRequired",
-                "false"
-            },
-            {
-                "performMFACheck",
-                "false"
-            },
-            {
-                "rememberMyBrowserShown",
-                "false"
-            },
-            {
-                "rememberMyBrowserChecked",
-                "false"
-            }
+            { "id", "gauth-widget" },
+            { "embedWidget", "true" },
         };
 
         return queryParams;
