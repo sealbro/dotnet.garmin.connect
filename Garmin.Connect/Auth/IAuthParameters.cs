@@ -1,20 +1,18 @@
 using System.Collections.Generic;
+using Garmin.Connect.Auth.External;
 
 namespace Garmin.Connect.Auth;
 
 public interface IAuthParameters
 {
+    string UserAgent { get; }
+    string Domain { get; }
     string Cookies { get; set; }
-
-    bool NeedReLogin { get; }
+    string Csrf { get; set; }
 
     string BaseUrl { get; }
-
-    string SsoUrl { get; }
-
-    string SigninUrl { get; }
-
-    string ExchangeUrl { get; }
+    
+    ConsumerCredentials ConsumerCredentials { get; }
 
     IReadOnlyDictionary<string, string> GetHeaders();
 

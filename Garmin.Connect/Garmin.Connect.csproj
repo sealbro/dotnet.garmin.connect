@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -20,5 +20,9 @@
     <ItemGroup>
         <None Include="..\LICENSE" Pack="true" PackagePath="LICENSE" />
         <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="OAuth.DotNetCore" Version="3.0.1" />
     </ItemGroup>
 </Project>
