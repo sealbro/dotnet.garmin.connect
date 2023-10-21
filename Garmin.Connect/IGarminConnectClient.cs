@@ -41,6 +41,11 @@ public interface IGarminConnectClient
     Task<GarminHydrationData> GetHydrationData(DateTime date);
 
     /// <summary>
+    /// Fetch hrv summary data between specific dates
+    /// </summary>
+    Task<GarminHrvSummaries> GetHrvSummaries(DateTime startDate, DateTime endDate);
+
+    /// <summary>
     /// Fetch available body composition data (only for date)
     /// </summary>
     Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate);

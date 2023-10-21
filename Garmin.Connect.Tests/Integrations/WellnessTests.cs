@@ -65,4 +65,12 @@ public class WellnessTests
 
         Assert.NotNull(garminBodyComposition);
     }
+
+    [Fact]
+    public async Task GetHrvSummaries_NotNull()
+    {
+        var hrvSummary = await _garmin.GetHrvSummaries(_startDate, _endDate);
+
+        Assert.NotNull(hrvSummary);
+    }
 }

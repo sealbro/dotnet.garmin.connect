@@ -30,6 +30,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string DeviceListUrl = "/device-service/deviceregistration/devices";
     private const string DeviceServiceUrl = "/device-service/deviceservice/";
     private const string GearUrl = "/gear-service/gear/";
+    private const string HrvSummaryUrl = "/hrv-service/hrv/daily/";
 
     public GarminConnectClient(GarminConnectContext context)
     {
@@ -292,6 +293,14 @@ public partial class GarminConnectClient : IGarminConnectClient
         var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
 
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
+    }
+
+    public Task<GarminHrvSummaries> GetHrvSummaries(DateTime startDate, DateTime endDate)
+    {
+        var hrvUrl =
+            $"{HrvSummaryUrl}{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminHrvSummaries>(hrvUrl);
     }
 
     #endregion
