@@ -11,7 +11,6 @@ public partial class GarminConnectClient : IGarminConnectClient
     private readonly GarminConnectContext _context;
 
     private const string UserProfileUrl = "/userprofile-service/socialProfile";
-    private const string UserPreferencesUrl = "/userprofile-service/preferences";
     private const string UserSettingsUrl = "/userprofile-service/userprofile/user-settings";
     private const string UserSummaryUrl = "/usersummary-service/usersummary/daily/";
     private const string UserSummaryChartUrl = "/wellness-service/wellness/dailySummaryChart/";
