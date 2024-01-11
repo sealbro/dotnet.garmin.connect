@@ -9,20 +9,25 @@ jobs:
     environment: nuget
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    -
+      name: Checkout
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set env
+    -
+      name: Set env
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v1
+    -
+      name: Setup dotnet
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0.x'
-    - name: Build and pack package
+        dotnet-version: '8.0.x'
+    -
+      name: Build and pack package
       shell: bash
       run: ./pack.sh $RELEASE_VERSION
-    - name: Publish to nuget
+    -
+      name: Publish to nuget
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       shell: bash

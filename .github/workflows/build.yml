@@ -6,19 +6,22 @@ on:
     - main
   pull_request:
     branches:
-      - main
+    - main
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    -
+      name: Checkout
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v1
+    -
+      name: Setup dotnet
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0.x'
-    - name: Build and pack package
+        dotnet-version: '8.0.x'
+    -
+      name: Build and pack package
       shell: bash
       run: ./pack.sh
