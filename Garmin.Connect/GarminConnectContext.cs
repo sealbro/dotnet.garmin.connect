@@ -24,7 +24,6 @@ public class GarminConnectContext
     private const int DelayAfterFailAuth = 300;
     private readonly Regex _csrfRegex = new Regex(@"name=""_csrf""\s+value=""(\w+)""", RegexOptions.Compiled);
     private readonly Regex _responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
-    private string _tokenCached;
     private readonly GarminAuthenticationService _garminAuthenticationService;
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
@@ -49,6 +48,11 @@ public class GarminConnectContext
     public async Task<T> GetAndDeserialize<T>(string url)
     {
         var response = await MakeHttpGet(url);
+        if (response.StatusCode == HttpStatusCode.NoContent)
+        {
+            return default;
+        }
+        
         var json = await response.Content.ReadAsByteArrayAsync();
 
         // Console.WriteLine($"{url}\n{json}\n\n\n");
