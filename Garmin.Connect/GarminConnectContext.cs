@@ -1,10 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Garmin.Connect.Auth;
 using Garmin.Connect.Auth.External;
@@ -22,8 +21,6 @@ public class GarminConnectContext
 
     private const int Attempts = 3;
     private const int DelayAfterFailAuth = 300;
-    private readonly Regex _csrfRegex = new Regex(@"name=""_csrf""\s+value=""(\w+)""", RegexOptions.Compiled);
-    private readonly Regex _responseUrlRegex = new Regex(@"""(https:[^""]+?ticket=[^""]+)""", RegexOptions.Compiled);
     private readonly GarminAuthenticationService _garminAuthenticationService;
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
@@ -65,9 +62,13 @@ public class GarminConnectContext
         MakeHttpRequest(url, HttpMethod.Get);
 
     public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body) =>
-        MakeHttpRequest(url, HttpMethod.Put, JsonContent.Create(body));
+        MakeHttpRequest(url, HttpMethod.Put, content:JsonContent.Create(body));
+    
+    public Task<HttpResponseMessage> MakeHttpPost<TBody>(string url, TBody body) =>
+        MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string, string>{{"X-Http-Method-Override", "PUT"}},
+            JsonContent.Create(body));
 
-    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method, HttpContent content = null)
+    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method, IReadOnlyDictionary<string, string> headers = null, HttpContent content = null)
     {
         var force = false;
         Exception exception = null;
@@ -80,6 +81,15 @@ public class GarminConnectContext
 
                 var requestUri = new Uri($"{_authParameters.BaseUrl}{url}");
                 var httpRequestMessage = new HttpRequestMessage(method, requestUri);
+
+                if (headers != null)
+                {
+                    foreach (var (key, value) in headers)
+                    {
+                        httpRequestMessage.Headers.Add(key, value);
+                    }
+                }
+
                 httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
                 httpRequestMessage.Headers.Add("authorization", $"Bearer {_oAuth2Token.Access_Token}");
                 httpRequestMessage.Headers.Add("di-backend", "connectapi.garmin.com");
@@ -87,7 +97,7 @@ public class GarminConnectContext
 
                 var response = await _httpClient.SendAsync(httpRequestMessage);
 
-                RaiseForStatus(response);
+                await RaiseForStatus(response);
 
                 return response;
             }
@@ -109,7 +119,7 @@ public class GarminConnectContext
         throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
 
-    private static void RaiseForStatus(HttpResponseMessage response)
+    private static async Task RaiseForStatus(HttpResponseMessage response)
     {
         switch (response.StatusCode)
         {
@@ -120,27 +130,10 @@ public class GarminConnectContext
                 return;
             default:
             {
-                var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}";
+                var content = await response.Content.ReadAsStringAsync();
+                var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}\n{content}";
                 throw new GarminConnectRequestException(message, response.StatusCode);
             }
         }
-    }
-
-    private static TModel ParseJson<TModel>(string html, string key)
-    {
-        var dataRegex = new Regex($@"window\.{key} = (.*);", RegexOptions.Compiled);
-        var dataMatch = dataRegex.Match(html);
-
-        if (dataMatch.Success)
-        {
-            var json = dataMatch.Groups[1].Value.Replace("\\\"", "\"");
-            var model = JsonSerializer.Deserialize<TModel>(json);
-            if (model != null)
-            {
-                return model;
-            }
-        }
-
-        throw new GarminConnectUnexpectedException(key);
     }
 }
