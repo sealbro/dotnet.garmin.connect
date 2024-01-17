@@ -166,4 +166,9 @@ public interface IGarminConnectClient
     /// (used for changing workout)
     /// </summary>
     Task<GarminWorkoutTypes> GetWorkoutTypes();
+
+    /// <summary>
+    /// Schedule workout for specific date
+    /// </summary>
+    Task ScheduleWorkout(long workoutId, DateOnly date);
 }

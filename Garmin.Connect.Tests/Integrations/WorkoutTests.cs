@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Parameters;
@@ -67,5 +68,16 @@ public class WorkoutTests
         workout = await _garmin.GetWorkout(workoutId);
 
         Assert.Equal(originalWorkoutStep.EndConditionValue, workout.WorkoutSegments.First().WorkoutSteps.First().EndConditionValue);
+    }
+    
+    [Fact]
+    public async Task ScheduleWorkout()
+    {
+        var workouts = await _garmin.GetWorkouts(new WorkoutsParameters { OrderSeq = OrderSeq.ASC,Limit = 5 });
+        
+        Assert.NotEmpty(workouts);
+
+        var workout = workouts.First();
+        await _garmin.ScheduleWorkout(workout.WorkoutId, DateOnly.FromDateTime(workout.CreatedDate));
     }
 }

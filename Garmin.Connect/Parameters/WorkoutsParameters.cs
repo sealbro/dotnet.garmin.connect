@@ -18,11 +18,11 @@ public enum WorkoutsOrderBy
     WORKOUT_NAME,
     UPDATE_DATE,
     CREATED_DATE,
-    WORKOUT_SPORT_PK,
+    WORKOUT_SPORT_PK
 }
 
 public enum OrderSeq
 {
     ASC,
-    DESC,
+    DESC
 }

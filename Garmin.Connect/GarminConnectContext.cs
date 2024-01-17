@@ -61,14 +61,16 @@ public class GarminConnectContext
     public Task<HttpResponseMessage> MakeHttpGet(string url) =>
         MakeHttpRequest(url, HttpMethod.Get);
 
-    public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body) =>
-        MakeHttpRequest(url, HttpMethod.Put, content:JsonContent.Create(body));
-    
-    public Task<HttpResponseMessage> MakeHttpPost<TBody>(string url, TBody body) =>
-        MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string, string>{{"X-Http-Method-Override", "PUT"}},
-            JsonContent.Create(body));
+    public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body,
+        IReadOnlyDictionary<string, string> headers = null) =>
+        MakeHttpRequest(url, HttpMethod.Put, headers, JsonContent.Create(body));
 
-    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method, IReadOnlyDictionary<string, string> headers = null, HttpContent content = null)
+    public Task<HttpResponseMessage> MakeHttpPost<TBody>(string url, TBody body,
+        IReadOnlyDictionary<string, string> headers = null) =>
+        MakeHttpRequest(url, HttpMethod.Post, headers, JsonContent.Create(body));
+
+    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
+        IReadOnlyDictionary<string, string> headers = null, HttpContent content = null)
     {
         var force = false;
         Exception exception = null;

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
-using Garmin.Connect.Models.Internal;
 using Garmin.Connect.Parameters;
 
 namespace Garmin.Connect;
 
-public partial class GarminConnectClient
+public partial class GarminConnectClient: IGarminConnectClient
 {
     private readonly GarminConnectContext _context;
 
@@ -32,6 +31,7 @@ public partial class GarminConnectClient
     private const string DeviceServiceUrl = "/device-service/deviceservice/";
     private const string GearUrl = "/gear-service/gear/";
     private const string WorkoutUrl = "/workout-service/workout/";
+    private const string WorkoutScheduleUrl = "/workout-service/schedule/";
     private const string WorkoutsUrl = "/workout-service/workouts";
 
     public GarminConnectClient(GarminConnectContext context)
@@ -320,18 +320,6 @@ public partial class GarminConnectClient
         var workoutsUrl = $"{WorkoutsUrl}?{parameters.ToQueryParams()}";
 
         return _context.GetAndDeserialize<GarminWorkout[]>(workoutsUrl);
-    }
-
-    public Task UpdateWorkout(GarminWorkout workout)
-    {
-        if (workout.WorkoutId == 0)
-        {
-            throw new ArgumentException("WorkoutId must be from existing workout");
-        }
-        
-        var workoutUrl = $"{WorkoutUrl}{workout.WorkoutId}";
-        
-        return _context.MakeHttpPost(workoutUrl, GarminUpdateWorkout.From(workout));
     }
 
     #endregion
