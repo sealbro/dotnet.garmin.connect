@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
 using Garmin.Connect.Parameters;
 
 namespace Garmin.Connect;
 
-public partial class GarminConnectClient: IGarminConnectClient
+public partial class GarminConnectClient : IGarminConnectClient
 {
     private readonly GarminConnectContext _context;
 
@@ -41,15 +42,15 @@ public partial class GarminConnectClient: IGarminConnectClient
 
     #region Activities
 
-    public Task<GarminActivity[]> GetActivities(int start, int limit)
+    public Task<GarminActivity[]> GetActivities(int start, int limit, CancellationToken cancellationToken = default)
     {
         var activitiesUrl = $"{ActivitiesUrl}?start={start}&limit={limit}";
 
-        return _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl);
+        return _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl, cancellationToken);
     }
 
     public async Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate,
-        string activityType)
+        string activityType, CancellationToken cancellationToken = default)
     {
         string activitySlug;
 
@@ -75,7 +76,7 @@ public partial class GarminConnectClient: IGarminConnectClient
             var activitiesUrl =
                 $"{ActivitiesUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
 
-            var activities = await _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl);
+            var activities = await _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl, cancellationToken);
 
             if (activities.Any())
             {
@@ -91,51 +92,56 @@ public partial class GarminConnectClient: IGarminConnectClient
         return result.ToArray();
     }
 
-    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId)
+    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId,
+        CancellationToken cancellationToken = default)
     {
         var exerciseSetsUrl = $"{ActivityUrl}{activityId}";
 
-        return _context.GetAndDeserialize<GarminExerciseSets>(exerciseSetsUrl);
+        return _context.GetAndDeserialize<GarminExerciseSets>(exerciseSetsUrl, cancellationToken);
     }
 
-    public Task<GarminActivitySplits> GetActivitySplits(long activityId)
+    public Task<GarminActivitySplits> GetActivitySplits(long activityId, CancellationToken cancellationToken = default)
     {
         var splitsUrl = $"{ActivityUrl}{activityId}/splits";
 
-        return _context.GetAndDeserialize<GarminActivitySplits>(splitsUrl);
+        return _context.GetAndDeserialize<GarminActivitySplits>(splitsUrl, cancellationToken);
     }
 
-    public Task<GarminSplitSummary> GetActivitySplitSummaries(long activityId)
+    public Task<GarminSplitSummary> GetActivitySplitSummaries(long activityId,
+        CancellationToken cancellationToken = default)
     {
         var splitSummariesUrl = $"{ActivityUrl}{activityId}/split_summaries";
 
-        return _context.GetAndDeserialize<GarminSplitSummary>(splitSummariesUrl);
+        return _context.GetAndDeserialize<GarminSplitSummary>(splitSummariesUrl, cancellationToken);
     }
 
-    public Task<GarminActivityWeather> GetActivityWeather(long activityId)
+    public Task<GarminActivityWeather> GetActivityWeather(long activityId,
+        CancellationToken cancellationToken = default)
     {
         var activityWeatherUrl = $"{ActivityUrl}{activityId}/weather";
 
-        return _context.GetAndDeserialize<GarminActivityWeather>(activityWeatherUrl);
+        return _context.GetAndDeserialize<GarminActivityWeather>(activityWeatherUrl, cancellationToken);
     }
 
-    public Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(long activityId)
+    public Task<GarminHrTimeInZones[]> GetActivityHrInTimezones(long activityId,
+        CancellationToken cancellationToken = default)
     {
         var activityHrTimezoneUrl = $"{ActivityUrl}{activityId}/hrTimeInZones";
 
-        return _context.GetAndDeserialize<GarminHrTimeInZones[]>(activityHrTimezoneUrl);
+        return _context.GetAndDeserialize<GarminHrTimeInZones[]>(activityHrTimezoneUrl, cancellationToken);
     }
 
     public Task<GarminActivityDetails> GetActivityDetails(long activityId, int maxChartSize,
-        int maxPolylineSize = 4000)
+        int maxPolylineSize = 4000, CancellationToken cancellationToken = default)
     {
         var queryParams = $"maxChartSize={maxChartSize}&maxPolylineSize={maxPolylineSize}";
         var detailsUrl = $"{ActivityUrl}{activityId}/details?{queryParams}";
 
-        return _context.GetAndDeserialize<GarminActivityDetails>(detailsUrl);
+        return _context.GetAndDeserialize<GarminActivityDetails>(detailsUrl, cancellationToken);
     }
 
-    public async Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format)
+    public async Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format,
+        CancellationToken cancellationToken = default)
     {
         var urls = new Dictionary<ActivityDownloadFormat, string>
         {
@@ -167,159 +173,164 @@ public partial class GarminConnectClient: IGarminConnectClient
 
         var url = urls[format];
 
-        var response = await _context.MakeHttpGet(url);
+        var response = await _context.MakeHttpGet(url, cancellationToken: cancellationToken);
 
-        return await response.Content.ReadAsByteArrayAsync();
+        return await response.Content.ReadAsByteArrayAsync(cancellationToken);
     }
 
     #endregion
 
     #region Device
 
-    public Task<GarminDevice[]> GetDevices()
+    public Task<GarminDevice[]> GetDevices(CancellationToken cancellationToken = default)
     {
-        return _context.GetAndDeserialize<GarminDevice[]>(DeviceListUrl);
+        return _context.GetAndDeserialize<GarminDevice[]>(DeviceListUrl, cancellationToken);
     }
 
-    public Task<GarminDeviceSettings> GetDeviceSettings(long deviceId)
+    public Task<GarminDeviceSettings> GetDeviceSettings(long deviceId, CancellationToken cancellationToken = default)
     {
         var devicesUrl = $"{DeviceServiceUrl}device-info/settings/{deviceId}";
 
-        return _context.GetAndDeserialize<GarminDeviceSettings>(devicesUrl);
+        return _context.GetAndDeserialize<GarminDeviceSettings>(devicesUrl, cancellationToken);
     }
 
-    public Task<GarminDeviceLastUsed> GetDeviceLastUsed()
+    public Task<GarminDeviceLastUsed> GetDeviceLastUsed(CancellationToken cancellationToken = default)
     {
         const string deviceLastUsedUrl = $"{DeviceServiceUrl}mylastused";
 
-        return _context.GetAndDeserialize<GarminDeviceLastUsed>(deviceLastUsedUrl);
+        return _context.GetAndDeserialize<GarminDeviceLastUsed>(deviceLastUsedUrl, cancellationToken);
     }
 
     #endregion
 
     #region MyRegion
 
-    public Task<GarminGearType[]> GetGearTypes()
+    public Task<GarminGearType[]> GetGearTypes(CancellationToken cancellationToken = default)
     {
         const string gearTypesUrl = $"{GearUrl}types";
 
-        return _context.GetAndDeserialize<GarminGearType[]>(gearTypesUrl);
+        return _context.GetAndDeserialize<GarminGearType[]>(gearTypesUrl, cancellationToken);
     }
 
-    public Task<GarminGear[]> GetUserGears(long userId)
+    public Task<GarminGear[]> GetUserGears(long userId, CancellationToken cancellationToken = default)
     {
         string userGearsUrl = $"{GearUrl}filterGear?userProfilePk={userId}";
 
-        return _context.GetAndDeserialize<GarminGear[]>(userGearsUrl);
+        return _context.GetAndDeserialize<GarminGear[]>(userGearsUrl, cancellationToken);
     }
 
-    public Task<GarminGear[]> GetActivityGears(long activityId)
+    public Task<GarminGear[]> GetActivityGears(long activityId, CancellationToken cancellationToken = default)
     {
         string activityGearsUrl = $"{GearUrl}filterGear?activityId={activityId}";
 
-        return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl);
+        return _context.GetAndDeserialize<GarminGear[]>(activityGearsUrl, cancellationToken);
     }
 
     #endregion
 
     #region Owner
 
-    public async Task<GarminSocialProfile> GetSocialProfile()
+    public async Task<GarminSocialProfile> GetSocialProfile(CancellationToken cancellationToken = default)
     {
         if (_context.Profile is null)
         {
-            _context.Profile = await _context.GetAndDeserialize<GarminSocialProfile>(UserProfileUrl);
+            _context.Profile = await _context.GetAndDeserialize<GarminSocialProfile>(UserProfileUrl, cancellationToken);
         }
 
         return _context.Profile;
     }
 
-    public Task<GarminUserSettings> GetUserSettings()
+    public Task<GarminUserSettings> GetUserSettings(CancellationToken cancellationToken = default)
     {
-        return _context.GetAndDeserialize<GarminUserSettings>(UserSettingsUrl);
+        return _context.GetAndDeserialize<GarminUserSettings>(UserSettingsUrl, cancellationToken);
     }
 
-    public Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName)
+    public Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName,
+        CancellationToken cancellationToken = default)
     {
         var personalRecordsUrl = $"{PersonalRecordUrl}prs/{ownerDisplayName}";
 
-        return _context.GetAndDeserialize<GarminPersonalRecord[]>(personalRecordsUrl);
+        return _context.GetAndDeserialize<GarminPersonalRecord[]>(personalRecordsUrl, cancellationToken);
     }
 
     #endregion
 
     #region Wellness
 
-    public async Task<GarminStepsData[]> GetWellnessStepsData(DateTime date)
+    public async Task<GarminStepsData[]> GetWellnessStepsData(DateTime date,
+        CancellationToken cancellationToken = default)
     {
         var profile = await GetSocialProfile();
 
         return await _context.GetAndDeserialize<GarminStepsData[]>(
-            $"{UserSummaryChartUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+            $"{UserSummaryChartUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);
     }
 
-    public async Task<GarminStats> GetUserSummary(DateTime date)
+    public async Task<GarminStats> GetUserSummary(DateTime date, CancellationToken cancellationToken = default)
     {
         var profile = await GetSocialProfile();
 
         return await _context.GetAndDeserialize<GarminStats>(
-            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyy-MM-dd}");
+            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyy-MM-dd}", cancellationToken);
     }
 
-    public async Task<GarminHr> GetWellnessHeartRates(DateTime date)
+    public async Task<GarminHr> GetWellnessHeartRates(DateTime date, CancellationToken cancellationToken = default)
     {
         var profile = await GetSocialProfile();
 
         return await _context.GetAndDeserialize<GarminHr>(
-            $"{HeartRatesUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+            $"{HeartRatesUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);
     }
 
-    public async Task<GarminSleepData> GetWellnessSleepData(DateTime date)
+    public async Task<GarminSleepData> GetWellnessSleepData(DateTime date,
+        CancellationToken cancellationToken = default)
     {
         var profile = await GetSocialProfile();
 
         return await _context.GetAndDeserialize<GarminSleepData>(
-            $"{SleepDataUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}");
+            $"{SleepDataUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);
     }
 
-    public Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate)
+    public Task<GarminBodyComposition> GetBodyComposition(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
     {
         var bodyCompositionUrl =
             $"{BodyCompositionUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
 
-        return _context.GetAndDeserialize<GarminBodyComposition>(bodyCompositionUrl);
+        return _context.GetAndDeserialize<GarminBodyComposition>(bodyCompositionUrl, cancellationToken);
     }
 
-    public Task<GarminHydrationData> GetHydrationData(DateTime date)
+    public Task<GarminHydrationData> GetHydrationData(DateTime date, CancellationToken cancellationToken = default)
     {
         var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
 
-        return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl);
+        return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
     }
 
     #endregion
 
     #region Workouts
 
-    public Task<GarminWorkout> GetWorkout(long workoutId)
+    public Task<GarminWorkout> GetWorkout(long workoutId, CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutUrl}{workoutId}";
 
-        return _context.GetAndDeserialize<GarminWorkout>(workoutUrl);
+        return _context.GetAndDeserialize<GarminWorkout>(workoutUrl, cancellationToken);
     }
-    
-    public Task<GarminWorkoutTypes> GetWorkoutTypes()
+
+    public Task<GarminWorkoutTypes> GetWorkoutTypes(CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutUrl}types";
 
-        return _context.GetAndDeserialize<GarminWorkoutTypes>(workoutUrl);
+        return _context.GetAndDeserialize<GarminWorkoutTypes>(workoutUrl, cancellationToken);
     }
 
-    public Task<GarminWorkout[]> GetWorkouts(WorkoutsParameters parameters)
+    public Task<GarminWorkout[]> GetWorkouts(WorkoutsParameters parameters,
+        CancellationToken cancellationToken = default)
     {
         var workoutsUrl = $"{WorkoutsUrl}?{parameters.ToQueryParams()}";
 
-        return _context.GetAndDeserialize<GarminWorkout[]>(workoutsUrl);
+        return _context.GetAndDeserialize<GarminWorkout[]>(workoutsUrl, cancellationToken);
     }
 
     #endregion

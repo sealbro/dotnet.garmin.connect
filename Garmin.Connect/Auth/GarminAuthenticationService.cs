@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Garmin.Connect.Auth.External;
@@ -28,18 +29,18 @@ internal class GarminAuthenticationService
         _httpClient = httpClient;
     }
 
-    public async Task<OAuth2Token> RefreshGarminAuthenticationAsync()
+    public async Task<OAuth2Token> RefreshGarminAuthenticationAsync(CancellationToken cancellationToken)
     {
-        _authParameters.Cookies = await RequestCookies();
-        _authParameters.Csrf = await RequestCsrfToken();
+        _authParameters.Cookies = await RequestCookies(cancellationToken);
+        _authParameters.Csrf = await RequestCsrfToken(cancellationToken);
 
-        var ticket = await GetOAuthTicket();
-        var consumerCredentials = _authParameters.ConsumerCredentials ?? await GetConsumerCredentials();
-        var auth1Token = await GetOAuth1Token(ticket, consumerCredentials);
+        var ticket = await GetOAuthTicket(cancellationToken);
+        var consumerCredentials = _authParameters.ConsumerCredentials ?? await GetConsumerCredentials(cancellationToken);
+        var auth1Token = await GetOAuth1Token(ticket, consumerCredentials, cancellationToken);
 
         try
         {
-            return await GetOAuth2TokenAsync(auth1Token, consumerCredentials);
+            return await GetOAuth2TokenAsync(auth1Token, consumerCredentials, cancellationToken);
         }
         catch (Exception e)
         {
@@ -48,7 +49,7 @@ internal class GarminAuthenticationService
         }
     }
 
-    private async Task<ConsumerCredentials> GetConsumerCredentials()
+    private async Task<ConsumerCredentials> GetConsumerCredentials(CancellationToken cancellationToken)
     {
         var oauthConsumerUrl = Environment.GetEnvironmentVariable("OAUTH_CONSUMER_URL");
         if (string.IsNullOrWhiteSpace(oauthConsumerUrl))
@@ -57,14 +58,14 @@ internal class GarminAuthenticationService
         }
         
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthConsumerUrl);
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
-        var content = await responseMessage.Content.ReadAsStringAsync();
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+        var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         
         return JsonSerializer.Deserialize<ConsumerCredentials>(content);
     }
 
 
-    private async Task<string> RequestCookies()
+    private async Task<string> RequestCookies(CancellationToken cancellationToken)
     {
         var queryEmbed = HttpUtility.ParseQueryString(string.Empty);
         foreach (var kv in _authParameters.GetQueryParameters())
@@ -82,7 +83,7 @@ internal class GarminAuthenticationService
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
         }
 
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new GarminConnectAuthenticationException("Failed to fetch cookies from Garmin.")
@@ -104,7 +105,7 @@ internal class GarminAuthenticationService
         return cookies;
     }
 
-    private async Task<string> RequestCsrfToken()
+    private async Task<string> RequestCsrfToken(CancellationToken cancellationToken)
     {
         var parameters = new Dictionary<string, string>(_authParameters.GetQueryParameters());
         parameters.Add("gauthHost", EmbedUrl);
@@ -126,13 +127,13 @@ internal class GarminAuthenticationService
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
         }
 
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new GarminConnectAuthenticationException("Failed to fetch csrf token from Garmin.")
                 { Code = Code.CsrfTokenNotFound };
 
-        var content = await responseMessage.Content.ReadAsStringAsync();
+        var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         var regexCsrf = new Regex("name=\"_csrf\"\\s+value=\"(.+?)\"",
             RegexOptions.Compiled | RegexOptions.Multiline);
 
@@ -153,7 +154,7 @@ internal class GarminAuthenticationService
     }
 
 
-    private async Task<string> GetOAuthTicket()
+    private async Task<string> GetOAuthTicket(CancellationToken cancellationToken)
     {
         var parameters = new Dictionary<string, string>(_authParameters.GetQueryParameters());
         parameters.Add("gauthHost", EmbedUrl);
@@ -179,8 +180,8 @@ internal class GarminAuthenticationService
         httpRequestMessage.Headers.Add("NK", "NT");
         httpRequestMessage.Content = new FormUrlEncodedContent(_authParameters.GetFormParameters());
 
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
-        var content = await responseMessage.Content.ReadAsStringAsync();
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+        var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
 
         if (responseMessage.StatusCode == HttpStatusCode.Forbidden && content == "error code: 1020")
@@ -203,7 +204,8 @@ internal class GarminAuthenticationService
         return ticket;
     }
 
-    private async Task<OAuth1Token> GetOAuth1Token(string ticket, ConsumerCredentials credentials)
+    private async Task<OAuth1Token> GetOAuth1Token(string ticket, ConsumerCredentials credentials,
+        CancellationToken cancellationToken)
     {
         string oauth1Response;
         try
@@ -216,9 +218,9 @@ internal class GarminAuthenticationService
             httpRequestMessage.Headers.Add("User-Agent", _authParameters.UserAgent);
             httpRequestMessage.Headers.Add("Authorization", oauthClient.GetAuthorizationHeader());
 
-            var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
+            var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-            oauth1Response = await responseMessage.Content.ReadAsStringAsync();
+            oauth1Response = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
         catch (Exception e)
         {
@@ -254,7 +256,8 @@ internal class GarminAuthenticationService
     }
 
 
-    private async Task<OAuth2Token> GetOAuth2TokenAsync(OAuth1Token oAuth1Token, ConsumerCredentials credentials)
+    private async Task<OAuth2Token> GetOAuth2TokenAsync(OAuth1Token oAuth1Token, ConsumerCredentials credentials,
+        CancellationToken cancellationToken)
     {
         var oauth2Client = OAuthRequest.ForProtectedResource("POST", credentials.Consumer_Key,
             credentials.Consumer_Secret, oAuth1Token.Token, oAuth1Token.TokenSecret);
@@ -265,9 +268,9 @@ internal class GarminAuthenticationService
         httpRequestMessage.Headers.Add("Authorization", oauth2Client.GetAuthorizationHeader());
 
         httpRequestMessage.Content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>() });
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage);
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-        var content = await responseMessage.Content.ReadAsStringAsync();
+        var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         return JsonSerializer.Deserialize<OAuth2Token>(content);
     }
 }
