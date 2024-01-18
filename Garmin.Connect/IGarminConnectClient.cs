@@ -39,6 +39,11 @@ public interface IGarminConnectClient
     Task<GarminStepsData[]> GetWellnessStepsData(DateTime date, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Fetch hrv summary data between specific dates
+    /// </summary>
+    Task<GarminReportHrvStatus> GetReportHrvStatus(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Fetch available hydration data
     /// </summary>
     Task<GarminHydrationData> GetHydrationData(DateTime date, CancellationToken cancellationToken = default);
