@@ -40,7 +40,7 @@ public class OwnerTests
         Assert.NotNull(userSettings);
     }
 
-    [Fact(Skip = "Not for CI only for self test")]
+    [Fact]
     public async Task SetUserWeight()
     {
         var userSettingsOriginal = await _garmin.GetUserSettings();

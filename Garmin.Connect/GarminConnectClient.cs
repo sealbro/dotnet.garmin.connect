@@ -34,6 +34,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string WorkoutUrl = "/workout-service/workout/";
     private const string WorkoutScheduleUrl = "/workout-service/schedule/";
     private const string WorkoutsUrl = "/workout-service/workouts";
+    private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
 
     public GarminConnectClient(GarminConnectContext context)
     {
@@ -331,6 +332,19 @@ public partial class GarminConnectClient : IGarminConnectClient
         var workoutsUrl = $"{WorkoutsUrl}?{parameters.ToQueryParams()}";
 
         return _context.GetAndDeserialize<GarminWorkout[]>(workoutsUrl, cancellationToken);
+    }
+
+    #endregion
+
+    #region Reports
+
+    public Task<GarminReportHrvStatus> GetReportHrvStatus(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
+    {
+        var hrvUrl =
+            $"{ReportHrvStatusUrl}{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminReportHrvStatus>(hrvUrl, cancellationToken);
     }
 
     #endregion

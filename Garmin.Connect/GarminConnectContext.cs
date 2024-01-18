@@ -53,9 +53,6 @@ public class GarminConnectContext
 
         var json = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
-        // Console.WriteLine($"{url}\n{json}\n\n\n");
-        // return default;
-
         return GarminSerializer.To<T>(json);
     }
 
