@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using Garmin.Connect.Models;
+using Garmin.Connect.Parameters;
 
 namespace Garmin.Connect;
 
@@ -144,4 +145,30 @@ public interface IGarminConnectClient
     /// Null values set default time.
     /// </summary>
     Task SetUserSleepTimes(long? sleepTime, long? wakeTime);
+
+    /// <summary>
+    /// [Experimental] Update workout from exists.
+    /// </summary>
+    Task UpdateWorkout(GarminWorkout workout);
+
+    /// <summary>
+    /// Fetch specific workout by id
+    /// </summary>
+    Task<GarminWorkout> GetWorkout(long workoutId);
+
+    /// <summary>
+    /// Fetch available workouts by parameters
+    /// </summary>
+    Task<GarminWorkout[]> GetWorkouts(WorkoutsParameters parameters);
+
+    /// <summary>
+    /// Fetch available workout types
+    /// (used for changing workout)
+    /// </summary>
+    Task<GarminWorkoutTypes> GetWorkoutTypes();
+
+    /// <summary>
+    /// Schedule workout for specific date
+    /// </summary>
+    Task ScheduleWorkout(long workoutId, DateOnly date);
 }

@@ -10,8 +10,8 @@ namespace Garmin.Connect.Converters;
 internal class DateTimeConverter : JsonConverter<DateTime>
 {
     private const string Format = "yyyy-MM-dd HH:mm:ss";
-    private const string Format2nd = "yyyy-MM-dd\\THH:mm:ss.f";
-    private readonly static string[] Formats = new string[] { Format, Format2nd };
+    private const string Format2 = "yyyy-MM-dd\\THH:mm:ss.f";
+    private static readonly string[] Formats = [Format2, Format];
 
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -19,7 +19,7 @@ internal class DateTimeConverter : JsonConverter<DateTime>
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        => writer.WriteStringValue(value.ToUniversalTime().ToString(Format));
+        => writer.WriteStringValue(value.ToUniversalTime().ToString(Format2));
 
     private static string GetRawString(Utf8JsonReader reader)
     {
