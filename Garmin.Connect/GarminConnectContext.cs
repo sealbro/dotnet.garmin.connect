@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Garmin.Connect.Auth;
 using Garmin.Connect.Auth.External;
@@ -30,11 +31,11 @@ public class GarminConnectContext
         _garminAuthenticationService = new GarminAuthenticationService(_httpClient, authParameters);
     }
 
-    public async Task ReLoginIfExpired(bool force = false)
+    public async Task ReLoginIfExpired(bool force = false, CancellationToken cancellationToken = default)
     {
         if (force || _oAuth2Token is null)
         {
-            var oAuth2Token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync();
+            var oAuth2Token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
 
             _oAuth2Token = oAuth2Token;
         }
@@ -42,15 +43,15 @@ public class GarminConnectContext
 
     internal GarminSocialProfile Profile { get; set; }
 
-    public async Task<T> GetAndDeserialize<T>(string url)
+    public async Task<T> GetAndDeserialize<T>(string url, CancellationToken cancellationToken = default)
     {
-        var response = await MakeHttpGet(url);
+        var response = await MakeHttpGet(url, cancellationToken: cancellationToken);
         if (response.StatusCode == HttpStatusCode.NoContent)
         {
             return default;
         }
-        
-        var json = await response.Content.ReadAsByteArrayAsync();
+
+        var json = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
         // Console.WriteLine($"{url}\n{json}\n\n\n");
         // return default;
@@ -58,19 +59,20 @@ public class GarminConnectContext
         return GarminSerializer.To<T>(json);
     }
 
-    public Task<HttpResponseMessage> MakeHttpGet(string url) =>
-        MakeHttpRequest(url, HttpMethod.Get);
+    public Task<HttpResponseMessage> MakeHttpGet(string url,
+        IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
+        MakeHttpRequest(url, HttpMethod.Get, headers, null, cancellationToken);
 
     public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body,
-        IReadOnlyDictionary<string, string> headers = null) =>
-        MakeHttpRequest(url, HttpMethod.Put, headers, JsonContent.Create(body));
+        IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
+        MakeHttpRequest(url, HttpMethod.Put, headers, JsonContent.Create(body), cancellationToken);
 
     public Task<HttpResponseMessage> MakeHttpPost<TBody>(string url, TBody body,
-        IReadOnlyDictionary<string, string> headers = null) =>
-        MakeHttpRequest(url, HttpMethod.Post, headers, JsonContent.Create(body));
+        IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
+        MakeHttpRequest(url, HttpMethod.Post, headers, JsonContent.Create(body), cancellationToken);
 
     private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
-        IReadOnlyDictionary<string, string> headers = null, HttpContent content = null)
+        IReadOnlyDictionary<string, string> headers, HttpContent content, CancellationToken cancellationToken)
     {
         var force = false;
         Exception exception = null;
@@ -79,7 +81,7 @@ public class GarminConnectContext
         {
             try
             {
-                await ReLoginIfExpired(force);
+                await ReLoginIfExpired(force, cancellationToken);
 
                 var requestUri = new Uri($"{_authParameters.BaseUrl}{url}");
                 var httpRequestMessage = new HttpRequestMessage(method, requestUri);
@@ -97,9 +99,9 @@ public class GarminConnectContext
                 httpRequestMessage.Headers.Add("di-backend", "connectapi.garmin.com");
                 httpRequestMessage.Content = content;
 
-                var response = await _httpClient.SendAsync(httpRequestMessage);
+                var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-                await RaiseForStatus(response);
+                await RaiseForStatus(response, cancellationToken);
 
                 return response;
             }
@@ -108,7 +110,7 @@ public class GarminConnectContext
                 exception = ex;
                 if (ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
                 {
-                    await Task.Delay(DelayAfterFailAuth);
+                    await Task.Delay(DelayAfterFailAuth, cancellationToken);
                     force = true;
                     continue;
                 }
@@ -121,7 +123,7 @@ public class GarminConnectContext
         throw new GarminConnectAuthenticationException($"Authentication fail after {Attempts} attempts", exception);
     }
 
-    private static async Task RaiseForStatus(HttpResponseMessage response)
+    private static async Task RaiseForStatus(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         switch (response.StatusCode)
         {
@@ -132,8 +134,9 @@ public class GarminConnectContext
                 return;
             default:
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}\n{content}";
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var message =
+                    $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}\n{content}";
                 throw new GarminConnectRequestException(message, response.StatusCode);
             }
         }
