@@ -20,7 +20,7 @@ public class ActivitiesTests
     }
 
     [Fact]
-    public async Task GetActivities_NotNull()
+    public async Task GetActivities_NotEmpty()
     {
         var garminActivities = await _lazyActivities.Value;
 
@@ -29,7 +29,7 @@ public class ActivitiesTests
     }
 
     [Fact]
-    public async Task GetActivitiesByDate_NotNull()
+    public async Task GetActivitiesByDate_NotEmpty()
     {
         var activitiesByDate =
             await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "running");
@@ -51,18 +51,18 @@ public class ActivitiesTests
     }
 
     [Fact]
-    public async Task GetActivityExerciseSets_NotNull()
+    public async Task GetActivityExerciseSets_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminExerciseSets = await _garmin.GetActivityExerciseSets(activityId);
 
-        Assert.NotNull(garminExerciseSets);
+        Assert.NotEqual(0,garminExerciseSets.ActivityId);
     }
 
     [Fact]
-    public async Task GetActivityHrInTimezones_NotNull()
+    public async Task GetActivityHrInTimezones_NotEmpty()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
@@ -70,49 +70,52 @@ public class ActivitiesTests
         var garminHrTimeInZonesArray = await _garmin.GetActivityHrInTimezones(activityId);
 
         Assert.NotNull(garminHrTimeInZonesArray);
+        Assert.NotEmpty(garminHrTimeInZonesArray);
     }
 
     [Fact]
-    public async Task GetActivitySplits_NotNull()
+    public async Task GetActivitySplits_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminActivitySplits = await _garmin.GetActivitySplits(activityId);
 
-        Assert.NotNull(garminActivitySplits);
+        Assert.NotEqual(0, garminActivitySplits.ActivityId);
     }
 
     [Fact]
-    public async Task GetActivityWeather_NotNull()
+    public async Task GetActivityWeather_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminActivityWeather = await _garmin.GetActivityWeather(activityId);
 
-        Assert.NotNull(garminActivityWeather);
+        DateTime defaultDt = default;
+
+        Assert.NotEqual(defaultDt, garminActivityWeather.IssueDate);
     }
 
     [Fact]
-    public async Task GetActivityDetails_NotNull()
+    public async Task GetActivityDetails_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminActivityDetails = await _garmin.GetActivityDetails(activityId, 50, 50);
 
-        Assert.NotNull(garminActivityDetails);
+        Assert.NotEmpty(garminActivityDetails.ActivityDetailMetrics);
     }
 
     [Fact]
-    public async Task GetActivitySplitSummaries_NotNull()
+    public async Task GetActivitySplitSummaries_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var activitySplitSummaries = await _garmin.GetActivitySplitSummaries(activityId);
 
-        Assert.NotNull(activitySplitSummaries);
+        Assert.NotEmpty(activitySplitSummaries.SplitSummaries);
     }
 }

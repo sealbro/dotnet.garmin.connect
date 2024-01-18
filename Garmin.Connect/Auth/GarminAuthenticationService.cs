@@ -183,10 +183,19 @@ internal class GarminAuthenticationService
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
+        if (responseMessage.StatusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.Forbidden)
+        {
+            content = content switch
+            {
+                "error code: 1015" => "temporary blocked by Garmin",
+                "error code: 1020" => "temporary blocked by CloudFlare",
+                _ => content
+            };
 
-        if (responseMessage.StatusCode == HttpStatusCode.Forbidden && content == "error code: 1020")
-            throw new GarminConnectAuthenticationException("Garmin Authentication Failed. Blocked by CloudFlare.")
+            throw new GarminConnectAuthenticationException(
+                    $"Garmin Authentication Failed. {responseMessage.StatusCode}: {content}")
                 { Code = Code.OAuth1TicketNotFound };
+        }
 
         var regexTicket = new Regex(@"embed\?ticket=([^""]+)""", RegexOptions.Compiled | RegexOptions.Multiline);
         var match = regexTicket.Match(content);
