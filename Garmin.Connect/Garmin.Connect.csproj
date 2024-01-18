@@ -9,6 +9,7 @@
         <PackageId>Unofficial.Garmin.Connect</PackageId>
         <PackageIcon>packageIcon.png</PackageIcon>
         <PackageIconFullPath>$(MSBuildThisFileDirectory)packageIcon.png</PackageIconFullPath>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Authors>Seal Bro</Authors>
         <Company>Not a company</Company>
         <PackageDescription>Unofficial garmin connect client</PackageDescription>
@@ -19,6 +20,7 @@
 
     <ItemGroup>
         <None Include="..\LICENSE" Pack="true" PackagePath="LICENSE" />
+        <None Include="..\README.md" Pack="true" PackagePath="README.md"/>
         <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\" />
     </ItemGroup>
 

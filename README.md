@@ -2,8 +2,6 @@
 
 Unofficial dotnet garmin connect client
 
-The library has been ported from [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect)
-
 [![Build](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/build.yml/badge.svg)](https://github.com/pachman/dotnet.garmin.connect/actions/workflows/build.yml)
 [![NuGet Version](http://img.shields.io/nuget/v/Unofficial.Garmin.Connect.svg)](https://www.nuget.org/packages/Unofficial.Garmin.Connect/)
 [![NuGet Downloads](http://img.shields.io/nuget/dt/Unofficial.Garmin.Connect.svg)](https://www.nuget.org/packages/Unofficial.Garmin.Connect/)
@@ -37,11 +35,12 @@ var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), 
 
 ## Tests
 
-- set enviroment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
+- set environment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
   - JB Rider `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
 
 ## Thanks
 
+- The first vision from [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect)
 - Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
 - VS Code plugin [Paste JSON as Code](https://marketplace.visualstudio.com/items?itemName=quicktype.quicktype)
 - JetBrains Rider [EAP](https://www.jetbrains.com/rider/nextversion/)
