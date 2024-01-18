@@ -3,7 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Converters;
-internal class DateOnlyConverter : JsonConverter<DateOnly>
+
+public class DateOnlyConverter : JsonConverter<DateOnly>
 {
     public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
