@@ -35,6 +35,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string WorkoutScheduleUrl = "/workout-service/schedule/";
     private const string WorkoutsUrl = "/workout-service/workouts";
     private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
+    private const string CalendarYearUrl = "/calendar-service/year/";
 
     public GarminConnectClient(GarminConnectContext context)
     {
@@ -179,6 +180,32 @@ public partial class GarminConnectClient : IGarminConnectClient
         return await response.Content.ReadAsByteArrayAsync(cancellationToken);
     }
 
+    #endregion
+
+    #region Calendar
+
+    public Task<GarminCalendarYear> GetCalendarYear(int year, CancellationToken cancellationToken = default)
+    {
+        var calendarUrl = $"{CalendarYearUrl}{year}";
+
+        return _context.GetAndDeserialize<GarminCalendarYear>(calendarUrl, cancellationToken);
+    }
+
+    public Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month,
+        CancellationToken cancellationToken = default)
+    {
+        var calendarUrl = $"{CalendarYearUrl}{year}/month/{month.GetHashCode()}";
+
+        return _context.GetAndDeserialize<GarminCalendarMonth>(calendarUrl, cancellationToken);
+    }
+
+    public Task<GarminCalendarWeek> GetCalendarWeek(DateOnly dateOnly, CancellationToken cancellationToken = default)
+    {
+        var calendarUrl = $"{CalendarYearUrl}{dateOnly.Year}/month/{dateOnly.Month-1}/day/{dateOnly.Day}/start/1";
+
+        return _context.GetAndDeserialize<GarminCalendarWeek>(calendarUrl, cancellationToken);
+    }
+    
     #endregion
 
     #region Device

@@ -4,7 +4,7 @@ using Garmin.Connect.Converters;
 
 namespace Garmin.Connect.Models;
 
-public class GarminWorkout
+public record GarminWorkout
 {
     [JsonPropertyName("workoutId")]
     public long WorkoutId { get; init; }

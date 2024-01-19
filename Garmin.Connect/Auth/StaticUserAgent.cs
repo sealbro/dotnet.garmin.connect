@@ -1,5 +1,3 @@
-using System;
-
 namespace Garmin.Connect.Auth;
 
 public class StaticUserAgent : IUserAgent
