@@ -68,6 +68,10 @@ public class GarminConnectContext
         IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
         MakeHttpRequest(url, HttpMethod.Post, headers, JsonContent.Create(body), cancellationToken);
 
+    public Task<HttpResponseMessage> MakeHttpDelete(string url,
+        IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
+        MakeHttpRequest(url, HttpMethod.Delete, headers, null, cancellationToken);
+
     private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
         IReadOnlyDictionary<string, string> headers, HttpContent content, CancellationToken cancellationToken)
     {
@@ -131,9 +135,13 @@ public class GarminConnectContext
                 return;
             default:
             {
+                var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}";
+#if DEBUG
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                var message =
-                    $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}\n{content}";
+                message += $"\n{content}";
+#else
+                await Task.CompletedTask;
+#endif
                 throw new GarminConnectRequestException(message, response.StatusCode);
             }
         }

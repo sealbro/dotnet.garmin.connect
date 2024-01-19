@@ -42,4 +42,11 @@ public partial class GarminConnectClient
 
         return _context.MakeHttpPost(workoutUrl, new GarminDateRequest { Date = date }, cancellationToken: cancellationToken);
     }
+
+    public Task RemoveScheduledWorkout(long calendarId, CancellationToken cancellationToken = default)
+    {
+        var workoutUrl = $"{WorkoutScheduleUrl}{calendarId}";
+
+        return _context.MakeHttpDelete(workoutUrl, cancellationToken: cancellationToken);
+    }
 }

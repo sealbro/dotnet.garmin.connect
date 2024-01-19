@@ -10,7 +10,7 @@ Unofficial dotnet garmin connect client
 
 This package allows you to request your device, activity and health data from your Garmin Connect account.
 
-See <https://connect.garmin.com/>
+**WARNING!** Use the library only for personal automation without too many accounts. For other needs [request access](https://developer.garmin.com/gc-developer-program/overview/) to the developer program.
 
 ## Installation
 
@@ -42,6 +42,6 @@ var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), 
 
 - The first vision from [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect)
 - Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
-- VS Code plugin [Paste JSON as Code](https://marketplace.visualstudio.com/items?itemName=quicktype.quicktype)
+- Converter JSON to C# [app.quicktype.io](https://app.quicktype.io/)
 - JetBrains Rider [EAP](https://www.jetbrains.com/rider/nextversion/)
 - and [Garmin](https://connect.garmin.com) for the best devices

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Garmin.Connect.Auth.External;
 
 namespace Garmin.Connect.Auth;
 

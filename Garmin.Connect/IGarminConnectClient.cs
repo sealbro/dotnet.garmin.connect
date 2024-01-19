@@ -41,7 +41,8 @@ public interface IGarminConnectClient
     /// <summary>
     /// Fetch hrv summary data between specific dates
     /// </summary>
-    Task<GarminReportHrvStatus> GetReportHrvStatus(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+    Task<GarminReportHrvStatus> GetReportHrvStatus(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Fetch available hydration data
@@ -184,4 +185,26 @@ public interface IGarminConnectClient
     /// Schedule workout for specific date
     /// </summary>
     Task ScheduleWorkout(long workoutId, DateOnly date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Remove scheduled workout by calendar id
+    /// </summary>
+    Task RemoveScheduledWorkout(long calendarId, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Fetch calendar by year
+    /// </summary>
+    Task<GarminCalendarYear> GetCalendarYear(int year, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch calendar by month
+    /// </summary>
+    Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch calendar by week
+    /// </summary>
+    /// <param name="dateOnly">Any date from this week</param>
+    /// <param name="cancellationToken"></param>
+    Task<GarminCalendarWeek> GetCalendarWeek(DateOnly dateOnly, CancellationToken cancellationToken = default);
 }
