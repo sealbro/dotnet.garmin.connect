@@ -43,4 +43,12 @@ public class DeviceTests
 
         Assert.NotNull(garminDeviceLastUsed);
     }
+    
+    [Fact]
+    public async Task GetDeviceMessages_Exists()
+    {
+        var deviceMessages = await _garmin.GetDeviceMessages();
+
+        Assert.NotEmpty(deviceMessages.Messages);
+    }
 }

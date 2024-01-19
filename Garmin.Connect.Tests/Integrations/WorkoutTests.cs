@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Garmin.Connect.Models;
 using Garmin.Connect.Parameters;
 using Xunit;
 
@@ -11,6 +12,10 @@ public class WorkoutTests
 {
     private readonly IGarminConnectClient _garmin;
 
+    private readonly Lazy<Task<GarminWorkout[]>> _lazyWorkouts =
+        new(() => LazyClient.Garmin.Value.GetWorkouts(new WorkoutsParameters
+            { OrderSeq = OrderSeq.ASC, OrderBy = WorkoutsOrderBy.CREATED_DATE, Limit = 5 }));
+
     public WorkoutTests()
     {
         _garmin = LazyClient.Garmin.Value;
@@ -19,7 +24,7 @@ public class WorkoutTests
     [Fact]
     public async Task GetWorkouts_NotEmpty()
     {
-        var workouts = await _garmin.GetWorkouts(new WorkoutsParameters { Limit = 200 });
+        var workouts = await _lazyWorkouts.Value;
 
         Assert.NotEmpty(workouts);
     }
@@ -36,7 +41,7 @@ public class WorkoutTests
     public async Task GetWorkout_NotNull()
     {
         var workoutsParameters = new WorkoutsParameters
-            { OrderSeq = OrderSeq.ASC, OrderBy = WorkoutsOrderBy.UPDATE_DATE };
+            { OrderBy = WorkoutsOrderBy.UPDATE_DATE };
         var workouts = await _garmin.GetWorkouts(workoutsParameters);
 
         Assert.NotEmpty(workouts);
@@ -50,8 +55,7 @@ public class WorkoutTests
     public async Task UpdateWorkout()
     {
         var expectedConditionValue = 2000;
-        var workoutId = (await _garmin.GetWorkouts(new WorkoutsParameters
-            { OrderSeq = OrderSeq.ASC, OrderBy = WorkoutsOrderBy.CREATED_DATE })).First().WorkoutId;
+        var workoutId = (await _lazyWorkouts.Value).First().WorkoutId;
 
         var workout = await _garmin.GetWorkout(workoutId);
 
@@ -80,7 +84,7 @@ public class WorkoutTests
     [Fact]
     public async Task ScheduleWorkout()
     {
-        var workouts = await _garmin.GetWorkouts(new WorkoutsParameters { OrderSeq = OrderSeq.ASC, Limit = 5 });
+        var workouts = await _lazyWorkouts.Value;
         var workout = workouts.First();
         var scheduleDate = DateOnly.FromDateTime(workout.CreatedDate);
 
@@ -101,5 +105,24 @@ public class WorkoutTests
         calendarWeek = await _garmin.GetCalendarWeek(scheduleDate);
 
         Assert.DoesNotContain(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
+    }
+
+    [Fact(Skip = "Not for CI only for self test")]
+    public async Task SendToDevice()
+    {
+        var workouts = await _lazyWorkouts.Value;
+        var workout = workouts.First();
+
+        Assert.Equal("running", workout.SportType.SportTypeKey);
+
+        var deviceId = (await _garmin.GetDevices()).First(device => device.SupportedHrZones.Contains("RUNNING"))
+            .DeviceId;
+
+        await _garmin.SendWorkoutToDevices(workout.WorkoutId, [deviceId]);
+
+        var deviceMessages = await _garmin.GetDeviceMessages();
+
+        Assert.Contains(deviceMessages.Messages,
+            x => x.MessageType == "workouts" && x.DeviceId == deviceId && x.MetaData.MetaDataId == workout.WorkoutId);
     }
 }

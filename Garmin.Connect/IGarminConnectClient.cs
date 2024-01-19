@@ -77,6 +77,11 @@ public interface IGarminConnectClient
     Task<GarminDevice[]> GetDevices(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Get messages for device
+    /// </summary>
+    Task<GarminDeviceMessages> GetDeviceMessages(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Fetch activity split summaries
     /// </summary>
     Task<GarminSplitSummary> GetActivitySplitSummaries(long activityId, CancellationToken cancellationToken = default);
@@ -182,6 +187,11 @@ public interface IGarminConnectClient
     Task<GarminWorkoutTypes> GetWorkoutTypes(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// [Experimental] Send workout to devices or sync command to Garmin Connect App
+    /// </summary>
+    Task SendWorkoutToDevices(long workoutId, long[] deviceIds, CancellationToken cancellationToken = default);
+    
+    /// <summary>
     /// Schedule workout for specific date
     /// </summary>
     Task ScheduleWorkout(long workoutId, DateOnly date, CancellationToken cancellationToken = default);
@@ -190,7 +200,7 @@ public interface IGarminConnectClient
     /// Remove scheduled workout by calendar id
     /// </summary>
     Task RemoveScheduledWorkout(long calendarId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Fetch calendar by year
     /// </summary>
@@ -199,7 +209,8 @@ public interface IGarminConnectClient
     /// <summary>
     /// Fetch calendar by month
     /// </summary>
-    Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month, CancellationToken cancellationToken = default);
+    Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Fetch calendar by week
