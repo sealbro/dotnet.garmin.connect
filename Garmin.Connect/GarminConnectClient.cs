@@ -15,12 +15,12 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string UserProfileUrl = "/userprofile-service/socialProfile";
     private const string UserSettingsUrl = "/userprofile-service/userprofile/user-settings";
     private const string UserSummaryUrl = "/usersummary-service/usersummary/daily/";
+    private const string UserSummaryHydrationDataUrl = "/usersummary-service/usersummary/hydration/daily/";
     private const string UserSummaryChartUrl = "/wellness-service/wellness/dailySummaryChart/";
     private const string HeartRatesUrl = "/wellness-service/wellness/dailyHeartRate/";
     private const string SleepDataUrl = "/wellness-service/wellness/dailySleepData/";
     private const string BodyCompositionUrl = "/weight-service/weight/daterangesnapshot";
     private const string ActivitiesUrl = "/activitylist-service/activities/search/activities";
-    private const string HydrationDataUrl = "/usersummary-service/usersummary/hydration/daily/";
     private const string ActivityUrl = "/activity-service/activity/";
     private const string PersonalRecordUrl = "/personalrecord-service/personalrecord/";
     private const string TcxDownloadUrl = "/download-service/export/tcx/activity/";
@@ -30,6 +30,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string CsvDownloadUrl = "/download-service/export/csv/activity/";
     private const string DeviceListUrl = "/device-service/deviceregistration/devices";
     private const string DeviceServiceUrl = "/device-service/deviceservice/";
+    private const string DeviceMessageUrl = "/device-service/devicemessage/messages";
     private const string GearUrl = "/gear-service/gear/";
     private const string WorkoutUrl = "/workout-service/workout/";
     private const string WorkoutScheduleUrl = "/workout-service/schedule/";
@@ -229,9 +230,14 @@ public partial class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminDeviceLastUsed>(deviceLastUsedUrl, cancellationToken);
     }
 
+    public Task<GarminDeviceMessages> GetDeviceMessages(CancellationToken cancellationToken = default)
+    {
+        return _context.GetAndDeserialize<GarminDeviceMessages>(DeviceMessageUrl, cancellationToken);
+    }
+    
     #endregion
 
-    #region MyRegion
+    #region Gears
 
     public Task<GarminGearType[]> GetGearTypes(CancellationToken cancellationToken = default)
     {
@@ -330,7 +336,7 @@ public partial class GarminConnectClient : IGarminConnectClient
 
     public Task<GarminHydrationData> GetHydrationData(DateTime date, CancellationToken cancellationToken = default)
     {
-        var hydrationUrl = $"{HydrationDataUrl}{date:yyyy-MM-dd}";
+        var hydrationUrl = $"{UserSummaryHydrationDataUrl}{date:yyyy-MM-dd}";
 
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
     }
