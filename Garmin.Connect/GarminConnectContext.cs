@@ -139,6 +139,8 @@ public class GarminConnectContext
 #if DEBUG
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 message += $"\n{content}";
+#else
+                await Task.CompletedTask;
 #endif
                 throw new GarminConnectRequestException(message, response.StatusCode);
             }
