@@ -185,14 +185,14 @@ public partial class GarminConnectClient : IGarminConnectClient
 
     #region Calendar
 
-    public Task<GarminCalendarYear> GetCalendarYear(int year, CancellationToken cancellationToken = default)
+    public Task<GarminCalendarYear> GetCalendarByYear(int year, CancellationToken cancellationToken = default)
     {
         var calendarUrl = $"{CalendarYearUrl}{year}";
 
         return _context.GetAndDeserialize<GarminCalendarYear>(calendarUrl, cancellationToken);
     }
 
-    public Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month,
+    public Task<GarminCalendarMonth> GetCalendarByMonth(int year, GarminMonth month,
         CancellationToken cancellationToken = default)
     {
         var calendarUrl = $"{CalendarYearUrl}{year}/month/{month.GetHashCode()}";
@@ -200,7 +200,7 @@ public partial class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminCalendarMonth>(calendarUrl, cancellationToken);
     }
 
-    public Task<GarminCalendarWeek> GetCalendarWeek(DateOnly dateOnly, CancellationToken cancellationToken = default)
+    public Task<GarminCalendarWeek> GetCalendarByWeek(DateOnly dateOnly, CancellationToken cancellationToken = default)
     {
         var calendarUrl = $"{CalendarYearUrl}{dateOnly.Year}/month/{dateOnly.Month-1}/day/{dateOnly.Day}/start/1";
 

@@ -204,12 +204,12 @@ public interface IGarminConnectClient
     /// <summary>
     /// Fetch calendar by year
     /// </summary>
-    Task<GarminCalendarYear> GetCalendarYear(int year, CancellationToken cancellationToken = default);
+    Task<GarminCalendarYear> GetCalendarByYear(int year, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Fetch calendar by month
     /// </summary>
-    Task<GarminCalendarMonth> GetCalendarMonth(int year, GarminMonth month,
+    Task<GarminCalendarMonth> GetCalendarByMonth(int year, GarminMonth month,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -217,5 +217,5 @@ public interface IGarminConnectClient
     /// </summary>
     /// <param name="dateOnly">Any date from this week</param>
     /// <param name="cancellationToken"></param>
-    Task<GarminCalendarWeek> GetCalendarWeek(DateOnly dateOnly, CancellationToken cancellationToken = default);
+    Task<GarminCalendarWeek> GetCalendarByWeek(DateOnly dateOnly, CancellationToken cancellationToken = default);
 }

@@ -90,19 +90,19 @@ public class WorkoutTests
 
         Assert.NotEmpty(workouts);
 
-        var calendarWeek = await _garmin.GetCalendarWeek(scheduleDate);
+        var calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate);
 
         Assert.DoesNotContain(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
 
         await _garmin.ScheduleWorkout(workout.WorkoutId, scheduleDate);
-        calendarWeek = await _garmin.GetCalendarWeek(scheduleDate);
+        calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate);
 
         Assert.Contains(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
 
         var calendarId = calendarWeek.CalendarItems
             .First(x => x.WorkoutId == workout.WorkoutId).Id;
         await _garmin.RemoveScheduledWorkout(calendarId);
-        calendarWeek = await _garmin.GetCalendarWeek(scheduleDate);
+        calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate);
 
         Assert.DoesNotContain(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
     }
