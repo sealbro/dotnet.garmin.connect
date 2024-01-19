@@ -19,7 +19,7 @@ public class CalendarTests
     public async Task GetCalendarYear_Exists()
     {
         var year = DateTime.Now.Year;
-        var calendarYear = await _garmin.GetCalendarYear(year);
+        var calendarYear = await _garmin.GetCalendarByYear(year);
 
         Assert.NotEmpty(calendarYear.YearSummaries);
     }
@@ -30,7 +30,7 @@ public class CalendarTests
         var date = DateTime.Now.AddMonths(-1);
         var year = date.Year;
         var previousMonth = (GarminMonth)(date.Month - 1);
-        var calendarMonth = await _garmin.GetCalendarMonth(year, previousMonth);
+        var calendarMonth = await _garmin.GetCalendarByMonth(year, previousMonth);
 
         Assert.Equal(year, calendarMonth.Year);
         Assert.Equal(previousMonth, calendarMonth.Month);
@@ -41,7 +41,7 @@ public class CalendarTests
     public async Task GetCalendarWeek_Exists()
     {
         var date = DateOnly.FromDateTime(DateTime.Now.AddDays(-7));
-        var calendarWeek = await _garmin.GetCalendarWeek(date);
+        var calendarWeek = await _garmin.GetCalendarByWeek(date);
 
         Assert.True(date >= calendarWeek.StartDate);
         Assert.True(date <= calendarWeek.EndDate);
