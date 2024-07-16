@@ -37,8 +37,9 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string WorkoutsUrl = "/workout-service/workouts";
     private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
     private const string CalendarYearUrl = "/calendar-service/year/";
+	private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
 
-    public GarminConnectClient(GarminConnectContext context)
+	public GarminConnectClient(GarminConnectContext context)
     {
         _context = context;
     }
@@ -341,11 +342,19 @@ public partial class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
     }
 
-    #endregion
+	public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+	{
+		var bodyBatteryUrl =
+					$"{BodyBatteryUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
 
-    #region Workouts
+		return _context.GetAndDeserialize<GarminBodyBatteryData[]>(bodyBatteryUrl, cancellationToken);
+	}
 
-    public Task<GarminWorkout> GetWorkout(long workoutId, CancellationToken cancellationToken = default)
+	#endregion
+
+	#region Workouts
+
+	public Task<GarminWorkout> GetWorkout(long workoutId, CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutUrl}{workoutId}";
 

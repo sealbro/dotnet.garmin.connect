@@ -56,9 +56,15 @@ public interface IGarminConnectClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Fetch personal records by owner display name
+    /// Fetch available body battery data (only for date)
     /// </summary>
-    Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName,
+    Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate,
+		CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Fetch personal records by owner display name
+	/// </summary>
+	Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName,
         CancellationToken cancellationToken = default);
 
     /// <summary>
