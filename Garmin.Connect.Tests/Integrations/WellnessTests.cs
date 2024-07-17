@@ -50,15 +50,15 @@ public class WellnessTests
         Assert.NotNull(wellnessHeartRates);
     }
 
-	[Fact]
-	public async Task GetWellnessBodyBattery_NotNull()
-	{
-		var garminBodyBattery = await _garmin.GetWelnessBodyBatteryData(_startDate, _endDate);
+    [Fact]
+    public async Task GetWellnessBodyBattery_NotNull()
+    {
+        var garminBodyBattery = await _garmin.GetWelnessBodyBatteryData(_startDate, _endDate);
 
-		Assert.NotNull(garminBodyBattery);
-	}
+        Assert.NotNull(garminBodyBattery);
+    }
 
-	[Fact]
+    [Fact]
     public async Task GetHydrationData_NotNull()
     {
         var garminHydrationData = await _garmin.GetHydrationData(_startDate);

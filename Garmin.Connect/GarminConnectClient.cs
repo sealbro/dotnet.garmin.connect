@@ -37,9 +37,9 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string WorkoutsUrl = "/workout-service/workouts";
     private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
     private const string CalendarYearUrl = "/calendar-service/year/";
-	private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
+    private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
 
-	public GarminConnectClient(GarminConnectContext context)
+    public GarminConnectClient(GarminConnectContext context)
     {
         _context = context;
     }
@@ -203,11 +203,11 @@ public partial class GarminConnectClient : IGarminConnectClient
 
     public Task<GarminCalendarWeek> GetCalendarByWeek(DateOnly dateOnly, CancellationToken cancellationToken = default)
     {
-        var calendarUrl = $"{CalendarYearUrl}{dateOnly.Year}/month/{dateOnly.Month-1}/day/{dateOnly.Day}/start/1";
+        var calendarUrl = $"{CalendarYearUrl}{dateOnly.Year}/month/{dateOnly.Month - 1}/day/{dateOnly.Day}/start/1";
 
         return _context.GetAndDeserialize<GarminCalendarWeek>(calendarUrl, cancellationToken);
     }
-    
+
     #endregion
 
     #region Device
@@ -235,7 +235,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     {
         return _context.GetAndDeserialize<GarminDeviceMessages>(DeviceMessageUrl, cancellationToken);
     }
-    
+
     #endregion
 
     #region Gears
@@ -342,19 +342,19 @@ public partial class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
     }
 
-	public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
-	{
-		var bodyBatteryUrl =
-					$"{BodyBatteryUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+    public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+    {
+        var bodyBatteryUrl =
+                    $"{BodyBatteryUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
 
-		return _context.GetAndDeserialize<GarminBodyBatteryData[]>(bodyBatteryUrl, cancellationToken);
-	}
+        return _context.GetAndDeserialize<GarminBodyBatteryData[]>(bodyBatteryUrl, cancellationToken);
+    }
 
-	#endregion
+    #endregion
 
-	#region Workouts
+    #region Workouts
 
-	public Task<GarminWorkout> GetWorkout(long workoutId, CancellationToken cancellationToken = default)
+    public Task<GarminWorkout> GetWorkout(long workoutId, CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutUrl}{workoutId}";
 
