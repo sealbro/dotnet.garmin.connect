@@ -14,7 +14,7 @@ public class WorkoutTests
 
     private readonly Lazy<Task<GarminWorkout[]>> _lazyWorkouts =
         new(() => LazyClient.Garmin.Value.GetWorkouts(new WorkoutsParameters
-            { OrderSeq = OrderSeq.ASC, OrderBy = WorkoutsOrderBy.CREATED_DATE, Limit = 5 }));
+        { OrderSeq = OrderSeq.ASC, OrderBy = WorkoutsOrderBy.CREATED_DATE, Limit = 5 }));
 
     public WorkoutTests()
     {
@@ -41,7 +41,7 @@ public class WorkoutTests
     public async Task GetWorkout_NotNull()
     {
         var workoutsParameters = new WorkoutsParameters
-            { OrderBy = WorkoutsOrderBy.UPDATE_DATE };
+        { OrderBy = WorkoutsOrderBy.UPDATE_DATE };
         var workouts = await _garmin.GetWorkouts(workoutsParameters);
 
         Assert.NotEmpty(workouts);

@@ -14,7 +14,7 @@ internal record struct GarminSetUserSleepTimes
             DefaultSleepTime = !sleepTime.HasValue,
             DefaultWakeTime = !wakeTime.HasValue
         };
-        
+
         if (sleepTime.HasValue)
             UserSleep = UserSleep with { SleepTime = sleepTime.Value };
 
@@ -22,4 +22,3 @@ internal record struct GarminSetUserSleepTimes
             UserSleep = UserSleep with { WakeTime = wakeTime.Value };
     }
 }
-

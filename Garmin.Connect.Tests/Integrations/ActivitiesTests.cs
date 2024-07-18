@@ -58,7 +58,7 @@ public class ActivitiesTests
 
         var garminExerciseSets = await _garmin.GetActivityExerciseSets(activityId);
 
-        Assert.NotEqual(0,garminExerciseSets.ActivityId);
+        Assert.NotEqual(0, garminExerciseSets.ActivityId);
     }
 
     [Fact]
@@ -116,6 +116,13 @@ public class ActivitiesTests
 
         var activitySplitSummaries = await _garmin.GetActivitySplitSummaries(activityId);
 
-        Assert.NotEmpty(activitySplitSummaries.SplitSummaries);
+        if (activitySplitSummaries.HasSplits)
+        {
+            Assert.NotEmpty(activitySplitSummaries.SplitSummaries);
+        }
+        else
+        {
+            Assert.Empty(activitySplitSummaries.SplitSummaries);
+        }
     }
 }

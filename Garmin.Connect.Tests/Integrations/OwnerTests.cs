@@ -13,12 +13,12 @@ public class OwnerTests
     {
         _garmin = LazyClient.Garmin.Value;
     }
-   
+
     [Fact]
     public async Task GetSocialProfile_NotNull()
     {
         var profile = await _garmin.GetSocialProfile();
-    
+
         Assert.NotNull(profile);
         Assert.NotNull(profile.DisplayName);
     }
@@ -88,7 +88,7 @@ public class OwnerTests
         Assert.NotNull(userSettingsBackToOriginal);
         Assert.Equal(userSettingsOriginal.UserSleep.DefaultSleepTime, userSettingsBackToOriginal.UserSleep.DefaultSleepTime);
         Assert.Equal(userSleepSleepTime, userSettingsBackToOriginal.UserSleep.SleepTime);
-        Assert.Equal(userSettingsOriginal.UserSleep.DefaultWakeTime , userSettingsBackToOriginal.UserSleep.DefaultWakeTime);
+        Assert.Equal(userSettingsOriginal.UserSleep.DefaultWakeTime, userSettingsBackToOriginal.UserSleep.DefaultWakeTime);
         Assert.Equal(userSleepWakeTime, userSettingsBackToOriginal.UserSleep.WakeTime);
     }
 }

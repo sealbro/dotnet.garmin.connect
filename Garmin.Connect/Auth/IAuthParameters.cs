@@ -10,7 +10,7 @@ public interface IAuthParameters
     string Csrf { get; set; }
 
     string BaseUrl { get; }
-    
+
     ConsumerCredentials ConsumerCredentials { get; }
 
     IReadOnlyDictionary<string, string> GetHeaders();

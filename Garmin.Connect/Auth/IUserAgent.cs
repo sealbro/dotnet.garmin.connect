@@ -1,4 +1,4 @@
-﻿namespace Garmin.Connect.Auth;
+namespace Garmin.Connect.Auth;
 
 public interface IUserAgent
 {

@@ -18,6 +18,10 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    </PropertyGroup>
+
     <ItemGroup>
         <None Include="..\LICENSE" Pack="true" PackagePath="LICENSE" />
         <None Include="..\README.md" Pack="true" PackagePath="README.md"/>
@@ -27,4 +31,5 @@
     <ItemGroup>
       <PackageReference Include="OAuth.DotNetCore" Version="3.0.1" />
     </ItemGroup>
+
 </Project>

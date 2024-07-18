@@ -81,7 +81,7 @@ public record EndPoint
 
     [JsonPropertyName("distanceFromPreviousPoint")]
     public object DistanceFromPreviousPoint { get; init; }
-        
+
     [JsonPropertyName("distanceInMeters")]
     public object DistanceInMeters { get; init; }
 
@@ -90,7 +90,7 @@ public record EndPoint
 
     [JsonPropertyName("cumulativeAscent")]
     public object CumulativeAscent { get; init; }
-        
+
     [JsonPropertyName("cumulativeDescent")]
     public object CumulativeDescent { get; init; }
 
