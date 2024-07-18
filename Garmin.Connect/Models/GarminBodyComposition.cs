@@ -63,7 +63,7 @@ public record GarminDateWeight
     public long Date { get; init; }
 
     [JsonPropertyName("calendarDate")]
-    public DateTimeOffset CalendarDate { get; init; }
+    public DateTime CalendarDate { get; init; }
 
     [JsonPropertyName("weight")]
     public double Weight { get; init; }

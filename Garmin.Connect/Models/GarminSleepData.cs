@@ -33,7 +33,7 @@ public record DailySleepDto
     public long UserProfilePk { get; init; }
 
     [JsonPropertyName("calendarDate")]
-    public DateTimeOffset CalendarDate { get; init; }
+    public DateTime CalendarDate { get; init; }
 
     [JsonPropertyName("sleepTimeSeconds")]
     public long SleepTimeSeconds { get; init; }
@@ -198,10 +198,10 @@ public record Restlessness
 public record Sleep
 {
     [JsonPropertyName("startGMT")]
-    public DateTimeOffset StartGmt { get; init; }
+    public DateTime StartGmt { get; init; }
 
     [JsonPropertyName("endGMT")]
-    public DateTimeOffset EndGmt { get; init; }
+    public DateTime EndGmt { get; init; }
 
     [JsonPropertyName("activityLevel")]
     public double ActivityLevel { get; init; }

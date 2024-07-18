@@ -73,22 +73,22 @@ public record GarminWorkout
 
     [JsonPropertyName("shared")]
     public bool Shared { get; init; }
-    
+
     [JsonPropertyName("estimated")]
     public bool Estimated { get; init; }
-    
+
     [JsonPropertyName("avgTrainingSpeed")]
     public double AvgTrainingSpeed { get; init; }
-    
+
     [JsonPropertyName("subSportType")]
     public object SubSportType { get; init; }
-    
+
     [JsonPropertyName("sharedWithUsers")]
     public object SharedWithUsers { get; init; }
-    
+
     [JsonPropertyName("workoutSegments")]
     public GarminWorkoutSegment[] WorkoutSegments { get; init; }
-    
+
     [JsonPropertyName("uploadTimestamp")]
     public object UploadTimestamp { get; init; }
 }

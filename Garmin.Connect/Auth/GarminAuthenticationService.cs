@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -45,7 +45,7 @@ internal class GarminAuthenticationService
         catch (Exception e)
         {
             throw new GarminConnectAuthenticationException("Auth appeared successful but failed to get the OAuth2 token.", e)
-                { Code = Code.OAuth2TokenNotFound };
+            { Code = Code.OAuth2TokenNotFound };
         }
     }
 
@@ -56,11 +56,11 @@ internal class GarminAuthenticationService
         {
             oauthConsumerUrl = "https://thegarth.s3.amazonaws.com/oauth_consumer.json";
         }
-        
+
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthConsumerUrl);
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
-        
+
         return JsonSerializer.Deserialize<ConsumerCredentials>(content);
     }
 
@@ -87,7 +87,7 @@ internal class GarminAuthenticationService
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new GarminConnectAuthenticationException("Failed to fetch cookies from Garmin.")
-                { Code = Code.CookiesNotFound };
+            { Code = Code.CookiesNotFound };
 
         var headerCookies = responseMessage.Headers.SingleOrDefault(header => header.Key == "Set-Cookie").Value;
         var sb = new StringBuilder();
@@ -100,7 +100,7 @@ internal class GarminAuthenticationService
 
         if (string.IsNullOrWhiteSpace(cookies))
             throw new GarminConnectAuthenticationException("Found cookies but they are null.")
-                { Code = Code.CookiesNotFound };
+            { Code = Code.CookiesNotFound };
 
         return cookies;
     }
@@ -131,7 +131,7 @@ internal class GarminAuthenticationService
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new GarminConnectAuthenticationException("Failed to fetch csrf token from Garmin.")
-                { Code = Code.CsrfTokenNotFound };
+            { Code = Code.CsrfTokenNotFound };
 
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         var regexCsrf = new Regex("name=\"_csrf\"\\s+value=\"(.+?)\"",
@@ -141,13 +141,13 @@ internal class GarminAuthenticationService
 
         if (!match.Success)
             throw new GarminConnectAuthenticationException("Failed to find regex match for csrf token.")
-                { Code = Code.CsrfTokenNotFound };
+            { Code = Code.CsrfTokenNotFound };
 
         var csrf = match.Groups[1].Value;
 
         if (string.IsNullOrWhiteSpace(csrf))
             throw new GarminConnectAuthenticationException("Found csrfToken but its null.")
-                { Code = Code.CsrfTokenNotFound };
+            { Code = Code.CsrfTokenNotFound };
 
 
         return match.Groups[1].Value;
@@ -194,7 +194,7 @@ internal class GarminAuthenticationService
 
             throw new GarminConnectAuthenticationException(
                     $"Garmin Authentication Failed. {responseMessage.StatusCode}: {content}")
-                { Code = Code.OAuth1TicketNotFound };
+            { Code = Code.OAuth1TicketNotFound };
         }
 
         var regexTicket = new Regex(@"embed\?ticket=([^""]+)""", RegexOptions.Compiled | RegexOptions.Multiline);
@@ -202,13 +202,13 @@ internal class GarminAuthenticationService
 
         if (!match.Success)
             throw new GarminConnectAuthenticationException("Failed to find regex match for ticket.")
-                { Code = Code.OAuth1TicketNotFound };
+            { Code = Code.OAuth1TicketNotFound };
 
         var ticket = match.Groups[1].Value;
 
         if (string.IsNullOrWhiteSpace(ticket))
             throw new GarminConnectAuthenticationException("Found ticket but its null.")
-                { Code = Code.OAuth1TicketNotFound };
+            { Code = Code.OAuth1TicketNotFound };
 
         return ticket;
     }
@@ -234,13 +234,13 @@ internal class GarminAuthenticationService
         catch (Exception e)
         {
             throw new GarminConnectAuthenticationException("Auth appeared successful but failed to get the OAuth1 token.", e)
-                { Code = Code.OAuth1TokenNotFound };
+            { Code = Code.OAuth1TokenNotFound };
         }
 
         if (string.IsNullOrWhiteSpace(oauth1Response))
             throw new GarminConnectAuthenticationException(
                     "Auth appeared successful but returned OAuth1 Token response is null.")
-                { Code = Code.OAuth1TokenNotFound };
+            { Code = Code.OAuth1TokenNotFound };
 
         var queryParams = HttpUtility.ParseQueryString(oauth1Response);
 
@@ -250,12 +250,12 @@ internal class GarminAuthenticationService
         if (string.IsNullOrWhiteSpace(oAuthToken))
             throw new GarminConnectAuthenticationException(
                     $"Auth appeared successful but returned OAuth1 token is null. oauth1Response: {oauth1Response}")
-                { Code = Code.OAuth1TokenNotFound };
+            { Code = Code.OAuth1TokenNotFound };
 
         if (string.IsNullOrWhiteSpace(oAuthTokenSecret))
             throw new GarminConnectAuthenticationException(
                     $"Auth appeared successful but returned OAuth1 token secret is null. oauth1Response: {oauth1Response}")
-                { Code = Code.OAuth1TokenNotFound };
+            { Code = Code.OAuth1TokenNotFound };
 
         return new OAuth1Token
         {

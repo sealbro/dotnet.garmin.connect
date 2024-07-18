@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Security.Authentication;
 using Garmin.Connect.Auth;
@@ -12,7 +12,7 @@ public static class LazyClient
         var handler = new HttpClientHandler();
         handler.SslProtocols = SslProtocols.Tls13 | SslProtocols.Tls12;
         var httpClient = new HttpClient(handler);
-        
+
         return new GarminConnectClient(new GarminConnectContext(httpClient,
             new BasicAuthParameters(
                 Environment.GetEnvironmentVariable("GARMIN_LOGIN"),

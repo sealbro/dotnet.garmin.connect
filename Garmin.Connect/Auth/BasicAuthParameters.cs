@@ -55,12 +55,12 @@ public class BasicAuthParameters : IAuthParameters
                 $"https://sso.{Domain}"
             }
         };
-        
+
         if (!string.IsNullOrEmpty(Cookies))
         {
             headers.Add("cookie", Cookies);
         }
-        
+
         return headers;
     }
 

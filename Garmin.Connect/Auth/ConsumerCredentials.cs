@@ -7,7 +7,7 @@ public record ConsumerCredentials
     [JsonPropertyName("consumer_key")]
     public string Consumer_Key { get; set; }
     [JsonPropertyName("consumer_secret")]
-    public string Consumer_Secret { get; set;}
+    public string Consumer_Secret { get; set; }
 }
 
 // 10/01/23
