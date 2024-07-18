@@ -56,6 +56,12 @@ public interface IGarminConnectClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Fetch available body battery data (only for date)
+    /// </summary>
+    Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Fetch personal records by owner display name
     /// </summary>
     Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName,
@@ -190,7 +196,7 @@ public interface IGarminConnectClient
     /// [Experimental] Send workout to devices or sync command to Garmin Connect App
     /// </summary>
     Task SendWorkoutToDevices(long workoutId, long[] deviceIds, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Schedule workout for specific date
     /// </summary>

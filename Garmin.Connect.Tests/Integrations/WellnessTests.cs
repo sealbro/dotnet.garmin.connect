@@ -51,6 +51,14 @@ public class WellnessTests
     }
 
     [Fact]
+    public async Task GetWellnessBodyBattery_NotNull()
+    {
+        var garminBodyBattery = await _garmin.GetWelnessBodyBatteryData(_startDate, _endDate);
+
+        Assert.NotNull(garminBodyBattery);
+    }
+
+    [Fact]
     public async Task GetHydrationData_NotNull()
     {
         var garminHydrationData = await _garmin.GetHydrationData(_startDate);
