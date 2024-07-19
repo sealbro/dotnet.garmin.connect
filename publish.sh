@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 NUGET_API_KEY=$1
 
 echo "Here you see *.nupkg files:"
