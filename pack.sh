@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 PACKAGE_VERSION=$1
 VERSION_SUFFIX=$2
 
