@@ -38,6 +38,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
     private const string CalendarYearUrl = "/calendar-service/year/";
     private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
+    private const string BloodPressureUrl = "/bloodpressure-service/bloodpressure";
 
     public GarminConnectClient(GarminConnectContext context)
     {
@@ -149,26 +150,11 @@ public partial class GarminConnectClient : IGarminConnectClient
     {
         var urls = new Dictionary<ActivityDownloadFormat, string>
         {
-            {
-                ActivityDownloadFormat.ORIGINAL,
-                $"{FitDownloadUrl}{activityId}"
-            },
-            {
-                ActivityDownloadFormat.TCX,
-                $"{TcxDownloadUrl}{activityId}"
-            },
-            {
-                ActivityDownloadFormat.GPX,
-                $"{GpxDownloadUrl}{activityId}"
-            },
-            {
-                ActivityDownloadFormat.KML,
-                $"{KmlDownloadUrl}{activityId}"
-            },
-            {
-                ActivityDownloadFormat.CSV,
-                $"{CsvDownloadUrl}{activityId}"
-            }
+            { ActivityDownloadFormat.ORIGINAL, $"{FitDownloadUrl}{activityId}" },
+            { ActivityDownloadFormat.TCX, $"{TcxDownloadUrl}{activityId}" },
+            { ActivityDownloadFormat.GPX, $"{GpxDownloadUrl}{activityId}" },
+            { ActivityDownloadFormat.KML, $"{KmlDownloadUrl}{activityId}" },
+            { ActivityDownloadFormat.CSV, $"{CsvDownloadUrl}{activityId}" }
         };
         if (!urls.ContainsKey(format))
         {
@@ -342,12 +328,33 @@ public partial class GarminConnectClient : IGarminConnectClient
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
     }
 
-    public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+    public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
     {
         var bodyBatteryUrl =
-                    $"{BodyBatteryUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+            $"{BodyBatteryUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
 
         return _context.GetAndDeserialize<GarminBodyBatteryData[]>(bodyBatteryUrl, cancellationToken);
+    }
+
+    #endregion
+
+    #region BloodPressure
+
+    public Task<GarminBloodPressureDaily> GetBloodPressureDaily(DateTime date,
+        CancellationToken cancellationToken = default)
+    {
+        var bloodPressureUrl = $"{BloodPressureUrl}/dayview/{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminBloodPressureDaily>(bloodPressureUrl, cancellationToken);
+    }
+
+    public Task<GarminBloodPressureMeasurement[]> GetBloodPressureRange(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
+    {
+        var bloodPressureUrl = $"{BloodPressureUrl}/daily/last/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminBloodPressureMeasurement[]>(bloodPressureUrl, cancellationToken);
     }
 
     #endregion

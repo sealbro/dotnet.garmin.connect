@@ -98,4 +98,48 @@ public partial class GarminConnectClient
 
         await _context.MakeHttpPost(DeviceMessageUrl, sendToDevice, cancellationToken: cancellationToken);
     }
+
+    public async Task<bool> AddBloodPressure(GarminBloodPressure bloodPressure,
+        CancellationToken cancellationToken = default)
+    {
+        if (!bloodPressure.IsValid())
+        {
+            return false;
+        }
+
+        var roundedDateTime = new DateTime(
+            bloodPressure.MeasurementDateTime.Year,
+            bloodPressure.MeasurementDateTime.Month,
+            bloodPressure.MeasurementDateTime.Day,
+            bloodPressure.MeasurementDateTime.Hour,
+            bloodPressure.MeasurementDateTime.Minute,
+            0);
+        var request = new GarminBloodPressureRequest
+        {
+            Version = null,
+            Systolic = bloodPressure.Systolic,
+            Diastolic = bloodPressure.Diastolic,
+            Pulse = bloodPressure.Pulse,
+            MultiMeasurement = false,
+            Notes = bloodPressure.Notes,
+            SourceType = "MANUAL",
+            MeasurementTimestampLocal = roundedDateTime,
+            MeasurementTimestampGmt = roundedDateTime.ToUniversalTime(),
+            Category = null,
+            CategoryName = null
+        };
+
+        await _context.MakeHttpPost(BloodPressureUrl, request, cancellationToken: cancellationToken);
+
+        return true;
+    }
+
+    public async Task RemoveBloodPressure(GarminBloodPressureIdentifier bloodPressureIdentifier,
+        CancellationToken cancellationToken = default)
+    {
+        var url =
+            $"{BloodPressureUrl}/{bloodPressureIdentifier.MeasurementTimestampGmt:yyyy-MM-dd}/{bloodPressureIdentifier.Version}";
+
+        await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
+    }
 }
