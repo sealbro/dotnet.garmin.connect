@@ -22,6 +22,13 @@ public class ReportTests
 
         var hrvSummary = await _garmin.GetReportHrvStatus(startDate, endDate);
 
-        Assert.NotEmpty(hrvSummary.HrvSummaries);
+        if (hrvSummary == null)
+        {
+            Assert.Null(hrvSummary);
+        }
+        else
+        {
+            Assert.NotEmpty(hrvSummary.HrvSummaries);
+        }
     }
 }

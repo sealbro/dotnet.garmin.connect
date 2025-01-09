@@ -224,4 +224,33 @@ public interface IGarminConnectClient
     /// <param name="dateOnly">Any date from this week</param>
     /// <param name="cancellationToken"></param>
     Task<GarminCalendarWeek> GetCalendarByWeek(DateOnly dateOnly, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch blood pressure daily data
+    /// </summary>
+    /// <param name="date">Date</param>
+    /// <param name="cancellationToken"></param>
+    Task<GarminBloodPressureDaily> GetBloodPressureDaily(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch blood pressure range data
+    /// <param name="startDate">Date start</param>
+    /// <param name="endDate">Date end</param>
+    /// <param name="cancellationToken"></param>
+    Task<GarminBloodPressureMeasurement[]> GetBloodPressureRange(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Add blood pressure data
+    /// </summary>
+    /// <param name="bloodPressure">Blood pressure data</param>
+    /// <param name="cancellationToken"></param>
+    Task<bool> AddBloodPressure(GarminBloodPressure bloodPressure, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Remove blood pressure data
+    /// </summary>
+    /// <param name="bloodPressureIdentifier">Blood pressure identifier</param>
+    /// <param name="cancellationToken"></param>
+    Task RemoveBloodPressure(GarminBloodPressureIdentifier bloodPressureIdentifier, CancellationToken cancellationToken = default);
 }
