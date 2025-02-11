@@ -36,12 +36,11 @@ var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), 
 ## Tests
 
 - set environment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
-  - JB Rider `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
+  - JetBrains Rider `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
 
 ## Thanks
 
 - The first vision from [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect)
 - Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
 - Converter JSON to C# [app.quicktype.io](https://app.quicktype.io/)
-- JetBrains Rider [EAP](https://www.jetbrains.com/rider/nextversion/)
 - and [Garmin](https://connect.garmin.com) for the best devices

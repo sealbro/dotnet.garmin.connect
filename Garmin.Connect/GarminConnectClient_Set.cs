@@ -99,29 +99,29 @@ public partial class GarminConnectClient
         await _context.MakeHttpPost(DeviceMessageUrl, sendToDevice, cancellationToken: cancellationToken);
     }
 
-    public async Task<bool> AddBloodPressure(GarminBloodPressure bloodPressure,
+    public async Task<bool> AddBloodPressure(GarminBloodPressure bloodPressureData,
         CancellationToken cancellationToken = default)
     {
-        if (!bloodPressure.IsValid())
+        if (!bloodPressureData.IsValid())
         {
             return false;
         }
 
         var roundedDateTime = new DateTime(
-            bloodPressure.MeasurementDateTime.Year,
-            bloodPressure.MeasurementDateTime.Month,
-            bloodPressure.MeasurementDateTime.Day,
-            bloodPressure.MeasurementDateTime.Hour,
-            bloodPressure.MeasurementDateTime.Minute,
+            bloodPressureData.MeasurementDateTime.Year,
+            bloodPressureData.MeasurementDateTime.Month,
+            bloodPressureData.MeasurementDateTime.Day,
+            bloodPressureData.MeasurementDateTime.Hour,
+            bloodPressureData.MeasurementDateTime.Minute,
             0);
         var request = new GarminBloodPressureRequest
         {
             Version = null,
-            Systolic = bloodPressure.Systolic,
-            Diastolic = bloodPressure.Diastolic,
-            Pulse = bloodPressure.Pulse,
+            Systolic = bloodPressureData.Systolic,
+            Diastolic = bloodPressureData.Diastolic,
+            Pulse = bloodPressureData.Pulse,
             MultiMeasurement = false,
-            Notes = bloodPressure.Notes,
+            Notes = bloodPressureData.Notes,
             SourceType = "MANUAL",
             MeasurementTimestampLocal = roundedDateTime,
             MeasurementTimestampGmt = roundedDateTime.ToUniversalTime(),
@@ -139,6 +139,40 @@ public partial class GarminConnectClient
     {
         var url =
             $"{BloodPressureUrl}/{bloodPressureIdentifier.MeasurementTimestampGmt:yyyy-MM-dd}/{bloodPressureIdentifier.Version}";
+
+        await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
+    }
+
+    public async Task<bool> AddWeight(GarminWeight weightData, CancellationToken cancellationToken = default)
+    {
+        if (!weightData.IsValid())
+        {
+            return false;
+        }
+
+        var roundedDateTime = new DateTime(
+            weightData.MeasurementDateTime.Year,
+            weightData.MeasurementDateTime.Month,
+            weightData.MeasurementDateTime.Day,
+            weightData.MeasurementDateTime.Hour,
+            weightData.MeasurementDateTime.Minute,
+            0);
+        var request = new GarminWeightRequest
+        {
+            DateTimestamp = roundedDateTime,
+            GmtTimestamp = roundedDateTime.ToUniversalTime(),
+            UnitKey = weightData.UnitKey.ToString().ToLowerInvariant(),
+            Value = weightData.Value
+        };
+
+        await _context.MakeHttpPost(WeightUrl, request, cancellationToken: cancellationToken);
+
+        return true;
+    }
+
+    public async Task RemoveWeight(GarminWeightIdentifier weightIdentifier, CancellationToken cancellationToken = default)
+    {
+        var url = $"{WeightUrl}/{weightIdentifier.CalendarDate:yyyy-MM-dd}/byversion/{weightIdentifier.SamplePk}";
 
         await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
     }

@@ -19,6 +19,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string UserSummaryChartUrl = "/wellness-service/wellness/dailySummaryChart/";
     private const string HeartRatesUrl = "/wellness-service/wellness/dailyHeartRate/";
     private const string SleepDataUrl = "/wellness-service/wellness/dailySleepData/";
+    private const string WeightUrl = "/weight-service/weight";
     private const string BodyCompositionUrl = "/weight-service/weight/daterangesnapshot";
     private const string ActivitiesUrl = "/activitylist-service/activities/search/activities";
     private const string ActivityUrl = "/activity-service/activity/";
@@ -394,6 +395,17 @@ public partial class GarminConnectClient : IGarminConnectClient
             $"{ReportHrvStatusUrl}{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
 
         return _context.GetAndDeserialize<GarminReportHrvStatus>(hrvUrl, cancellationToken);
+    }
+
+    #endregion
+
+    #region Weight
+
+    public Task<GarminWeightRange> GetWeightRange(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+    {
+        var weightUrl = $"{WeightUrl}/range/{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}?includeAll=true";
+
+        return _context.GetAndDeserialize<GarminWeightRange>(weightUrl, cancellationToken);
     }
 
     #endregion
