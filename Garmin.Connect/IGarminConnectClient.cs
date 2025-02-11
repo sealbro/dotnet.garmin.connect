@@ -163,6 +163,7 @@ public interface IGarminConnectClient
     /// <summary>
     /// [Experimental] Sets user's weight in grams.
     /// </summary>
+    [Obsolete("Use AddWeight(GarminWeight weight)")]
     Task SetUserWeight(double weight, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -239,18 +240,39 @@ public interface IGarminConnectClient
     /// <param name="cancellationToken"></param>
     Task<GarminBloodPressureMeasurement[]> GetBloodPressureRange(DateTime startDate, DateTime endDate,
         CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Add blood pressure data
     /// </summary>
-    /// <param name="bloodPressure">Blood pressure data</param>
+    /// <param name="bloodPressureData">Blood pressure data</param>
     /// <param name="cancellationToken"></param>
-    Task<bool> AddBloodPressure(GarminBloodPressure bloodPressure, CancellationToken cancellationToken = default);
-    
+    Task<bool> AddBloodPressure(GarminBloodPressure bloodPressureData, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Remove blood pressure data
     /// </summary>
     /// <param name="bloodPressureIdentifier">Blood pressure identifier</param>
     /// <param name="cancellationToken"></param>
     Task RemoveBloodPressure(GarminBloodPressureIdentifier bloodPressureIdentifier, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get weight range data
+    /// <param name="startDate">Date start</param>
+    /// <param name="endDate">Date end</param>
+    /// <param name="cancellationToken"></param>
+    Task<GarminWeightRange> GetWeightRange(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Add weight data
+    /// </summary>
+    /// <param name="weightData">Weight data</param>
+    /// <param name="cancellationToken"></param>
+    Task<bool> AddWeight(GarminWeight weightData, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Remove weight data
+    /// </summary>
+    /// <param name="weightIdentifier">Weight identifier</param>
+    /// <param name="cancellationToken"></param>
+    Task RemoveWeight(GarminWeightIdentifier weightIdentifier, CancellationToken cancellationToken = default);
 }

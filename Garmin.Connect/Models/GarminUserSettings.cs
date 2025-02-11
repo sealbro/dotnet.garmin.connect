@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json.Serialization;
+using Garmin.Connect.Converters;
 
 namespace Garmin.Connect.Models;
 
@@ -36,6 +37,7 @@ public record UserData
     public string TimeFormat { get; init; }
 
     [JsonPropertyName("birthDate")]
+    [JsonConverter(typeof(DateTimeConverter))]
     public DateTime BirthDate { get; init; }
 
     [JsonPropertyName("measurementSystem")]
