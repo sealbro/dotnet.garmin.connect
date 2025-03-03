@@ -86,4 +86,16 @@ public class BasicAuthParameters : IAuthParameters
 
         return queryParams;
     }
+
+    public virtual IReadOnlyDictionary<string, string> GetMfaParameters()
+    {
+        var queryParams = new Dictionary<string, string>
+        {
+            { "embed", "true" },
+            { "fromPage", "setupEnterMfaCode" },
+            { "_csrf", Csrf },
+        };
+
+        return queryParams;
+    }
 }

@@ -24,11 +24,14 @@ public class GarminConnectContext
     private const int DelayAfterFailAuth = 300;
     private readonly GarminAuthenticationService _garminAuthenticationService;
 
-    public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
+    public GarminConnectContext(
+        HttpClient httpClient, 
+        IAuthParameters authParameters,
+        IGetUserMfaCode userMfaService)
     {
         _httpClient = httpClient;
         _authParameters = authParameters;
-        _garminAuthenticationService = new GarminAuthenticationService(_httpClient, authParameters);
+        _garminAuthenticationService = new GarminAuthenticationService(_httpClient, authParameters, userMfaService);
     }
 
     public async Task ReLoginIfExpired(bool force = false, CancellationToken cancellationToken = default)
