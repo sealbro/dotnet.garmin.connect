@@ -1,12 +1,11 @@
-namespace OAuth
+namespace OAuth;
+
+/// <summary>
+/// The encryption method to use when hashing a request signature.
+/// </summary>
+internal enum OAuthSignatureMethod
 {
-    /// <summary>
-    /// The encryption method to use when hashing a request signature.
-    /// </summary>
-    internal enum OAuthSignatureMethod
-    {
-        HmacSha1,
-        PlainText,
-        RsaSha1
-    }
+    HmacSha1,
+    PlainText,
+    RsaSha1
 }
