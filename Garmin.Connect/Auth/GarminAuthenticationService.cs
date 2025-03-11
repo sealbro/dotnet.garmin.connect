@@ -19,7 +19,7 @@ internal class GarminAuthenticationService
     private readonly IAuthParameters _authParameters;
     private readonly IGetUserMfaCode _userMfaCodeService;
     private readonly HttpClient _httpClient;
-
+    private const uint Maxnumberofredirects = 3;
     private string SsoUrl => $"https://sso.{_authParameters.Domain}/sso";
     private string EmbedUrl => $"{SsoUrl}/embed";
     private string SigninUrl => $"{SsoUrl}/signin";
@@ -113,24 +113,17 @@ internal class GarminAuthenticationService
 
     private string FindCsrfToken(string rawResponseBody, Code failureStepCode)
     {
-        try
-        {
-            var tokenRegex = new Regex("name=\"_csrf\"\\s+value=\"(?<csrf>.+?)\"");
-            var match = tokenRegex.Match(rawResponseBody);
-            if (!match.Success)
-                throw new GarminConnectAuthenticationException($"Failed to find regex match for csrf token. tokenResult: {rawResponseBody}") { Code = failureStepCode };
+        var tokenRegex = new Regex("name=\"_csrf\"\\s+value=\"(?<csrf>.+?)\"");
+        var match = tokenRegex.Match(rawResponseBody);
+        if (!match.Success)
+            throw new GarminConnectAuthenticationException($"Failed to find regex match for csrf token. tokenResult: {rawResponseBody}") { Code = failureStepCode };
 
-            var csrfToken = match.Groups.GetValueOrDefault("csrf")?.Value;
+        var csrfToken = match.Groups.GetValueOrDefault("csrf")?.Value;
 
-            if (string.IsNullOrWhiteSpace(csrfToken))
-                throw new GarminConnectAuthenticationException("Found csrfToken but its null.") { Code = failureStepCode };
+        if (string.IsNullOrWhiteSpace(csrfToken))
+            throw new GarminConnectAuthenticationException("Found csrfToken but its null.") { Code = failureStepCode };
 
-            return csrfToken;
-        }
-        catch (Exception e)
-        {
-            throw new GarminConnectAuthenticationException("Failed to parse csrf token.", e) { Code = failureStepCode };
-        }
+        return csrfToken;
     }
 
     private async Task<string> RequestCsrfToken(CancellationToken cancellationToken)
@@ -200,7 +193,7 @@ internal class GarminAuthenticationService
         responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         if (responseMessage.StatusCode == HttpStatusCode.Redirect)
         {
-            content = await HandleRedirect(responseMessage, cancellationToken);
+            content = await HandleRedirect(responseMessage, cancellationToken, 0);
             return content;
         }
         else if (responseMessage.IsSuccessStatusCode)
@@ -225,8 +218,11 @@ internal class GarminAuthenticationService
         }
     }
 
-    private async Task<string> HandleRedirect(HttpResponseMessage msg, CancellationToken cancellationToken)
+    private async Task<string> HandleRedirect(HttpResponseMessage msg, CancellationToken cancellationToken, uint currentRedirectCount)
     {
+        if (currentRedirectCount == Maxnumberofredirects) //zerobased counting
+            return String.Empty;
+
         var redirectUrl = msg.Headers.Location;
         //get the redirect url manually:
         var httpRequestMessageRedirect = new HttpRequestMessage(HttpMethod.Get, redirectUrl);
@@ -235,7 +231,7 @@ internal class GarminAuthenticationService
             await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
         while (responseMessageRedirect.StatusCode == HttpStatusCode.Redirect)
         {
-            return await HandleRedirect(responseMessageRedirect, cancellationToken);
+            return await HandleRedirect(responseMessageRedirect, cancellationToken, currentRedirectCount+1);
         }
         return await responseMessageRedirect.Content.ReadAsStringAsync(cancellationToken);
     }
@@ -291,7 +287,7 @@ internal class GarminAuthenticationService
             var location = responseMessage.Headers.Location;
 
             //handle redirect manually
-            content = await HandleRedirect(responseMessage, cancellationToken);
+            content = await HandleRedirect(responseMessage, cancellationToken, 0);
             if (location.ToString().Contains("https://sso.garmin.com/sso/verifyMFA/loginEnterMfaCode"))
             {
                 //extract new csrf token for MFA Code flow
