@@ -198,8 +198,7 @@ internal class GarminAuthenticationService
         }
         else if (responseMessage.IsSuccessStatusCode)
         {
-            content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
-            return content;
+            return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
         else
         {
