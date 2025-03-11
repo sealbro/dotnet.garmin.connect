@@ -18,4 +18,5 @@ public interface IAuthParameters
     IReadOnlyDictionary<string, string> GetFormParameters();
 
     IReadOnlyDictionary<string, string> GetQueryParameters();
+    IReadOnlyDictionary<string, string> GetMfaParameters();
 }
