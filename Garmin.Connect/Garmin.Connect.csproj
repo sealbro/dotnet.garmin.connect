@@ -28,8 +28,4 @@
         <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="OAuth.DotNetCore" Version="3.0.1" />
-    </ItemGroup>
-
 </Project>

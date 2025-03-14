@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Garmin.Connect.Auth.External;
-using OAuth;
+using Garmin.Connect.OAuth;
 
 namespace Garmin.Connect.Auth;
 
