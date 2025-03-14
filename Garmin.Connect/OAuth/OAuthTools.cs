@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-
-#if !WINRT
 using System.Security.Cryptography;
+using System.Text;
+#if !WINRT
+
 #else
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
@@ -13,7 +12,7 @@ using Windows.Storage.Streams;
 using System.Globalization;
 #endif
 
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 /// <summary>
 /// A general purpose toolset for creating components of an OAuth request.
@@ -99,7 +98,7 @@ internal static class OAuthTools
 
     private static long ToUnixTime(DateTime dateTime)
     {
-        var timeSpan = (dateTime - new DateTime(1970, 1, 1));
+        var timeSpan = dateTime - new DateTime(1970, 1, 1);
         var timestamp = (long)timeSpan.TotalSeconds;
 
         return timestamp;
@@ -130,7 +129,7 @@ internal static class OAuthTools
         foreach (var b in bytes)
         {
             // Supports proper encoding of special characters (\n\r\t\b)
-            if ((b > 7 && b < 11) || b == 13)
+            if (b is > 7 and < 11 or 13)
             {
                 sb.Append($"%0{b:X}");
             }
@@ -226,7 +225,7 @@ internal static class OAuthTools
 #if WINRT || DOTNETCORE
             return CultureInfo.InvariantCulture.CompareInfo.Compare(left, right, CompareOptions.IgnoreCase) == 0;
 #else
-        return String.Compare(left, right, StringComparison.InvariantCultureIgnoreCase) == 0;
+        return string.Compare(left, right, StringComparison.InvariantCultureIgnoreCase) == 0;
 #endif
     }
 
@@ -339,7 +338,7 @@ internal static class OAuthTools
     {
         if (IsNullOrBlank(tokenSecret))
         {
-            tokenSecret = String.Empty;
+            tokenSecret = string.Empty;
         }
 
         string signature;

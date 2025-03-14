@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 internal static class RsaPrivateKeyParser
 {

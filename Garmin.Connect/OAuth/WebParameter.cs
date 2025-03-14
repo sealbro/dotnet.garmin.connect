@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 #if !Smartphone
 [DebuggerDisplay("{Name}:{Value}")]

@@ -1,4 +1,4 @@
-﻿namespace OAuth;
+﻿namespace Garmin.Connect.OAuth;
 
 /// <summary>
 /// Specifies whether the final signature value should be escaped during calculation.

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Text;
 
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 internal static class TextSigner
 {

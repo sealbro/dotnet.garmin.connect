@@ -1,4 +1,4 @@
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 /// <summary>
 /// The encryption method to use when hashing a request signature.

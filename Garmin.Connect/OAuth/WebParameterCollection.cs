@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.Specialized;
+using System.Linq;
 
-namespace OAuth;
+namespace Garmin.Connect.OAuth;
 
 internal class WebParameterCollection : IList<WebParameter>
 {
@@ -82,7 +82,7 @@ internal class WebParameterCollection : IList<WebParameter>
 
     public WebParameterCollection()
     {
-        _parameters = new List<WebParameter>(0);
+        _parameters = [];
     }
 
     public WebParameterCollection(int capacity)
