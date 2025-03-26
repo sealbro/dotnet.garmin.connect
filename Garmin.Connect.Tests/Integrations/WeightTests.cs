@@ -51,7 +51,7 @@ public class WeightTests
         Assert.NotEmpty(weightRange.DailyWeightSummaries);
 
         var measurement = weightRange.DailyWeightSummaries.First(summary => summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime))
-            .AllWeightMetrics.First();
+            .AllWeightMetrics.First(weightMeasurement => weightMeasurement.Weight == expectedWeightInGram);
 
         Assert.Equal(expectedWeightInGram, measurement.Weight);
 

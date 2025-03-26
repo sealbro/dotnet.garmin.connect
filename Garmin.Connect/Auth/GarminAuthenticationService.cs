@@ -17,7 +17,7 @@ namespace Garmin.Connect.Auth;
 internal class GarminAuthenticationService
 {
     private readonly IAuthParameters _authParameters;
-    private readonly IGetUserMfaCode _userMfaCodeService;
+    private readonly IMfaCodeProvider _userMfaCodeProviderService;
     private readonly HttpClient _httpClient;
     private const uint Maxnumberofredirects = 3;
     private string SsoUrl => $"https://sso.{_authParameters.Domain}/sso";
@@ -28,10 +28,10 @@ internal class GarminAuthenticationService
     public GarminAuthenticationService(
         HttpClient httpClient, 
         IAuthParameters authParameters,
-        IGetUserMfaCode userMfaCodeService)
+        IMfaCodeProvider userMfaCodeProviderService)
     {
         _authParameters = authParameters;
-        _userMfaCodeService = userMfaCodeService;
+        _userMfaCodeProviderService = userMfaCodeProviderService;
         _httpClient = httpClient;
     }
 
@@ -113,6 +113,10 @@ internal class GarminAuthenticationService
 
     private string FindCsrfToken(string rawResponseBody, Code failureStepCode)
     {
+        if (string.IsNullOrEmpty(rawResponseBody))
+            throw new GarminConnectAuthenticationException("Failed to find csrf token. content is null or empty.")
+            { Code = failureStepCode };
+
         var tokenRegex = new Regex("name=\"_csrf\"\\s+value=\"(?<csrf>.+?)\"");
         var match = tokenRegex.Match(rawResponseBody);
         if (!match.Success)
@@ -187,13 +191,11 @@ internal class GarminAuthenticationService
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
         }
         httpRequestMessage.Content = new FormUrlEncodedContent(parameters);
-        HttpResponseMessage responseMessage = null;
- 
-        string content;
-        responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+
+        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         if (responseMessage.StatusCode == HttpStatusCode.Redirect)
         {
-            content = await HandleRedirect(responseMessage, cancellationToken, 0);
+            var content = await HandleRedirect(responseMessage, cancellationToken, 0);
             return content;
         }
         else if (responseMessage.IsSuccessStatusCode)
@@ -202,8 +204,7 @@ internal class GarminAuthenticationService
         }
         else
         {
-            var responseContent = (await responseMessage.Content.ReadAsStringAsync(cancellationToken)) ??
-                                  string.Empty;
+            var responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
             if (responseContent == "error code: 1020")
                 throw new GarminConnectAuthenticationException(
                     "MFA: Garmin Authentication Failed. Blocked by CloudFlare.")
@@ -220,14 +221,13 @@ internal class GarminAuthenticationService
     private async Task<string> HandleRedirect(HttpResponseMessage msg, CancellationToken cancellationToken, uint currentRedirectCount)
     {
         if (currentRedirectCount == Maxnumberofredirects) //zerobased counting
-            return String.Empty;
+            return string.Empty;
 
         var redirectUrl = msg.Headers.Location;
         //get the redirect url manually:
         var httpRequestMessageRedirect = new HttpRequestMessage(HttpMethod.Get, redirectUrl);
-        
-        HttpResponseMessage responseMessageRedirect =
-            await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
+
+        var responseMessageRedirect = await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
         while (responseMessageRedirect.StatusCode == HttpStatusCode.Redirect)
         {
             return await HandleRedirect(responseMessageRedirect, cancellationToken, currentRedirectCount+1);
@@ -260,7 +260,7 @@ internal class GarminAuthenticationService
         httpRequestMessage.Headers.Add("referer", SigninUrl);
         httpRequestMessage.Headers.Add("NK", "NT");
         httpRequestMessage.Content = new FormUrlEncodedContent(_authParameters.GetFormParameters());
-        
+
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
@@ -277,40 +277,44 @@ internal class GarminAuthenticationService
                     $"Garmin Authentication Failed. {responseMessage.StatusCode}: {content}")
             { Code = Code.OAuth1TicketNotFound };
         }
-        //Handle MFA, important: this needs the injected HTTP client to not handle redirects automatically
-        //didn't look for a way to detect the redirect with automatic redirect
-        //TODO: check if we can figure out a redirect based on the content of the return message in case we can't find the ticket
-        //this would allow to use an HTTPClient with (default) HTTP redirect set to auto
-        if (responseMessage.StatusCode is HttpStatusCode.Found)
+
+        var isRedirectMfaFlow = responseMessage.StatusCode == HttpStatusCode.Found
+                                && responseMessage.Headers.Location.ToString()
+                                    .Contains("https://sso.garmin.com/sso/verifyMFA/loginEnterMfaCode");
+
+        // check if the MFA code resend cooldown and can reuse the old code
+        var isMfaCodeCooldown = responseMessage.StatusCode is HttpStatusCode.OK
+                             && content.Contains("validateMfaCodeAndPrivacyConsents()");
+
+        // Handle MFA, important: this needs the injected HTTP client to not handle redirects automatically
+        // didn't look for a way to detect the redirect with automatic redirect
+        // this would allow to use an HTTPClient with (default) HTTP redirect set to auto
+        if (isRedirectMfaFlow || isMfaCodeCooldown)
         {
-            var location = responseMessage.Headers.Location;
-
-            //handle redirect manually
-            content = await HandleRedirect(responseMessage, cancellationToken, 0);
-            if (location.ToString().Contains("https://sso.garmin.com/sso/verifyMFA/loginEnterMfaCode"))
+            if (isRedirectMfaFlow)
             {
-                //extract new csrf token for MFA Code flow
-                var csrf = FindCsrfToken(content, Code.CsrfTokenNotFound);
-                //replace existing csrf token (I don't think we need to store this separately)
-                _authParameters.Csrf = csrf;
-                //get the MFA code from the user:
-                var mfaCode = await _userMfaCodeService.GetMfaCodeAsync();
-                //complete MFA code flow
-                if (String.IsNullOrEmpty(mfaCode))
-                {
-                    throw new GarminConnectAuthenticationException("MFA Code provided is empty!")
-                    {
-                        Code = Code.MfaInvalidCode
-                    };
-                }
-
-                content = await CompleteMfaAuthAsync(mfaCode, cancellationToken);
+                // handle redirect manually
+                content = await HandleRedirect(responseMessage, cancellationToken, 0);
             }
+
+            // extract new csrf token for MFA Code flow
+            _authParameters.Csrf = FindCsrfToken(content, Code.CsrfTokenNotFound);
+            // get the MFA code from the user:
+            var mfaCode = await _userMfaCodeProviderService.GetMfaCodeAsync();
+            // complete MFA code flow
+            if (string.IsNullOrEmpty(mfaCode))
+            {
+                throw new GarminConnectAuthenticationException("MFA Code provided is empty!")
+                {
+                    Code = Code.MfaInvalidCode
+                };
+            }
+
+            content = await CompleteMfaAuthAsync(mfaCode, cancellationToken);
         }
 
         var regexTicket = new Regex(@"embed\?ticket=([^""]+)""", RegexOptions.Compiled | RegexOptions.Multiline);
         var match = regexTicket.Match(content);
-
         if (!match.Success)
             throw new GarminConnectAuthenticationException("Failed to find regex match for ticket.")
             { Code = Code.OAuth1TicketNotFound };

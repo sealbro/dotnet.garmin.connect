@@ -20,12 +20,47 @@ dotnet add package Unofficial.Garmin.Connect
 
 ## Using
 
+### Default authentication
+
 ```dotnet
 var login = "<garmin login>";
 var password = "<garmin password>";
 var authParameters = new BasicAuthParameters(login, password);
 
 var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters));
+```
+
+### Authentication with MFA (multi-factor auth) codes
+
+```dotnet
+var login = "<garmin login>";
+var password = "<garmin password>";
+var authParameters = new BasicAuthParameters(login, password);
+
+var mfaCode = new StaticMfaCode();
+
+var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters, mfaCode));
+```
+
+Example `IMfaCodeProvider` implementation
+
+```dotnet
+public class StaticMfaCode: IMfaCodeProvider
+{
+    public Task<string> GetMfaCodeAsync()
+    {
+        // 1. static code
+        var code = "123456";
+        
+        // 2.  wait input code from console
+        // var code = Console.ReadLine().Trim();
+        
+        // 3. any other approach how to wait and get the code from the user
+        // like read from file, variable, form input, etc.
+        
+        return Task.FromResult(code);
+    }
+}
 ```
 
 ## Build and publish
