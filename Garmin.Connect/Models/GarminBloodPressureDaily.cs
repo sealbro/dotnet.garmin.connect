@@ -28,13 +28,13 @@ public record GarminBloodPressureIdentifier
 {
     [JsonPropertyName("version")]
     public long Version { get; init; }
-    
+
     [JsonPropertyName("measurementTimestampGMT")]
     [JsonConverter(typeof(DateTimeConverter))]
     public DateTime MeasurementTimestampGmt { get; init; }
 }
 
-public record GarminBloodPressureMeasurement: GarminBloodPressureIdentifier
+public record GarminBloodPressureMeasurement : GarminBloodPressureIdentifier
 {
     [JsonPropertyName("systolic")]
     public long Systolic { get; init; }

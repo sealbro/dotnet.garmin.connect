@@ -30,7 +30,7 @@ public class WeightTests
     }
 
     [Fact]
-    public async Task Add_And_Weight_Success()
+    public async Task Add_And_Remove_Weight_Success()
     {
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now.AddDays(1);
