@@ -13,9 +13,11 @@ public static class LazyClient
         handler.SslProtocols = SslProtocols.Tls13 | SslProtocols.Tls12;
         var httpClient = new HttpClient(handler);
 
+        var mfaCode = new NotImplementedMfaCode();
+
         return new GarminConnectClient(new GarminConnectContext(httpClient,
             new BasicAuthParameters(
                 Environment.GetEnvironmentVariable("GARMIN_LOGIN"),
-                Environment.GetEnvironmentVariable("GARMIN_PASSWORD"))));
+                Environment.GetEnvironmentVariable("GARMIN_PASSWORD")), mfaCode));
     });
 }

@@ -24,10 +24,12 @@ public class GarminConnectContext
     private const int DelayAfterFailAuth = 300;
     private readonly GarminAuthenticationService _garminAuthenticationService;
 
-    public GarminConnectContext(
-        HttpClient httpClient, 
-        IAuthParameters authParameters,
-        IGetUserMfaCode userMfaService)
+    public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
+        : this(httpClient, authParameters, new NotImplementedMfaCode())
+    {
+    }
+
+    public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters, IMfaCodeProvider userMfaService)
     {
         _httpClient = httpClient;
         _authParameters = authParameters;
