@@ -17,7 +17,7 @@ public class WeightTests
     public WeightTests()
     {
         _garmin = LazyClient.Garmin.Value;
-        _startDate = new DateTime(2022,1,1);
+        _startDate = new DateTime(2022, 1, 1);
         _endDate = DateTime.Now.AddYears(1);
     }
 
@@ -85,8 +85,9 @@ public class WeightTests
 
         Assert.False(isAdded);
     }
-    
-    public static IEnumerable<object[]> WeightData() {
+
+    public static IEnumerable<object[]> WeightData()
+    {
         yield return [0.0];
         yield return [454.0];
     }
