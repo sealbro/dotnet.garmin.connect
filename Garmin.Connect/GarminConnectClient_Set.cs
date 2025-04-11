@@ -210,6 +210,6 @@ public partial class GarminConnectClient
         using var formData = new MultipartFormDataContent();
         formData.Add(fileContent, "userfile", Path.GetFileName(filename));
 
-        await _context.MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string,string>(), fileContent, cancellationToken);
+        await _context.MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string, string>(), fileContent, cancellationToken);
     }
 }
