@@ -26,7 +26,7 @@ internal class GarminAuthenticationService
     private string MfaCodeURL => $"{SsoUrl}/verifyMFA/loginEnterMfaCode";
 
     public GarminAuthenticationService(
-        HttpClient httpClient, 
+        HttpClient httpClient,
         IAuthParameters authParameters,
         IMfaCodeProvider userMfaCodeProviderService)
     {
@@ -230,8 +230,9 @@ internal class GarminAuthenticationService
         var responseMessageRedirect = await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
         while (responseMessageRedirect.StatusCode == HttpStatusCode.Redirect)
         {
-            return await HandleRedirect(responseMessageRedirect, cancellationToken, currentRedirectCount+1);
+            return await HandleRedirect(responseMessageRedirect, cancellationToken, currentRedirectCount + 1);
         }
+
         return await responseMessageRedirect.Content.ReadAsStringAsync(cancellationToken);
     }
 

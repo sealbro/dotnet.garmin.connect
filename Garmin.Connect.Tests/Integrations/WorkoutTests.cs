@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
@@ -124,5 +125,27 @@ public class WorkoutTests
 
         Assert.Contains(deviceMessages.Messages,
             x => x.MessageType == "workouts" && x.DeviceId == deviceId && x.MetaData.MetaDataId == workout.WorkoutId);
+    }
+
+    [Fact(Skip = "Not for CI only for self test")]
+    public async Task UploadFileFromLocalMachine()
+    {
+        var filename = "/some.fit";
+
+        await _garmin.UploadFile(filename);
+    }
+
+    [Fact(Skip = "Not for CI only for self test")]
+    public async Task UploadFileFromStream()
+    {
+        var filename = "/some.fit";
+        var memoryStream = new MemoryStream();
+        await using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+        {
+            await fileStream.CopyToAsync(memoryStream);
+        }
+        memoryStream.Position = 0;
+
+        await _garmin.UploadFile(filename, memoryStream);
     }
 }

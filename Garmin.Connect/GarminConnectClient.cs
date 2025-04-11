@@ -40,6 +40,7 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string CalendarYearUrl = "/calendar-service/year/";
     private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
     private const string BloodPressureUrl = "/bloodpressure-service/bloodpressure";
+    private const string UploadUrl = "/upload-service/upload";
 
     public GarminConnectClient(GarminConnectContext context)
     {

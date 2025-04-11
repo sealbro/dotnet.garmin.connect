@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
@@ -10,6 +13,14 @@ namespace Garmin.Connect;
 
 public partial class GarminConnectClient
 {
+    private readonly string[] _validExtensions =
+    [
+        // Garmin Activity Files
+        ".fit", ".tcx", ".gpx",
+        // Fitbit® body or activity data
+        ".csv", ".xls", ".xlsx"
+    ];
+
     public Task SetUserWeight(double weight, CancellationToken cancellationToken = default)
     {
         var garminSetUserWeight = new GarminSetUserWeight(weight);
@@ -175,5 +186,30 @@ public partial class GarminConnectClient
         var url = $"{WeightUrl}/{weightIdentifier.CalendarDate:yyyy-MM-dd}/byversion/{weightIdentifier.SamplePk}";
 
         await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
+    }
+
+    public async Task UploadFile(string filepath, CancellationToken cancellationToken = default)
+    {
+        await using var fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+
+        await UploadFile(filepath, fileStream, cancellationToken);
+    }
+
+    public async Task UploadFile(string filename, Stream stream, CancellationToken cancellationToken = default)
+    {
+        var extension = Path.GetExtension(filename);
+        if (!_validExtensions.Contains(extension))
+        {
+            throw new ArgumentException($"File extension {extension} is not supported. Supported extensions are: {string.Join(", ", _validExtensions)}");
+        }
+
+        var url = $"{UploadUrl}/{extension}";
+
+        var fileContent = new StreamContent(stream) { Headers = { ContentType = new MediaTypeHeaderValue("application/octet-stream") } };
+
+        using var formData = new MultipartFormDataContent();
+        formData.Add(fileContent, "userfile", Path.GetFileName(filename));
+
+        await _context.MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string, string>(), fileContent, cancellationToken);
     }
 }

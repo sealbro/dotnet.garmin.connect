@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
@@ -275,4 +276,19 @@ public interface IGarminConnectClient
     /// <param name="weightIdentifier">Weight identifier</param>
     /// <param name="cancellationToken"></param>
     Task RemoveWeight(GarminWeightIdentifier weightIdentifier, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Upload file to Garmin Connect from file path
+    /// </summary>
+    /// <param name="filepath">Full file path on your machine</param>
+    /// <param name="cancellationToken"></param>
+    Task UploadFile(string filepath, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Upload file to Garmin Connect from stream
+    /// </summary>
+    /// <param name="filename">File name with extension</param>
+    /// <param name="stream">Stream with file content</param>
+    /// <param name="cancellationToken"></param>
+    Task UploadFile(string filename, Stream stream, CancellationToken cancellationToken = default);
 }

@@ -77,7 +77,7 @@ public class GarminConnectContext
         IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
         MakeHttpRequest(url, HttpMethod.Delete, headers, null, cancellationToken);
 
-    private async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
+    internal async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
         IReadOnlyDictionary<string, string> headers, HttpContent content, CancellationToken cancellationToken)
     {
         var force = false;
