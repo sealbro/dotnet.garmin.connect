@@ -15,6 +15,7 @@ end_of_line = lf
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
 insert_final_newline = false
+trim_trailing_whitespace = true
 
 # XML project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
@@ -143,8 +144,6 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the LICENSE file in the project root for more information.
-
 # RS0016: Only enable if API files are present
 dotnet_public_api_analyzer.require_api_files = true
 
@@ -154,6 +153,8 @@ dotnet_diagnostic.IDE0055.severity = warning
 
 # CSharp code style settings:
 [*.cs]
+csharp_place_accessorholder_attribute_on_same_line = false
+
 # Newline settings
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true

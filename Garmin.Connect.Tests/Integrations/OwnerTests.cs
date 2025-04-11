@@ -41,6 +41,7 @@ public class OwnerTests
     }
 
     [Fact]
+    [Obsolete]
     public async Task SetUserWeight()
     {
         var userSettingsOriginal = await _garmin.GetUserSettings();

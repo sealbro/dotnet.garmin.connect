@@ -3,7 +3,7 @@ using Garmin.Connect.Auth;
 
 namespace Garmin.Connect.Tests;
 
-public class StaticMfaCode: IMfaCodeProvider
+public class StaticMfaCode : IMfaCodeProvider
 {
     public Task<string> GetMfaCodeAsync()
     {

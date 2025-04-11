@@ -17,7 +17,7 @@ public class BloodPressureTests
     public BloodPressureTests()
     {
         _garmin = LazyClient.Garmin.Value;
-        _startDate = new DateTime(2024,1,10);
+        _startDate = new DateTime(2024, 1, 10);
         _endDate = DateTime.Now.AddYears(1);
     }
 
@@ -37,7 +37,7 @@ public class BloodPressureTests
         Assert.NotEmpty(bloodPressureRange);
 
         var garminBloodPressureMeasurement = bloodPressureRange.First();
-        
+
         var bloodPressureDaily = await _garmin.GetBloodPressureDaily(garminBloodPressureMeasurement.MeasurementTimestampLocal);
 
         Assert.NotEmpty(bloodPressureDaily.BloodPressureMeasurements);
@@ -77,7 +77,7 @@ public class BloodPressureTests
         bloodPressureRange = await _garmin.GetBloodPressureRange(startDate, endDate);
 
         Assert.DoesNotContain(bloodPressureRange, x => x.Version == garminBloodPressureMeasurement.Version
-                                                       && x.MeasurementTimestampLocal == garminBloodPressureMeasurement.MeasurementTimestampLocal);    
+                                                       && x.MeasurementTimestampLocal == garminBloodPressureMeasurement.MeasurementTimestampLocal);
     }
 
     [Theory]
@@ -92,13 +92,14 @@ public class BloodPressureTests
             MeasurementDateTime = DateTime.Now,
             Notes = "123"
         };
-        
+
         var addBloodPressure = await _garmin.AddBloodPressure(bloodPressure);
 
         Assert.False(addBloodPressure);
     }
-    
-    public static IEnumerable<object[]> BloodPressureData() {
+
+    public static IEnumerable<object[]> BloodPressureData()
+    {
         yield return [29, 100, 100];
         yield return [201, 100, 100];
         yield return [100, 39, 100];
