@@ -13,7 +13,7 @@ public class DateTimeConverter : JsonConverter<DateTime>
     private const string Format1 = "yyyy-MM-dd HH:mm:ss";
     private const string Format2 = "yyyy-MM-dd\\THH:mm:ss.f";
     private const string Format3 = "yyyy-MM-dd\\THH:mm:ss.fff";
-    private const string Format4 = "yyyy-MM-dd\\THH:mm:ss.fff+ffff";
+    private const string Format4 = "yyyy-MM-dd\\THH:mm:ss.fffzzz";
     private static readonly string[] Formats = [Format2, Format3, Format4, Format1, Format0];
 
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
