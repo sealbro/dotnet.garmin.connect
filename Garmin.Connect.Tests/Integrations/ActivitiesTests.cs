@@ -10,7 +10,7 @@ namespace Garmin.Connect.Tests.Integrations;
 public class ActivitiesTests
 {
     private readonly Lazy<Task<GarminActivity[]>> _lazyActivities =
-        new(() => LazyClient.Garmin.Value.GetActivities(1, 1));
+        new(() => LazyClient.Garmin.Value.GetActivities(2, 1));
 
     private readonly IGarminConnectClient _garmin;
 
@@ -32,7 +32,7 @@ public class ActivitiesTests
     public async Task GetActivitiesByDate_NotEmpty()
     {
         var activitiesByDate =
-            await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "running");
+            await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "walking");
 
         Assert.NotNull(activitiesByDate);
         Assert.NotEmpty(activitiesByDate);
@@ -87,8 +87,9 @@ public class ActivitiesTests
     [Fact]
     public async Task GetActivityWeather_Exists()
     {
-        var garminActivities = await _lazyActivities.Value;
-        var activityId = garminActivities.First().ActivityId;
+        var activitiesByDate =
+            await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "walking");
+        var activityId = activitiesByDate.First().ActivityId;
 
         var garminActivityWeather = await _garmin.GetActivityWeather(activityId);
 

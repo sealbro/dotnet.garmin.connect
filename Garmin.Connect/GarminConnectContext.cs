@@ -57,8 +57,18 @@ public class GarminConnectContext
         }
 
         var json = await response.Content.ReadAsByteArrayAsync(cancellationToken);
-
+#if DEBUG
+        try
+        {
+            return GarminSerializer.To<T>(json);
+        }
+        catch (FormatException ex)
+        {
+            throw new FormatException($"Error deserializing JSON for {url}:\n{System.Text.Encoding.UTF8.GetString(json)}", ex);
+        }
+#else
         return GarminSerializer.To<T>(json);
+#endif
     }
 
     public Task<HttpResponseMessage> MakeHttpGet(string url,
