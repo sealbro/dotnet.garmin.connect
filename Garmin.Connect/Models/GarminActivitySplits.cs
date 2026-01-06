@@ -149,6 +149,9 @@ public record LapDto
     [JsonPropertyName("connectIQMeasurement")]
     public GarminConnectIqMeasurement[] ConnectIqMeasurement { get; init; }
 
+    [JsonPropertyName("intensityType")]
+    public string IntensityType { get; init; }
+
     [JsonPropertyName("messageIndex")]
     public long MessageIndex { get; init; }
 }
