@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Security.Authentication;
 using Garmin.Connect.Auth;
@@ -15,9 +16,10 @@ public static class LazyClient
 
         var mfaCode = new NotImplementedMfaCode();
 
+        var fileTokenCache = new FileTokenCache(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".garmin_token.json"));
         return new GarminConnectClient(new GarminConnectContext(httpClient,
             new BasicAuthParameters(
                 Environment.GetEnvironmentVariable("GARMIN_LOGIN"),
-                Environment.GetEnvironmentVariable("GARMIN_PASSWORD")), mfaCode));
+                Environment.GetEnvironmentVariable("GARMIN_PASSWORD")), mfaCode, fileTokenCache));
     });
 }

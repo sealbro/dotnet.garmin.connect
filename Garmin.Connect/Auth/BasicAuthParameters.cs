@@ -39,7 +39,7 @@ public class BasicAuthParameters : IAuthParameters
         _email = email;
         _password = password;
         _userAgent = userAgent;
-        ConsumerCredentials = consumerCredentials;
+        ConsumerCredentials = consumerCredentials ?? ConsumerCredentials.Default;
     }
 
     public virtual IReadOnlyDictionary<string, string> GetHeaders()
