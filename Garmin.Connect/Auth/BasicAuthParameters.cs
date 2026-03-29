@@ -28,12 +28,12 @@ public class BasicAuthParameters : IAuthParameters
     {
         if (string.IsNullOrEmpty(email))
         {
-            throw new ArgumentException(email, nameof(email));
+            throw new ArgumentException("Email cannot be empty.", nameof(email));
         }
 
         if (string.IsNullOrEmpty(password))
         {
-            throw new ArgumentException(password, nameof(password));
+            throw new ArgumentException("Password cannot be empty.", nameof(password));
         }
 
         _email = email;

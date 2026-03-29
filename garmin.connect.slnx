@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Garmin.Connect.Tests/Garmin.Connect.Tests.csproj" />
+  <Project Path="Garmin.Connect/Garmin.Connect.csproj" />
+</Solution>

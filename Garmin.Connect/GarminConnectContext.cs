@@ -22,6 +22,7 @@ public class GarminConnectContext
 
     private const int Attempts = 3;
     private const int DelayAfterFailAuth = 300;
+    private const string DiBackend = "connectapi.garmin.com";
     private readonly GarminAuthenticationService _garminAuthenticationService;
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters)
@@ -100,7 +101,7 @@ public class GarminConnectContext
                 await ReLoginIfExpired(force, cancellationToken);
 
                 var requestUri = new Uri($"{_authParameters.BaseUrl}{url}");
-                var httpRequestMessage = new HttpRequestMessage(method, requestUri);
+                using var httpRequestMessage = new HttpRequestMessage(method, requestUri);
 
                 if (headers != null)
                 {
@@ -112,7 +113,7 @@ public class GarminConnectContext
 
                 httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
                 httpRequestMessage.Headers.Add("authorization", $"Bearer {_oAuth2Token.Access_Token}");
-                httpRequestMessage.Headers.Add("di-backend", "connectapi.garmin.com");
+                httpRequestMessage.Headers.Add("di-backend", DiBackend);
                 httpRequestMessage.Content = content;
 
                 var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
@@ -150,14 +151,14 @@ public class GarminConnectContext
                 return;
             default:
                 {
-                    var message = $"{response.RequestMessage?.Method.Method}: {response.RequestMessage?.RequestUri}";
+                    var requestUrl = response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
 #if DEBUG
-                    var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                    message += $"\n{content}";
+                    var debugContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                    throw new GarminConnectRequestException(requestUrl, response.StatusCode,
+                        $"{response.RequestMessage?.Method.Method}: {requestUrl}\n{debugContent}");
 #else
-                    await Task.CompletedTask;
+                    throw new GarminConnectRequestException(requestUrl, response.StatusCode);
 #endif
-                    throw new GarminConnectRequestException(message, response.StatusCode);
                 }
         }
     }
