@@ -18,7 +18,8 @@ public class GarminConnectContext
 {
     private readonly HttpClient _httpClient;
     private readonly IAuthParameters _authParameters;
-    private OAuth2Token _oAuth2Token;
+    private readonly ITokenCache _tokenCache;
+    private readonly SemaphoreSlim _authLock = new(1, 1);
 
     private const int Attempts = 3;
     private const int DelayAfterFailAuth = 300;
@@ -31,19 +32,45 @@ public class GarminConnectContext
     }
 
     public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters, IMfaCodeProvider userMfaService)
+        : this(httpClient, authParameters, userMfaService, new InMemoryTokenCache())
+    {
+    }
+
+    public GarminConnectContext(HttpClient httpClient, IAuthParameters authParameters, IMfaCodeProvider userMfaService, ITokenCache tokenCache)
     {
         _httpClient = httpClient;
         _authParameters = authParameters;
+        _tokenCache = tokenCache;
         _garminAuthenticationService = new GarminAuthenticationService(_httpClient, authParameters, userMfaService);
     }
 
-    public async Task ReLoginIfExpired(bool force = false, CancellationToken cancellationToken = default)
+    private async Task<OAuth2Token> GetOrRefreshTokenAsync(bool force, CancellationToken cancellationToken)
     {
-        if (force || _oAuth2Token is null)
+        if (!force)
         {
-            var oAuth2Token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
+            var cached = await _tokenCache.GetOAuth2Token(cancellationToken);
+            if (cached is not null)
+                return cached;
+        }
 
-            _oAuth2Token = oAuth2Token;
+        await _authLock.WaitAsync(cancellationToken);
+        try
+        {
+            // Double-check: another thread may have refreshed while we were waiting
+            if (!force)
+            {
+                var cached = await _tokenCache.GetOAuth2Token(cancellationToken);
+                if (cached is not null)
+                    return cached;
+            }
+
+            var token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
+            await _tokenCache.SetOAuth2Token(token, cancellationToken);
+            return token;
+        }
+        finally
+        {
+            _authLock.Release();
         }
     }
 
@@ -98,8 +125,7 @@ public class GarminConnectContext
         {
             try
             {
-                await ReLoginIfExpired(force, cancellationToken);
-
+                var token = await GetOrRefreshTokenAsync(force, cancellationToken);
                 var requestUri = new Uri($"{_authParameters.BaseUrl}{url}");
                 using var httpRequestMessage = new HttpRequestMessage(method, requestUri);
 
@@ -111,8 +137,9 @@ public class GarminConnectContext
                     }
                 }
 
-                httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
-                httpRequestMessage.Headers.Add("authorization", $"Bearer {_oAuth2Token.Access_Token}");
+                if (!string.IsNullOrEmpty(_authParameters.Cookies))
+                    httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
+                httpRequestMessage.Headers.Add("authorization", $"Bearer {token.AccessToken}");
                 httpRequestMessage.Headers.Add("di-backend", DiBackend);
                 httpRequestMessage.Content = content;
 

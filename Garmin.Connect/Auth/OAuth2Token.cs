@@ -2,20 +2,20 @@ using System.Text.Json.Serialization;
 
 namespace Garmin.Connect.Auth;
 
-internal record OAuth2Token
+public record OAuth2Token
 {
     [JsonPropertyName("scope")]
-    public string Scope { get; set; }
+    public string Scope { get; init; }
     [JsonPropertyName("jti")]
-    public string Jti { get; set; }
+    public string Jti { get; init; }
     [JsonPropertyName("access_token")]
-    public string Access_Token { get; set; }
+    public string AccessToken { get; init; }
     [JsonPropertyName("token_type")]
-    public string Token_Type { get; set; }
+    public string TokenType { get; init; }
     [JsonPropertyName("refresh_token")]
-    public string Refresh_Token { get; set; }
+    public string RefreshToken { get; init; }
     [JsonPropertyName("expires_in")]
-    public int Expires_In { get; set; }
+    public int ExpiresIn { get; init; }
     [JsonPropertyName("refresh_token_expires_in")]
-    public int Refresh_Token_Expires_In { get; set; }
+    public int RefreshTokenExpiresIn { get; init; }
 }

@@ -1,7 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Garmin.Connect.Auth;
 
 internal class OAuth1Token
 {
-    public string Token { get; set; }
-    public string TokenSecret { get; set; }
+    [JsonPropertyName("token")]
+    public string Token { get; init; }
+    [JsonPropertyName("token_secret")]
+    public string TokenSecret { get; init; }
 }

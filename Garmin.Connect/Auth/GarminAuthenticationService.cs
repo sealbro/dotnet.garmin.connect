@@ -19,7 +19,7 @@ internal class GarminAuthenticationService
     private readonly IAuthParameters _authParameters;
     private readonly IMfaCodeProvider _userMfaCodeProviderService;
     private readonly HttpClient _httpClient;
-    private const uint Maxnumberofredirects = 3;
+    private const uint MaxNumberOfRedirects = 3;
     private string SsoUrl => $"https://sso.{_authParameters.Domain}/sso";
     private string EmbedUrl => $"{SsoUrl}/embed";
     private string SigninUrl => $"{SsoUrl}/signin";
@@ -41,7 +41,8 @@ internal class GarminAuthenticationService
         _authParameters.Csrf = await RequestCsrfToken(cancellationToken);
 
         var ticket = await GetOAuthTicket(cancellationToken);
-        var consumerCredentials = _authParameters.ConsumerCredentials ?? await GetConsumerCredentials(cancellationToken);
+        var consumerCredentials = _authParameters.ConsumerCredentials;
+
         var auth1Token = await GetOAuth1Token(ticket, consumerCredentials, cancellationToken);
 
         try
@@ -54,22 +55,6 @@ internal class GarminAuthenticationService
             { Code = Code.OAuth2TokenNotFound };
         }
     }
-
-    private async Task<ConsumerCredentials> GetConsumerCredentials(CancellationToken cancellationToken)
-    {
-        var oauthConsumerUrl = Environment.GetEnvironmentVariable("OAUTH_CONSUMER_URL");
-        if (string.IsNullOrWhiteSpace(oauthConsumerUrl))
-        {
-            oauthConsumerUrl = "https://thegarth.s3.amazonaws.com/oauth_consumer.json";
-        }
-
-        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthConsumerUrl);
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
-        var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
-
-        return JsonSerializer.Deserialize<ConsumerCredentials>(content);
-    }
-
 
     private async Task<string> RequestCookies(CancellationToken cancellationToken)
     {
@@ -220,7 +205,7 @@ internal class GarminAuthenticationService
 
     private async Task<string> HandleRedirect(HttpResponseMessage msg, CancellationToken cancellationToken, uint currentRedirectCount)
     {
-        if (currentRedirectCount == Maxnumberofredirects) //zerobased counting
+        if (currentRedirectCount == MaxNumberOfRedirects) //zerobased counting
             return string.Empty;
 
         var redirectUrl = msg.Headers.Location;
@@ -338,7 +323,7 @@ internal class GarminAuthenticationService
         string oauth1Response;
         try
         {
-            var oauthClient = OAuthRequest.ForRequestToken(credentials.Consumer_Key, credentials.Consumer_Secret);
+            var oauthClient = OAuthRequest.ForRequestToken(credentials.ConsumerKey, credentials.ConsumerSecret);
             oauthClient.RequestUrl =
                 $"https://connectapi.{_authParameters.Domain}/oauth-service/oauth/preauthorized?ticket={ticket}&login-url=https://sso.garmin.com/sso/embed&accepts-mfa-tokens=true";
 
@@ -387,8 +372,8 @@ internal class GarminAuthenticationService
     private async Task<OAuth2Token> GetOAuth2TokenAsync(OAuth1Token oAuth1Token, ConsumerCredentials credentials,
         CancellationToken cancellationToken)
     {
-        var oauth2Client = OAuthRequest.ForProtectedResource("POST", credentials.Consumer_Key,
-            credentials.Consumer_Secret, oAuth1Token.Token, oAuth1Token.TokenSecret);
+        var oauth2Client = OAuthRequest.ForProtectedResource("POST", credentials.ConsumerKey,
+            credentials.ConsumerSecret, oAuth1Token.Token, oAuth1Token.TokenSecret);
         oauth2Client.RequestUrl = $"https://connectapi.{_authParameters.Domain}/oauth-service/oauth/exchange/user/2.0";
 
         using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, oauth2Client.RequestUrl);
