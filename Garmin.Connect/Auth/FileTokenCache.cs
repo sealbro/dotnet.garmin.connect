@@ -46,6 +46,10 @@ public sealed class FileTokenCache : ITokenCache
 
     public async Task SetOAuth2Token(OAuth2Token token, CancellationToken cancellationToken)
     {
+        var directory = Path.GetDirectoryName(_filePath);
+        if (!string.IsNullOrEmpty(directory))
+            Directory.CreateDirectory(directory);
+
         var cached = new CachedToken { Token = token, ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(token.ExpiresIn) };
         var json = JsonSerializer.SerializeToUtf8Bytes(cached);
         await File.WriteAllBytesAsync(_filePath, json, cancellationToken);

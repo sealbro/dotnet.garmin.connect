@@ -22,43 +22,74 @@ dotnet add package Unofficial.Garmin.Connect
 
 ### Default authentication
 
-```dotnet
-var login = "<garmin login>";
-var password = "<garmin password>";
-var authParameters = new BasicAuthParameters(login, password);
-
+```csharp
+var authParameters = new BasicAuthParameters("<garmin login>", "<garmin password>");
 var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters));
 ```
 
-### Authentication with MFA (multi-factor auth) codes
+### Authentication with MFA (multi-factor auth)
 
-```dotnet
-var login = "<garmin login>";
-var password = "<garmin password>";
-var authParameters = new BasicAuthParameters(login, password);
-
+```csharp
+var authParameters = new BasicAuthParameters("<garmin login>", "<garmin password>");
 var mfaCode = new StaticMfaCode();
 
 var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters, mfaCode));
 ```
 
-Example `IMfaCodeProvider` implementation
+Example `IMfaCodeProvider` implementation:
 
-```dotnet
-public class StaticMfaCode: IMfaCodeProvider
+```csharp
+public class StaticMfaCode : IMfaCodeProvider
 {
     public Task<string> GetMfaCodeAsync()
     {
         // 1. static code
         var code = "123456";
-        
-        // 2.  wait input code from console
+
+        // 2. wait for input from console
         // var code = Console.ReadLine().Trim();
-        
-        // 3. any other approach how to wait and get the code from the user
-        // like read from file, variable, form input, etc.
-        
+
+        // 3. any other approach: read from file, env var, form input, etc.
+
         return Task.FromResult(code);
+    }
+}
+```
+
+### Token caching
+
+To avoid re-authenticating on every startup, pass an `ITokenCache` implementation. The OAuth2 token is reused until it expires.
+
+**In-memory cache** (default, cleared on restart):
+
+```csharp
+// InMemoryTokenCache is used automatically when no cache is specified
+var client = new GarminConnectClient(new GarminConnectContext(new HttpClient(), authParameters, mfaCode));
+```
+
+**File cache** (persists across restarts):
+
+```csharp
+var tokenCache = new FileTokenCache("/path/to/token.json");
+var client = new GarminConnectClient(
+    new GarminConnectContext(new HttpClient(), authParameters, mfaCode, tokenCache));
+```
+
+**Custom cache** (Redis, database, etc.):
+
+Implement `ITokenCache` to plug in any storage backend:
+
+```csharp
+public class RedisTokenCache : ITokenCache
+{
+    public async Task<OAuth2Token> GetOAuth2Token(CancellationToken cancellationToken)
+    {
+        // read and return token from Redis, or null if missing/expired
+    }
+
+    public async Task SetOAuth2Token(OAuth2Token token, CancellationToken cancellationToken)
+    {
+        // write token to Redis with TTL of token.ExpiresIn seconds
     }
 }
 ```
@@ -71,7 +102,7 @@ public class StaticMfaCode: IMfaCodeProvider
 ## Tests
 
 - set environment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
-  - JetBrains Rider `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
+  - JetBrains Rider: `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
 
 ## Thanks
 

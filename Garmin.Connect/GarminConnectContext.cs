@@ -44,19 +44,29 @@ public class GarminConnectContext
         _garminAuthenticationService = new GarminAuthenticationService(_httpClient, authParameters, userMfaService);
     }
 
-    public async Task ReLoginIfExpired(bool force = false, CancellationToken cancellationToken = default)
+    private async Task<OAuth2Token> GetOrRefreshTokenAsync(bool force, CancellationToken cancellationToken)
     {
-        if (!force && await _tokenCache.GetOAuth2Token(cancellationToken) is not null)
-            return;
-
-        if (!force && await _tokenCache.GetOAuth2Token(cancellationToken) is not null)
-            return;
+        if (!force)
+        {
+            var cached = await _tokenCache.GetOAuth2Token(cancellationToken);
+            if (cached is not null)
+                return cached;
+        }
 
         await _authLock.WaitAsync(cancellationToken);
         try
         {
+            // Double-check: another thread may have refreshed while we were waiting
+            if (!force)
+            {
+                var cached = await _tokenCache.GetOAuth2Token(cancellationToken);
+                if (cached is not null)
+                    return cached;
+            }
+
             var token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
             await _tokenCache.SetOAuth2Token(token, cancellationToken);
+            return token;
         }
         finally
         {
@@ -115,9 +125,7 @@ public class GarminConnectContext
         {
             try
             {
-                await ReLoginIfExpired(force, cancellationToken);
-
-                var token = await _tokenCache.GetOAuth2Token(cancellationToken);
+                var token = await GetOrRefreshTokenAsync(force, cancellationToken);
                 var requestUri = new Uri($"{_authParameters.BaseUrl}{url}");
                 using var httpRequestMessage = new HttpRequestMessage(method, requestUri);
 
