@@ -150,20 +150,15 @@ public partial class GarminConnectClient : IGarminConnectClient
     public async Task<byte[]> DownloadActivity(long activityId, ActivityDownloadFormat format,
         CancellationToken cancellationToken = default)
     {
-        var urls = new Dictionary<ActivityDownloadFormat, string>
+        var url = format switch
         {
-            { ActivityDownloadFormat.ORIGINAL, $"{FitDownloadUrl}{activityId}" },
-            { ActivityDownloadFormat.TCX, $"{TcxDownloadUrl}{activityId}" },
-            { ActivityDownloadFormat.GPX, $"{GpxDownloadUrl}{activityId}" },
-            { ActivityDownloadFormat.KML, $"{KmlDownloadUrl}{activityId}" },
-            { ActivityDownloadFormat.CSV, $"{CsvDownloadUrl}{activityId}" }
+            ActivityDownloadFormat.ORIGINAL => $"{FitDownloadUrl}{activityId}",
+            ActivityDownloadFormat.TCX => $"{TcxDownloadUrl}{activityId}",
+            ActivityDownloadFormat.GPX => $"{GpxDownloadUrl}{activityId}",
+            ActivityDownloadFormat.KML => $"{KmlDownloadUrl}{activityId}",
+            ActivityDownloadFormat.CSV => $"{CsvDownloadUrl}{activityId}",
+            _ => throw new ArgumentException($"Unexpected value {format} for dl_fmt")
         };
-        if (!urls.ContainsKey(format))
-        {
-            throw new ArgumentException($"Unexpected value {format} for dl_fmt");
-        }
-
-        var url = urls[format];
 
         var response = await _context.MakeHttpGet(url, cancellationToken: cancellationToken);
 
@@ -283,7 +278,8 @@ public partial class GarminConnectClient : IGarminConnectClient
     public async Task<GarminStepsData[]> GetWellnessStepsData(DateTime date,
         CancellationToken cancellationToken = default)
     {
-        var profile = await GetSocialProfile();
+        var profile = await GetSocialProfile(cancellationToken)
+            ?? throw new InvalidOperationException("Social profile could not be loaded.");
 
         return await _context.GetAndDeserialize<GarminStepsData[]>(
             $"{UserSummaryChartUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);
@@ -291,15 +287,17 @@ public partial class GarminConnectClient : IGarminConnectClient
 
     public async Task<GarminStats> GetUserSummary(DateTime date, CancellationToken cancellationToken = default)
     {
-        var profile = await GetSocialProfile();
+        var profile = await GetSocialProfile(cancellationToken)
+            ?? throw new InvalidOperationException("Social profile could not be loaded.");
 
         return await _context.GetAndDeserialize<GarminStats>(
-            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyy-MM-dd}", cancellationToken);
+            $"{UserSummaryUrl}{profile.DisplayName}?calendarDate={date:yyyy-MM-dd}", cancellationToken);
     }
 
     public async Task<GarminHr> GetWellnessHeartRates(DateTime date, CancellationToken cancellationToken = default)
     {
-        var profile = await GetSocialProfile();
+        var profile = await GetSocialProfile(cancellationToken)
+            ?? throw new InvalidOperationException("Social profile could not be loaded.");
 
         return await _context.GetAndDeserialize<GarminHr>(
             $"{HeartRatesUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);
@@ -308,7 +306,8 @@ public partial class GarminConnectClient : IGarminConnectClient
     public async Task<GarminSleepData> GetWellnessSleepData(DateTime date,
         CancellationToken cancellationToken = default)
     {
-        var profile = await GetSocialProfile();
+        var profile = await GetSocialProfile(cancellationToken)
+            ?? throw new InvalidOperationException("Social profile could not be loaded.");
 
         return await _context.GetAndDeserialize<GarminSleepData>(
             $"{SleepDataUrl}{profile.DisplayName}?date={date:yyyy-MM-dd}", cancellationToken);

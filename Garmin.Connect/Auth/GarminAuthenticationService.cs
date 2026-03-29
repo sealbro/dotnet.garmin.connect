@@ -63,7 +63,7 @@ internal class GarminAuthenticationService
             oauthConsumerUrl = "https://thegarth.s3.amazonaws.com/oauth_consumer.json";
         }
 
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthConsumerUrl);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthConsumerUrl);
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
@@ -83,7 +83,7 @@ internal class GarminAuthenticationService
 
         var requestUriEmbed = $"{EmbedUrl}?{queryEmbed}";
 
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUriEmbed);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUriEmbed);
         foreach (var kv in _authParameters.GetHeaders())
         {
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
@@ -146,7 +146,7 @@ internal class GarminAuthenticationService
         }
 
         var requestUriSignin = $"{SigninUrl}?{queryCsrf}";
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUriSignin);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUriSignin);
         foreach (var kv in _authParameters.GetHeaders())
         {
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
@@ -185,7 +185,7 @@ internal class GarminAuthenticationService
 
         // Send the MFA Code to Garmin
 
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestMfa);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestMfa);
         foreach (var kv in _authParameters.GetHeaders())
         {
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
@@ -225,9 +225,9 @@ internal class GarminAuthenticationService
 
         var redirectUrl = msg.Headers.Location;
         //get the redirect url manually:
-        var httpRequestMessageRedirect = new HttpRequestMessage(HttpMethod.Get, redirectUrl);
+        using var httpRequestMessageRedirect = new HttpRequestMessage(HttpMethod.Get, redirectUrl);
 
-        var responseMessageRedirect = await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
+        using var responseMessageRedirect = await _httpClient.SendAsync(httpRequestMessageRedirect, cancellationToken);
         while (responseMessageRedirect.StatusCode == HttpStatusCode.Redirect)
         {
             return await HandleRedirect(responseMessageRedirect, cancellationToken, currentRedirectCount + 1);
@@ -238,12 +238,14 @@ internal class GarminAuthenticationService
 
     private async Task<string> GetOAuthTicket(CancellationToken cancellationToken)
     {
-        var parameters = new Dictionary<string, string>(_authParameters.GetQueryParameters());
-        parameters.Add("gauthHost", EmbedUrl);
-        parameters.Add("service", EmbedUrl);
-        parameters.Add("source", EmbedUrl);
-        parameters.Add("redirectAfterAccountLoginUrl", EmbedUrl);
-        parameters.Add("redirectAfterAccountCreationUrl", EmbedUrl);
+        var parameters = new Dictionary<string, string>(_authParameters.GetQueryParameters())
+        {
+            { "gauthHost", EmbedUrl },
+            { "service", EmbedUrl },
+            { "source", EmbedUrl },
+            { "redirectAfterAccountLoginUrl", EmbedUrl },
+            { "redirectAfterAccountCreationUrl", EmbedUrl }
+        };
 
         var queryCsrf = HttpUtility.ParseQueryString(string.Empty);
         foreach (var kv in parameters)
@@ -252,7 +254,7 @@ internal class GarminAuthenticationService
         }
 
         var requestUriSignin = $"{SigninUrl}?{queryCsrf}";
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUriSignin);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUriSignin);
         foreach (var kv in _authParameters.GetHeaders())
         {
             httpRequestMessage.Headers.Add(kv.Key, kv.Value);
@@ -280,8 +282,9 @@ internal class GarminAuthenticationService
         }
 
         var isRedirectMfaFlow = responseMessage.StatusCode == HttpStatusCode.Found
+                                && responseMessage.Headers.Location != null
                                 && responseMessage.Headers.Location.ToString()
-                                    .Contains("https://sso.garmin.com/sso/verifyMFA/loginEnterMfaCode");
+                                    .Contains(MfaCodeURL);
 
         // check if the MFA code resend cooldown and can reuse the old code
         var isMfaCodeCooldown = responseMessage.StatusCode is HttpStatusCode.OK
@@ -339,7 +342,7 @@ internal class GarminAuthenticationService
             oauthClient.RequestUrl =
                 $"https://connectapi.{_authParameters.Domain}/oauth-service/oauth/preauthorized?ticket={ticket}&login-url=https://sso.garmin.com/sso/embed&accepts-mfa-tokens=true";
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthClient.RequestUrl);
+            using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, oauthClient.RequestUrl);
             httpRequestMessage.Headers.Add("User-Agent", _authParameters.UserAgent);
             httpRequestMessage.Headers.Add("Authorization", oauthClient.GetAuthorizationHeader());
 
@@ -388,11 +391,11 @@ internal class GarminAuthenticationService
             credentials.Consumer_Secret, oAuth1Token.Token, oAuth1Token.TokenSecret);
         oauth2Client.RequestUrl = $"https://connectapi.{_authParameters.Domain}/oauth-service/oauth/exchange/user/2.0";
 
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, oauth2Client.RequestUrl);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, oauth2Client.RequestUrl);
         httpRequestMessage.Headers.Add("User-Agent", _authParameters.UserAgent);
         httpRequestMessage.Headers.Add("Authorization", oauth2Client.GetAuthorizationHeader());
 
-        httpRequestMessage.Content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>() });
+        httpRequestMessage.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>()]);
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);

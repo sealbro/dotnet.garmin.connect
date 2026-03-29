@@ -207,9 +207,8 @@ public partial class GarminConnectClient
 
         var fileContent = new StreamContent(stream) { Headers = { ContentType = new MediaTypeHeaderValue("application/octet-stream") } };
 
-        using var formData = new MultipartFormDataContent();
-        formData.Add(fileContent, "userfile", Path.GetFileName(filename));
+        using var formData = new MultipartFormDataContent { { fileContent, "userfile", Path.GetFileName(filename) } };
 
-        await _context.MakeHttpRequest(url, HttpMethod.Post, new Dictionary<string, string>(), fileContent, cancellationToken);
+        await _context.MakeHttpRequest(url, HttpMethod.Post, null, formData, cancellationToken);
     }
 }
