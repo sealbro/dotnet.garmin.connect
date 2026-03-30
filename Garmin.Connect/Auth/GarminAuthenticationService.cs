@@ -239,30 +239,38 @@ internal class GarminAuthenticationService
         }
 
         var requestUriSignin = $"{SigninUrl}?{queryCsrf}";
-        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUriSignin);
-        foreach (var kv in _authParameters.GetHeaders())
+
+        HttpResponseMessage responseMessage;
+        var i = 0;
+        const int TooManyRequestsAttempts = 5;
+        do
         {
-            httpRequestMessage.Headers.Add(kv.Key, kv.Value);
-        }
+            using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUriSignin);
+            foreach (var kv in _authParameters.GetHeaders())
+            {
+                httpRequestMessage.Headers.Add(kv.Key, kv.Value);
+            }
 
-        httpRequestMessage.Headers.Add("referer", SigninUrl);
-        httpRequestMessage.Headers.Add("NK", "NT");
-        httpRequestMessage.Content = new FormUrlEncodedContent(_authParameters.GetFormParameters());
+            httpRequestMessage.Headers.Add("referer", SigninUrl);
+            httpRequestMessage.Headers.Add("NK", "NT");
+            httpRequestMessage.Content = new FormUrlEncodedContent(_authParameters.GetFormParameters());
 
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+            responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+            if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests)
+            {
+                break;
+            }
+            i++;
+            await Task.Delay(TimeSpan.FromSeconds(3 * i), cancellationToken);
+        } while (i < TooManyRequestsAttempts);
+
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+        responseMessage.Dispose();
 
         if (responseMessage.StatusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.Forbidden)
         {
-            content = content switch
-            {
-                "error code: 1015" => "temporary blocked by Garmin",
-                "error code: 1020" => "temporary blocked by CloudFlare",
-                _ => content
-            };
-
             throw new GarminConnectAuthenticationException(
-                    $"Garmin Authentication Failed. {responseMessage.StatusCode}: {content}")
+                    $"Garmin Authentication Failed after {i} attempts. {responseMessage.StatusCode}: {content}")
             { Code = Code.OAuth1TicketNotFound };
         }
 
