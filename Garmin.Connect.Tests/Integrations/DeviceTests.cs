@@ -11,12 +11,7 @@ public class DeviceTests
 {
     private readonly Lazy<Task<GarminDevice[]>> _lazyDevices = new(() => LazyClient.Garmin.Value.GetDevices());
 
-    private readonly IGarminConnectClient _garmin;
-
-    public DeviceTests()
-    {
-        _garmin = LazyClient.Garmin.Value;
-    }
+    private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
     [Fact]
     public async Task GetDevices_NotNull()
@@ -31,7 +26,8 @@ public class DeviceTests
     public async Task GetDeviceSettings_NotNull()
     {
         var garminDevices = await _lazyDevices.Value;
-        var garminDeviceSettings = await _garmin.GetDeviceSettings(garminDevices.First().DeviceId);
+        var garminDeviceSettings =
+            await _garmin.GetDeviceSettings(garminDevices.First().DeviceId, TestContext.Current.CancellationToken);
 
         Assert.NotNull(garminDeviceSettings);
     }
@@ -39,7 +35,7 @@ public class DeviceTests
     [Fact]
     public async Task GetDeviceLastUsed_NotNull()
     {
-        var garminDeviceLastUsed = await _garmin.GetDeviceLastUsed();
+        var garminDeviceLastUsed = await _garmin.GetDeviceLastUsed(TestContext.Current.CancellationToken);
 
         Assert.NotNull(garminDeviceLastUsed);
     }
@@ -47,7 +43,7 @@ public class DeviceTests
     [Fact]
     public async Task GetDeviceMessages_Exists()
     {
-        var deviceMessages = await _garmin.GetDeviceMessages();
+        var deviceMessages = await _garmin.GetDeviceMessages(TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(deviceMessages.Messages);
     }

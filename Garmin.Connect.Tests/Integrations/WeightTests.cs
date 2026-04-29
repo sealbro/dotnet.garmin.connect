@@ -10,21 +10,14 @@ namespace Garmin.Connect.Tests.Integrations;
 [Collection("Garmin Integrations")]
 public class WeightTests
 {
-    private readonly IGarminConnectClient _garmin;
-    private readonly DateTime _startDate;
-    private readonly DateTime _endDate;
-
-    public WeightTests()
-    {
-        _garmin = LazyClient.Garmin.Value;
-        _startDate = new DateTime(2022, 1, 1);
-        _endDate = DateTime.Now.AddYears(1);
-    }
+    private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
+    private readonly DateTime _startDate = new(2022, 1, 1);
+    private readonly DateTime _endDate = DateTime.Now.AddYears(1);
 
     [Fact]
     public async Task GetWeightRange_NotEmpty()
     {
-        var weightRange = await _garmin.GetWeightRange(_startDate, _endDate);
+        var weightRange = await _garmin.GetWeightRange(_startDate, _endDate, TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(weightRange.DailyWeightSummaries);
     }
@@ -32,33 +25,31 @@ public class WeightTests
     [Fact]
     public async Task Add_And_Remove_Weight_Success()
     {
+        var ct = TestContext.Current.CancellationToken;
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now.AddDays(1);
-        var weight = new GarminWeight
-        {
-            MeasurementDateTime = DateTime.Now,
-            UnitKey = WeightUnit.Kg,
-            Value = 42
-        };
+        var weight = new GarminWeight { MeasurementDateTime = DateTime.Now, UnitKey = WeightUnit.Kg, Value = 42 };
         var expectedWeightInGram = weight.Value * 1000;
 
-        var isAdded = await _garmin.AddWeight(weight);
+        var isAdded = await _garmin.AddWeight(weight, ct);
 
         Assert.True(isAdded);
 
-        var weightRange = await _garmin.GetWeightRange(startDate, endDate);
+        var weightRange = await _garmin.GetWeightRange(startDate, endDate, ct);
 
         Assert.NotEmpty(weightRange.DailyWeightSummaries);
 
-        var measurement = weightRange.DailyWeightSummaries.First(summary => summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime))
-            .AllWeightMetrics.First(weightMeasurement => weightMeasurement.Weight == expectedWeightInGram);
+        var measurement = weightRange.DailyWeightSummaries.First(summary =>
+                summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime))
+            .AllWeightMetrics.First(weightMeasurement => Math.Abs(weightMeasurement.Weight - expectedWeightInGram) < 0.1);
 
         Assert.Equal(expectedWeightInGram, measurement.Weight);
 
-        await _garmin.RemoveWeight(measurement);
+        await _garmin.RemoveWeight(measurement, ct);
 
-        weightRange = await _garmin.GetWeightRange(startDate, endDate);
-        var garminWeightDailyWeightSummary = weightRange.DailyWeightSummaries.FirstOrDefault(summary => summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime));
+        weightRange = await _garmin.GetWeightRange(startDate, endDate, ct);
+        var garminWeightDailyWeightSummary = weightRange.DailyWeightSummaries.FirstOrDefault(summary =>
+            summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime));
         if (garminWeightDailyWeightSummary is null)
         {
             Assert.Empty(weightRange.DailyWeightSummaries);
@@ -66,7 +57,8 @@ public class WeightTests
         else
         {
             Assert.DoesNotContain(garminWeightDailyWeightSummary.AllWeightMetrics,
-                x => x.SamplePk == measurement.SamplePk && x.CalendarDate == measurement.CalendarDate && x.Weight == measurement.Weight);
+                x => x.SamplePk == measurement.SamplePk && x.CalendarDate == measurement.CalendarDate &&
+                     Math.Abs(x.Weight - measurement.Weight) < 0.1);
         }
     }
 
@@ -81,7 +73,7 @@ public class WeightTests
             Value = weight
         };
 
-        var isAdded = await _garmin.AddWeight(weightData);
+        var isAdded = await _garmin.AddWeight(weightData, TestContext.Current.CancellationToken);
 
         Assert.False(isAdded);
     }

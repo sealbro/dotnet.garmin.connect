@@ -10,21 +10,15 @@ namespace Garmin.Connect.Tests.Integrations;
 [Collection("Garmin Integrations")]
 public class BloodPressureTests
 {
-    private readonly IGarminConnectClient _garmin;
-    private readonly DateTime _startDate;
-    private readonly DateTime _endDate;
-
-    public BloodPressureTests()
-    {
-        _garmin = LazyClient.Garmin.Value;
-        _startDate = new DateTime(2024, 1, 10);
-        _endDate = DateTime.Now.AddYears(1);
-    }
+    private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
+    private readonly DateTime _startDate = new(2024, 1, 10);
+    private readonly DateTime _endDate = DateTime.Now.AddYears(1);
 
     [Fact]
     public async Task GetBloodPressureRange_NotEmpty()
     {
-        var bloodPressureRange = await _garmin.GetBloodPressureRange(_startDate, _endDate);
+        var bloodPressureRange =
+            await _garmin.GetBloodPressureRange(_startDate, _endDate, TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(bloodPressureRange);
     }
@@ -32,13 +26,15 @@ public class BloodPressureTests
     [Fact]
     public async Task GetBloodPressureDaily_NotEmpty()
     {
-        var bloodPressureRange = await _garmin.GetBloodPressureRange(_startDate, _endDate);
+        var ct = TestContext.Current.CancellationToken;
+        var bloodPressureRange = await _garmin.GetBloodPressureRange(_startDate, _endDate, ct);
 
         Assert.NotEmpty(bloodPressureRange);
 
         var garminBloodPressureMeasurement = bloodPressureRange.First();
 
-        var bloodPressureDaily = await _garmin.GetBloodPressureDaily(garminBloodPressureMeasurement.MeasurementTimestampLocal);
+        var bloodPressureDaily =
+            await _garmin.GetBloodPressureDaily(garminBloodPressureMeasurement.MeasurementTimestampLocal, ct);
 
         Assert.NotEmpty(bloodPressureDaily.BloodPressureMeasurements);
     }
@@ -46,6 +42,7 @@ public class BloodPressureTests
     [Fact]
     public async Task Add_And_Remove_BloodPressure_Success()
     {
+        var ct = TestContext.Current.CancellationToken;
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now.AddDays(1);
         var bloodPressure = new GarminBloodPressure
@@ -57,11 +54,11 @@ public class BloodPressureTests
             Notes = "123"
         };
 
-        var addBloodPressure = await _garmin.AddBloodPressure(bloodPressure);
+        var addBloodPressure = await _garmin.AddBloodPressure(bloodPressure, ct);
 
         Assert.True(addBloodPressure);
 
-        var bloodPressureRange = await _garmin.GetBloodPressureRange(startDate, endDate);
+        var bloodPressureRange = await _garmin.GetBloodPressureRange(startDate, endDate, ct);
 
         Assert.NotEmpty(bloodPressureRange);
 
@@ -72,12 +69,13 @@ public class BloodPressureTests
         Assert.Equal(bloodPressure.Pulse, garminBloodPressureMeasurement.Pulse);
         Assert.Equal(bloodPressure.Notes, garminBloodPressureMeasurement.Notes);
 
-        await _garmin.RemoveBloodPressure(garminBloodPressureMeasurement);
+        await _garmin.RemoveBloodPressure(garminBloodPressureMeasurement, ct);
 
-        bloodPressureRange = await _garmin.GetBloodPressureRange(startDate, endDate);
+        bloodPressureRange = await _garmin.GetBloodPressureRange(startDate, endDate, ct);
 
         Assert.DoesNotContain(bloodPressureRange, x => x.Version == garminBloodPressureMeasurement.Version
-                                                       && x.MeasurementTimestampLocal == garminBloodPressureMeasurement.MeasurementTimestampLocal);
+                                                       && x.MeasurementTimestampLocal == garminBloodPressureMeasurement
+                                                           .MeasurementTimestampLocal);
     }
 
     [Theory]
@@ -93,7 +91,7 @@ public class BloodPressureTests
             Notes = "123"
         };
 
-        var addBloodPressure = await _garmin.AddBloodPressure(bloodPressure);
+        var addBloodPressure = await _garmin.AddBloodPressure(bloodPressure, TestContext.Current.CancellationToken);
 
         Assert.False(addBloodPressure);
     }

@@ -8,18 +8,13 @@ namespace Garmin.Connect.Tests.Integrations;
 [Collection("Garmin Integrations")]
 public class CalendarTests
 {
-    private readonly IGarminConnectClient _garmin;
-
-    public CalendarTests()
-    {
-        _garmin = LazyClient.Garmin.Value;
-    }
+    private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
     [Fact]
     public async Task GetCalendarYear_Exists()
     {
         var year = DateTime.Now.Year;
-        var calendarYear = await _garmin.GetCalendarByYear(year);
+        var calendarYear = await _garmin.GetCalendarByYear(year, TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(calendarYear.YearSummaries);
     }
@@ -30,7 +25,8 @@ public class CalendarTests
         var date = DateTime.Now.AddMonths(-1);
         var year = date.Year;
         var previousMonth = (GarminMonth)(date.Month - 1);
-        var calendarMonth = await _garmin.GetCalendarByMonth(year, previousMonth);
+        var calendarMonth =
+            await _garmin.GetCalendarByMonth(year, previousMonth, TestContext.Current.CancellationToken);
 
         Assert.Equal(year, calendarMonth.Year);
         Assert.Equal(previousMonth, calendarMonth.Month);
@@ -41,7 +37,7 @@ public class CalendarTests
     public async Task GetCalendarWeek_Exists()
     {
         var date = DateOnly.FromDateTime(DateTime.Now.AddDays(-7));
-        var calendarWeek = await _garmin.GetCalendarByWeek(date);
+        var calendarWeek = await _garmin.GetCalendarByWeek(date, TestContext.Current.CancellationToken);
 
         Assert.True(date >= calendarWeek.StartDate);
         Assert.True(date <= calendarWeek.EndDate);
