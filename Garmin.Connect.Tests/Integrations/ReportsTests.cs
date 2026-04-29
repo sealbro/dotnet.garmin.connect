@@ -7,12 +7,7 @@ namespace Garmin.Connect.Tests.Integrations;
 [Collection("Garmin Integrations")]
 public class ReportTests
 {
-    private readonly IGarminConnectClient _garmin;
-
-    public ReportTests()
-    {
-        _garmin = LazyClient.Garmin.Value;
-    }
+    private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
     [Fact]
     public async Task GetReportHrvStatus_NotEmpty()
@@ -20,7 +15,7 @@ public class ReportTests
         var endDate = DateTime.Now;
         var startDate = DateTime.Now.AddDays(-3);
 
-        var hrvSummary = await _garmin.GetReportHrvStatus(startDate, endDate);
+        var hrvSummary = await _garmin.GetReportHrvStatus(startDate, endDate, TestContext.Current.CancellationToken);
 
         if (hrvSummary == null)
         {
