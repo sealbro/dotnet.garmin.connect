@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -80,20 +78,45 @@ internal class GarminAuthenticationService
             throw new GarminConnectAuthenticationException("Failed to fetch cookies from Garmin.")
             { Code = Code.CookiesNotFound };
 
-        var headerCookies = responseMessage.Headers.SingleOrDefault(header => header.Key == "Set-Cookie").Value;
-        var sb = new StringBuilder();
-        foreach (var cookie in headerCookies)
-        {
-            sb.Append($"{cookie};");
-        }
+        // TryGetValues is case-insensitive: HTTP/2 lower-cases header names.
+        if (!responseMessage.Headers.TryGetValues("Set-Cookie", out var headerCookies))
+            throw new GarminConnectAuthenticationException("Garmin returned no Set-Cookie header.")
+            { Code = Code.CookiesNotFound };
 
-        var cookies = sb.ToString();
+        var cookies = BuildCookieHeader(headerCookies);
 
         if (string.IsNullOrWhiteSpace(cookies))
             throw new GarminConnectAuthenticationException("Found cookies but they are null.")
             { Code = Code.CookiesNotFound };
 
         return cookies;
+    }
+
+    /// <summary>
+    /// Turns Set-Cookie values into a Cookie header: only the leading name=value pair of each
+    /// directive belongs there, the attributes (Path, Expires, HttpOnly, ...) do not.
+    /// </summary>
+    private static string BuildCookieHeader(IEnumerable<string> setCookieValues)
+    {
+        var pairs = new Dictionary<string, string>(StringComparer.Ordinal);
+
+        foreach (var setCookie in setCookieValues)
+        {
+            if (string.IsNullOrWhiteSpace(setCookie))
+                continue;
+
+            var separatorIndex = setCookie.IndexOf(';');
+            var pair = (separatorIndex < 0 ? setCookie : setCookie.Substring(0, separatorIndex)).Trim();
+
+            var equalsIndex = pair.IndexOf('=');
+            if (equalsIndex <= 0)
+                continue;
+
+            // a later Set-Cookie for the same name replaces the earlier one
+            pairs[pair.Substring(0, equalsIndex)] = pair;
+        }
+
+        return string.Join("; ", pairs.Values);
     }
 
     private string FindCsrfToken(string rawResponseBody, Code failureStepCode)
