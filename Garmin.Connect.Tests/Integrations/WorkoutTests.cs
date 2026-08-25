@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
 using Garmin.Connect.Parameters;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class WorkoutTests
 {
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
@@ -21,47 +20,47 @@ public class WorkoutTests
             Limit = 5
         }));
 
-    [Fact]
+    [Test]
     public async Task GetWorkouts_NotEmpty()
     {
         var workouts = await _lazyWorkouts.Value;
 
-        Assert.NotEmpty(workouts);
+        await Assert.That(workouts).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWorkoutTypes_NotNull()
     {
-        var workoutTypes = await _garmin.GetWorkoutTypes(TestContext.Current.CancellationToken);
+        var workoutTypes = await _garmin.GetWorkoutTypes(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(workoutTypes);
+        await Assert.That(workoutTypes).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWorkout_NotNull()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var workoutsParameters = new WorkoutsParameters { OrderBy = WorkoutsOrderBy.UPDATE_DATE };
         var workouts = await _garmin.GetWorkouts(workoutsParameters, ct);
 
-        Assert.NotEmpty(workouts);
+        await Assert.That(workouts).IsNotEmpty();
 
         var workout = await _garmin.GetWorkout(workouts.First().WorkoutId, ct);
 
-        Assert.NotNull(workout);
+        await Assert.That(workout).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task UpdateWorkout()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var expectedConditionValue = 2000;
         var workoutId = (await _lazyWorkouts.Value).First().WorkoutId;
 
         var workout = await _garmin.GetWorkout(workoutId, ct);
 
-        Assert.NotEmpty(workout.WorkoutSegments);
-        Assert.NotEmpty(workout.WorkoutSegments.First().WorkoutSteps);
+        await Assert.That(workout.WorkoutSegments).IsNotEmpty();
+        await Assert.That(workout.WorkoutSegments.First().WorkoutSteps).IsNotEmpty();
 
         var originalWorkoutStep = workout.WorkoutSegments.First().WorkoutSteps[0];
         workout.WorkoutSegments.First().WorkoutSteps[0] =
@@ -69,7 +68,8 @@ public class WorkoutTests
         await _garmin.UpdateWorkout(workout, ct);
         workout = await _garmin.GetWorkout(workoutId, ct);
 
-        Assert.Equal(expectedConditionValue, workout.WorkoutSegments.First().WorkoutSteps.First().EndConditionValue);
+        await Assert.That(workout.WorkoutSegments.First().WorkoutSteps.First().EndConditionValue)
+            .IsEqualTo(expectedConditionValue);
 
         workout.WorkoutSegments.First().WorkoutSteps[0] = originalWorkoutStep with
         {
@@ -78,45 +78,45 @@ public class WorkoutTests
         await _garmin.UpdateWorkout(workout, ct);
         workout = await _garmin.GetWorkout(workoutId, ct);
 
-        Assert.Equal(originalWorkoutStep.EndConditionValue,
-            workout.WorkoutSegments.First().WorkoutSteps.First().EndConditionValue);
+        await Assert.That(workout.WorkoutSegments.First().WorkoutSteps.First().EndConditionValue)
+            .IsEqualTo(originalWorkoutStep.EndConditionValue);
     }
 
-    [Fact]
+    [Test]
     public async Task ScheduleWorkout()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var workouts = await _lazyWorkouts.Value;
         var workout = workouts.First();
         var scheduleDate = DateOnly.FromDateTime(workout.CreatedDate);
 
-        Assert.NotEmpty(workouts);
+        await Assert.That(workouts).IsNotEmpty();
 
         var calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate, ct);
 
-        Assert.DoesNotContain(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
+        await Assert.That(calendarWeek.CalendarItems).DoesNotContain(x => x.WorkoutId == workout.WorkoutId);
 
         await _garmin.ScheduleWorkout(workout.WorkoutId, scheduleDate, ct);
         calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate, ct);
 
-        Assert.Contains(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
+        await Assert.That(calendarWeek.CalendarItems).Contains(x => x.WorkoutId == workout.WorkoutId);
 
         var calendarId = calendarWeek.CalendarItems
             .First(x => x.WorkoutId == workout.WorkoutId).Id;
         await _garmin.RemoveScheduledWorkout(calendarId, ct);
         calendarWeek = await _garmin.GetCalendarByWeek(scheduleDate, ct);
 
-        Assert.DoesNotContain(calendarWeek.CalendarItems, x => x.WorkoutId == workout.WorkoutId);
+        await Assert.That(calendarWeek.CalendarItems).DoesNotContain(x => x.WorkoutId == workout.WorkoutId);
     }
 
-    [Fact(Skip = "Not for CI only for self test")]
+    [Test, Skip("Not for CI only for self test")]
     public async Task SendToDevice()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var workouts = await _lazyWorkouts.Value;
         var workout = workouts.First();
 
-        Assert.Equal("running", workout.SportType.SportTypeKey);
+        await Assert.That(workout.SportType.SportTypeKey).IsEqualTo("running");
 
         var deviceId = (await _garmin.GetDevices(ct)).First(device => device.SupportedHrZones.Contains("RUNNING"))
             .DeviceId;
@@ -125,22 +125,23 @@ public class WorkoutTests
 
         var deviceMessages = await _garmin.GetDeviceMessages(ct);
 
-        Assert.Contains(deviceMessages.Messages,
-            x => x.MessageType == "workouts" && x.DeviceId == deviceId && x.MetaData.MetaDataId == workout.WorkoutId);
+        await Assert.That(deviceMessages.Messages)
+            .Contains(x => x.MessageType == "workouts" && x.DeviceId == deviceId &&
+                           x.MetaData.MetaDataId == workout.WorkoutId);
     }
 
-    [Fact(Skip = "Not for CI only for self test")]
+    [Test, Skip("Not for CI only for self test")]
     public async Task UploadFileFromLocalMachine()
     {
         var filename = "/some.fit";
 
-        await _garmin.UploadFile(filename, TestContext.Current.CancellationToken);
+        await _garmin.UploadFile(filename, TestContext.Current!.Execution.CancellationToken);
     }
 
-    [Fact(Skip = "Not for CI only for self test")]
+    [Test, Skip("Not for CI only for self test")]
     public async Task UploadFileFromStream()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var filename = "/some.fit";
         var memoryStream = new MemoryStream();
         await using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))

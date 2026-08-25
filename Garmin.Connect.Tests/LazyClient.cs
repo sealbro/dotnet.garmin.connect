@@ -19,7 +19,7 @@ public static class LazyClient
         var fileTokenCache = new FileTokenCache(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".garmin_token.json"));
         return new GarminConnectClient(new GarminConnectContext(httpClient,
             new BasicAuthParameters(
-                Environment.GetEnvironmentVariable("GARMIN_LOGIN"),
-                Environment.GetEnvironmentVariable("GARMIN_PASSWORD")), mfaCode, fileTokenCache));
+                TestEnvironment.GetRequired("GARMIN_LOGIN"),
+                TestEnvironment.GetRequired("GARMIN_PASSWORD")), mfaCode, fileTokenCache));
     });
 }

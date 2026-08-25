@@ -1,71 +1,71 @@
 using System;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class WellnessTests
 {
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
     private readonly DateTime _startDate = DateTime.Now.AddDays(-1);
     private readonly DateTime _endDate = DateTime.Now;
 
-    [Fact]
+    [Test]
     public async Task GetUserSummary_NotNull()
     {
-        var userSummary = await _garmin.GetUserSummary(_startDate, TestContext.Current.CancellationToken);
+        var userSummary = await _garmin.GetUserSummary(_startDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(userSummary);
+        await Assert.That(userSummary).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWellnessStepsData_NotNull()
     {
-        var wellnessStepsData = await _garmin.GetWellnessStepsData(_startDate, TestContext.Current.CancellationToken);
+        var wellnessStepsData = await _garmin.GetWellnessStepsData(_startDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(wellnessStepsData);
+        await Assert.That(wellnessStepsData).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWellnessSleepData_NotNull()
     {
-        var wellnessSleepData = await _garmin.GetWellnessSleepData(_startDate, TestContext.Current.CancellationToken);
+        var wellnessSleepData = await _garmin.GetWellnessSleepData(_startDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(wellnessSleepData);
+        await Assert.That(wellnessSleepData).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWellnessHeartRates_NotNull()
     {
-        var wellnessHeartRates = await _garmin.GetWellnessHeartRates(_startDate, TestContext.Current.CancellationToken);
+        var wellnessHeartRates =
+            await _garmin.GetWellnessHeartRates(_startDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(wellnessHeartRates);
+        await Assert.That(wellnessHeartRates).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetWellnessBodyBattery_NotNull()
     {
         var garminBodyBattery =
-            await _garmin.GetWelnessBodyBatteryData(_startDate, _endDate, TestContext.Current.CancellationToken);
+            await _garmin.GetWelnessBodyBatteryData(_startDate, _endDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminBodyBattery);
+        await Assert.That(garminBodyBattery).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetHydrationData_NotNull()
     {
-        var garminHydrationData = await _garmin.GetHydrationData(_startDate, TestContext.Current.CancellationToken);
+        var garminHydrationData = await _garmin.GetHydrationData(_startDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminHydrationData);
+        await Assert.That(garminHydrationData).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetBodyComposition_NotNull()
     {
         var garminBodyComposition =
-            await _garmin.GetBodyComposition(_startDate, _endDate, TestContext.Current.CancellationToken);
+            await _garmin.GetBodyComposition(_startDate, _endDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminBodyComposition);
+        await Assert.That(garminBodyComposition).IsNotNull();
     }
 }

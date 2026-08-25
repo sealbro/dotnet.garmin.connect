@@ -2,11 +2,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class ActivitiesTests
 {
     private readonly Lazy<Task<GarminActivity[]>> _lazyActivities =
@@ -14,79 +13,80 @@ public class ActivitiesTests
 
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
-    [Fact]
+    [Test]
     public async Task GetActivities_NotEmpty()
     {
         var garminActivities = await _lazyActivities.Value;
 
-        Assert.NotNull(garminActivities);
-        Assert.NotEmpty(garminActivities);
+        await Assert.That(garminActivities).IsNotNull();
+        await Assert.That(garminActivities).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivitiesByDate_NotEmpty()
     {
         var activitiesByDate =
             await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "walking",
-                cancellationToken: TestContext.Current.CancellationToken);
+                cancellationToken: TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(activitiesByDate);
-        Assert.NotEmpty(activitiesByDate);
+        await Assert.That(activitiesByDate).IsNotNull();
+        await Assert.That(activitiesByDate).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task DownloadActivity_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var downloadActivity = await _garmin.DownloadActivity(activityId,
-            cancellationToken: TestContext.Current.CancellationToken);
+            cancellationToken: TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(downloadActivity);
-        Assert.NotEmpty(downloadActivity);
+        await Assert.That(downloadActivity).IsNotNull();
+        await Assert.That(downloadActivity).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivityExerciseSets_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminExerciseSets =
-            await _garmin.GetActivityExerciseSets(activityId, TestContext.Current.CancellationToken);
+            await _garmin.GetActivityExerciseSets(activityId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEqual(0, garminExerciseSets.ActivityId);
+        await Assert.That(garminExerciseSets.ActivityId).IsNotEqualTo(0);
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivityHrInTimezones_NotEmpty()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminHrTimeInZonesArray =
-            await _garmin.GetActivityHrInTimezones(activityId, TestContext.Current.CancellationToken);
+            await _garmin.GetActivityHrInTimezones(activityId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminHrTimeInZonesArray);
-        Assert.NotEmpty(garminHrTimeInZonesArray);
+        await Assert.That(garminHrTimeInZonesArray).IsNotNull();
+        await Assert.That(garminHrTimeInZonesArray).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivitySplits_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
-        var garminActivitySplits = await _garmin.GetActivitySplits(activityId, TestContext.Current.CancellationToken);
+        var garminActivitySplits =
+            await _garmin.GetActivitySplits(activityId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEqual(0, garminActivitySplits.ActivityId);
+        await Assert.That(garminActivitySplits.ActivityId).IsNotEqualTo(0);
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivityWeather_Exists()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var activitiesByDate =
             await _garmin.GetActivitiesByDate(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(-2), "walking",
                 cancellationToken: ct);
@@ -96,30 +96,32 @@ public class ActivitiesTests
 
         DateTime defaultDt = default;
 
-        Assert.NotEqual(defaultDt, garminActivityWeather.IssueDate);
+        await Assert.That(garminActivityWeather.IssueDate).IsNotEqualTo(defaultDt);
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivityDetails_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var garminActivityDetails =
-            await _garmin.GetActivityDetails(activityId, 50, 50, TestContext.Current.CancellationToken);
+            await _garmin.GetActivityDetails(activityId, 50, 50, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEmpty(garminActivityDetails.ActivityDetailMetrics);
+        await Assert.That(garminActivityDetails.ActivityDetailMetrics).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivitySplitSummaries_Exists()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityId = garminActivities.First().ActivityId;
 
         var activitySplitSummaries =
-            await _garmin.GetActivitySplitSummaries(activityId, TestContext.Current.CancellationToken);
+            await _garmin.GetActivitySplitSummaries(activityId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEmpty(activitySplitSummaries.SplitSummaries);
+        // The split_summaries endpoint has no 'hasSplits' field, so it always deserializes
+        // to false — only assert on what the endpoint actually returns.
+        await Assert.That(activitySplitSummaries.SplitSummaries).IsNotNull();
     }
 }

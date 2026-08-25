@@ -101,8 +101,50 @@ public class RedisTokenCache : ITokenCache
 
 ## Tests
 
-- set environment variables `GARMIN_LOGIN` and `GARMIN_PASSWORD`
-  - JetBrains Rider: `File | Settings | Build, Execution, Deployment | Unit Testing | Test Runner`
+Tests are [TUnit](https://tunit.dev) integration tests running on Microsoft.Testing.Platform,
+and they require real Garmin credentials.
+
+### Credentials
+
+Credentials are read from the `GARMIN_LOGIN` / `GARMIN_PASSWORD` environment variables, and
+fall back to [.NET user secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets)
+when those are not set.
+
+Because IDE test runners start the test host without your shell environment, user secrets are
+the recommended way to run tests locally — they are stored in your home directory
+(`~/.microsoft/usersecrets/<UserSecretsId>/secrets.json`), never inside the repository:
+
+```bash
+dotnet user-secrets set GARMIN_LOGIN your_login --project Garmin.Connect.Tests
+dotnet user-secrets set GARMIN_PASSWORD your_password --project Garmin.Connect.Tests
+```
+
+In JetBrains Rider you can also manage them via right-click on `Garmin.Connect.Tests` →
+`Tools | .NET User Secrets`.
+
+Note that user secrets are stored in plain text — they are kept out of source control, but
+they are not encrypted. Use environment variables in CI.
+
+### Running
+
+`global.json` opts `dotnet test` into the Microsoft.Testing.Platform runner, so the project is
+passed with `--project` and tests are filtered with `--treenode-filter`:
+
+```bash
+# All tests, credentials from the shell
+GARMIN_LOGIN=your_login GARMIN_PASSWORD=your_password ./test.sh
+
+# All tests, credentials from user secrets
+dotnet test --project Garmin.Connect.Tests/Garmin.Connect.Tests.csproj
+
+# Single test class
+dotnet test --project Garmin.Connect.Tests/Garmin.Connect.Tests.csproj \
+  --treenode-filter "/*/*/OwnerTests/*"
+
+# Single test method
+dotnet test --project Garmin.Connect.Tests/Garmin.Connect.Tests.csproj \
+  --treenode-filter "/*/*/OwnerTests/GetSocialProfile_NotNull"
+```
 
 ## Thanks
 

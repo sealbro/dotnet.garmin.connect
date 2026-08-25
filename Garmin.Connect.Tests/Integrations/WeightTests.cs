@@ -3,29 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class WeightTests
 {
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
     private readonly DateTime _startDate = new(2022, 1, 1);
     private readonly DateTime _endDate = DateTime.Now.AddYears(1);
 
-    [Fact]
+    [Test]
     public async Task GetWeightRange_NotEmpty()
     {
-        var weightRange = await _garmin.GetWeightRange(_startDate, _endDate, TestContext.Current.CancellationToken);
+        var weightRange = await _garmin.GetWeightRange(_startDate, _endDate, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEmpty(weightRange.DailyWeightSummaries);
+        await Assert.That(weightRange.DailyWeightSummaries).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task Add_And_Remove_Weight_Success()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now.AddDays(1);
         var weight = new GarminWeight { MeasurementDateTime = DateTime.Now, UnitKey = WeightUnit.Kg, Value = 42 };
@@ -33,17 +32,18 @@ public class WeightTests
 
         var isAdded = await _garmin.AddWeight(weight, ct);
 
-        Assert.True(isAdded);
+        await Assert.That(isAdded).IsTrue();
 
         var weightRange = await _garmin.GetWeightRange(startDate, endDate, ct);
 
-        Assert.NotEmpty(weightRange.DailyWeightSummaries);
+        await Assert.That(weightRange.DailyWeightSummaries).IsNotEmpty();
 
         var measurement = weightRange.DailyWeightSummaries.First(summary =>
                 summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime))
-            .AllWeightMetrics.First(weightMeasurement => Math.Abs(weightMeasurement.Weight - expectedWeightInGram) < 0.1);
+            .AllWeightMetrics.First(weightMeasurement =>
+                Math.Abs(weightMeasurement.Weight - expectedWeightInGram) < 0.1);
 
-        Assert.Equal(expectedWeightInGram, measurement.Weight);
+        await Assert.That(measurement.Weight).IsEqualTo(expectedWeightInGram);
 
         await _garmin.RemoveWeight(measurement, ct);
 
@@ -52,18 +52,18 @@ public class WeightTests
             summary.SummaryDate == DateOnly.FromDateTime(weight.MeasurementDateTime));
         if (garminWeightDailyWeightSummary is null)
         {
-            Assert.Empty(weightRange.DailyWeightSummaries);
+            await Assert.That(weightRange.DailyWeightSummaries).IsEmpty();
         }
         else
         {
-            Assert.DoesNotContain(garminWeightDailyWeightSummary.AllWeightMetrics,
-                x => x.SamplePk == measurement.SamplePk && x.CalendarDate == measurement.CalendarDate &&
-                     Math.Abs(x.Weight - measurement.Weight) < 0.1);
+            await Assert.That(garminWeightDailyWeightSummary.AllWeightMetrics)
+                .DoesNotContain(x => x.SamplePk == measurement.SamplePk && x.CalendarDate == measurement.CalendarDate &&
+                                     Math.Abs(x.Weight - measurement.Weight) < 0.1);
         }
     }
 
-    [Theory]
-    [MemberData(nameof(WeightData))]
+    [Test]
+    [MethodDataSource(nameof(WeightData))]
     public async Task Add_Weight_Failed(double weight)
     {
         var weightData = new GarminWeight
@@ -73,14 +73,14 @@ public class WeightTests
             Value = weight
         };
 
-        var isAdded = await _garmin.AddWeight(weightData, TestContext.Current.CancellationToken);
+        var isAdded = await _garmin.AddWeight(weightData, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.False(isAdded);
+        await Assert.That(isAdded).IsFalse();
     }
 
-    public static IEnumerable<object[]> WeightData()
+    public static IEnumerable<double> WeightData()
     {
-        yield return [0.0];
-        yield return [454.0];
+        yield return 0.0;
+        yield return 454.0;
     }
 }
