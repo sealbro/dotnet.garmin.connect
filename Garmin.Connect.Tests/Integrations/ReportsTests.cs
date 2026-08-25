@@ -1,29 +1,28 @@
 using System;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class ReportTests
 {
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
-    [Fact]
+    [Test]
     public async Task GetReportHrvStatus_NotEmpty()
     {
         var endDate = DateTime.Now;
         var startDate = DateTime.Now.AddDays(-3);
 
-        var hrvSummary = await _garmin.GetReportHrvStatus(startDate, endDate, TestContext.Current.CancellationToken);
+        var hrvSummary = await _garmin.GetReportHrvStatus(startDate, endDate, TestContext.Current!.Execution.CancellationToken);
 
         if (hrvSummary == null)
         {
-            Assert.Null(hrvSummary);
+            await Assert.That(hrvSummary).IsNull();
         }
         else
         {
-            Assert.NotEmpty(hrvSummary.HrvSummaries);
+            await Assert.That(hrvSummary.HrvSummaries).IsNotEmpty();
         }
     }
 }

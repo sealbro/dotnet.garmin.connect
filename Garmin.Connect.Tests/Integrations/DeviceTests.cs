@@ -2,49 +2,48 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class DeviceTests
 {
     private readonly Lazy<Task<GarminDevice[]>> _lazyDevices = new(() => LazyClient.Garmin.Value.GetDevices());
 
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
-    [Fact]
+    [Test]
     public async Task GetDevices_NotNull()
     {
         var garminDevices = await _lazyDevices.Value;
 
-        Assert.NotNull(garminDevices);
-        Assert.NotEmpty(garminDevices);
+        await Assert.That(garminDevices).IsNotNull();
+        await Assert.That(garminDevices).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetDeviceSettings_NotNull()
     {
         var garminDevices = await _lazyDevices.Value;
         var garminDeviceSettings =
-            await _garmin.GetDeviceSettings(garminDevices.First().DeviceId, TestContext.Current.CancellationToken);
+            await _garmin.GetDeviceSettings(garminDevices.First().DeviceId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminDeviceSettings);
+        await Assert.That(garminDeviceSettings).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetDeviceLastUsed_NotNull()
     {
-        var garminDeviceLastUsed = await _garmin.GetDeviceLastUsed(TestContext.Current.CancellationToken);
+        var garminDeviceLastUsed = await _garmin.GetDeviceLastUsed(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(garminDeviceLastUsed);
+        await Assert.That(garminDeviceLastUsed).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetDeviceMessages_Exists()
     {
-        var deviceMessages = await _garmin.GetDeviceMessages(TestContext.Current.CancellationToken);
+        var deviceMessages = await _garmin.GetDeviceMessages(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotEmpty(deviceMessages.Messages);
+        await Assert.That(deviceMessages.Messages).IsNotEmpty();
     }
 }

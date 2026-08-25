@@ -1,11 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class GearsTests
 {
     private readonly Lazy<Task<GarminActivity[]>> _lazyActivities =
@@ -13,33 +12,33 @@ public class GearsTests
 
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
-    [Fact]
+    [Test]
     public async Task GetGearTypes_NotNull()
     {
-        var gearTypes = await _garmin.GetGearTypes(TestContext.Current.CancellationToken);
+        var gearTypes = await _garmin.GetGearTypes(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(gearTypes);
-        Assert.NotEmpty(gearTypes);
+        await Assert.That(gearTypes).IsNotNull();
+        await Assert.That(gearTypes).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetUserGears_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
-        var userGears = await _garmin.GetUserGears(garminActivities[0].OwnerId, TestContext.Current.CancellationToken);
+        var userGears =
+            await _garmin.GetUserGears(garminActivities[0].OwnerId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(userGears);
-        Assert.NotEmpty(userGears);
+        await Assert.That(userGears).IsNotNull();
+        await Assert.That(userGears).IsNotEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task GetActivityGears_NotNull()
     {
         var garminActivities = await _lazyActivities.Value;
         var activityGears =
-            await _garmin.GetActivityGears(garminActivities[0].ActivityId, TestContext.Current.CancellationToken);
+            await _garmin.GetActivityGears(garminActivities[0].ActivityId, TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(activityGears);
-        // Assert.NotEmpty(activityGears);
+        await Assert.That(activityGears).IsNotNull();
     }
 }

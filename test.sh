@@ -2,22 +2,16 @@
 
 set -e
 
-GARMIN_LOGIN=$1
-GARMIN_PASSWORD=$2
+# Credentials are optional here: arguments override environment variables, and when
+# neither is given the tests fall back to user secrets (see README).
+export GARMIN_LOGIN=${1:-$GARMIN_LOGIN}
+export GARMIN_PASSWORD=${2:-$GARMIN_PASSWORD}
 
-if [ "$GARMIN_LOGIN" ]; then
-  echo "GARMIN_LOGIN detected!"
+if [ "$GARMIN_LOGIN" ] && [ "$GARMIN_PASSWORD" ]; then
+  echo "Credentials detected in the environment!"
 else
-  echo "GARMIN_LOGIN not detected!"
-  exit 1
-fi
-
-if [ "$GARMIN_PASSWORD" ]; then
-  echo "GARMIN_PASSWORD detected!"
-else
-  echo "GARMIN_PASSWORD not detected!"
-  exit 1
+  echo "No credentials in the environment, falling back to user secrets."
 fi
 
 dotnet build -c Release
-dotnet test -c Release --no-restore -e GARMIN_LOGIN=$GARMIN_LOGIN -e GARMIN_PASSWORD=$GARMIN_PASSWORD
+dotnet test --project Garmin.Connect.Tests/Garmin.Connect.Tests.csproj -c Release --no-restore

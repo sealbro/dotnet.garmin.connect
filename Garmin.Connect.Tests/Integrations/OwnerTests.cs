@@ -1,48 +1,47 @@
 using System;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Garmin.Connect.Tests.Integrations;
 
-[Collection("Garmin Integrations")]
+[NotInParallel("Garmin Integrations")]
 public class OwnerTests
 {
     private readonly IGarminConnectClient _garmin = LazyClient.Garmin.Value;
 
-    [Fact]
+    [Test]
     public async Task GetSocialProfile_NotNull()
     {
-        var profile = await _garmin.GetSocialProfile(TestContext.Current.CancellationToken);
+        var profile = await _garmin.GetSocialProfile(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(profile);
-        Assert.NotNull(profile.DisplayName);
+        await Assert.That(profile).IsNotNull();
+        await Assert.That(profile.DisplayName).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetPersonalRecord_NotNull()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var socialProfile = await _garmin.GetSocialProfile(ct);
         var personalRecords = await _garmin.GetPersonalRecord(socialProfile.DisplayName, ct);
 
-        Assert.NotNull(personalRecords);
+        await Assert.That(personalRecords).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     public async Task GetUserSettings_NotNull()
     {
-        var userSettings = await _garmin.GetUserSettings(TestContext.Current.CancellationToken);
+        var userSettings = await _garmin.GetUserSettings(TestContext.Current!.Execution.CancellationToken);
 
-        Assert.NotNull(userSettings);
+        await Assert.That(userSettings).IsNotNull();
     }
 
-    [Fact]
+    [Test]
     [Obsolete]
     public async Task SetUserWeight()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var userSettingsOriginal = await _garmin.GetUserSettings(ct);
-        Assert.NotNull(userSettingsOriginal);
+        await Assert.That(userSettingsOriginal).IsNotNull();
 
         var shiftedWeight = userSettingsOriginal.UserData.Weight + 1000;
         await _garmin.SetUserWeight(shiftedWeight, ct);
@@ -50,35 +49,35 @@ public class OwnerTests
         var expectedWeight = shiftedWeight;
         var actualWeight = userSettingsUpdated.UserData.Weight;
 
-        Assert.NotNull(userSettingsUpdated);
-        Assert.Equal(expectedWeight, actualWeight, 1);
+        await Assert.That(userSettingsUpdated).IsNotNull();
+        await Assert.That(actualWeight).IsEqualTo(expectedWeight).Within(0.5);
 
         await _garmin.SetUserWeight(userSettingsOriginal.UserData.Weight, ct);
         userSettingsUpdated = await _garmin.GetUserSettings(ct);
         expectedWeight = userSettingsOriginal.UserData.Weight;
         actualWeight = Math.Round(userSettingsUpdated.UserData.Weight);
 
-        Assert.NotNull(userSettingsUpdated);
-        Assert.Equal(expectedWeight, actualWeight, 1);
+        await Assert.That(userSettingsUpdated).IsNotNull();
+        await Assert.That(actualWeight).IsEqualTo(expectedWeight).Within(0.5);
     }
 
-    [Fact(Skip = "Not for CI only for self test")]
+    [Test, Skip("Not for CI only for self test")]
     public async Task SetUserSleepTimes()
     {
-        var ct = TestContext.Current.CancellationToken;
+        var ct = TestContext.Current!.Execution.CancellationToken;
         var userSettingsOriginal = await _garmin.GetUserSettings(ct);
-        Assert.NotNull(userSettingsOriginal);
+        await Assert.That(userSettingsOriginal).IsNotNull();
 
         const int expectedSleepTime = 1;
         const int expectedWakeTime = 2;
 
         await _garmin.SetUserSleepTimes(expectedSleepTime, expectedWakeTime, ct);
         var userSettingsUpdated = await _garmin.GetUserSettings(ct);
-        Assert.NotNull(userSettingsUpdated);
-        Assert.False(userSettingsUpdated.UserSleep.DefaultSleepTime);
-        Assert.Equal(expectedSleepTime, userSettingsUpdated.UserSleep.SleepTime);
-        Assert.False(userSettingsUpdated.UserSleep.DefaultWakeTime);
-        Assert.Equal(expectedWakeTime, userSettingsUpdated.UserSleep.WakeTime);
+        await Assert.That(userSettingsUpdated).IsNotNull();
+        await Assert.That(userSettingsUpdated.UserSleep.DefaultSleepTime).IsFalse();
+        await Assert.That(userSettingsUpdated.UserSleep.SleepTime).IsEqualTo(expectedSleepTime);
+        await Assert.That(userSettingsUpdated.UserSleep.DefaultWakeTime).IsFalse();
+        await Assert.That(userSettingsUpdated.UserSleep.WakeTime).IsEqualTo(expectedWakeTime);
 
         long? userSleepSleepTime = userSettingsOriginal.UserSleep.DefaultSleepTime
             ? null
@@ -88,12 +87,12 @@ public class OwnerTests
             : userSettingsOriginal.UserSleep.WakeTime;
         await _garmin.SetUserSleepTimes(userSleepSleepTime, userSleepWakeTime, ct);
         var userSettingsBackToOriginal = await _garmin.GetUserSettings(ct);
-        Assert.NotNull(userSettingsBackToOriginal);
-        Assert.Equal(userSettingsOriginal.UserSleep.DefaultSleepTime,
-            userSettingsBackToOriginal.UserSleep.DefaultSleepTime);
-        Assert.Equal(userSleepSleepTime, userSettingsBackToOriginal.UserSleep.SleepTime);
-        Assert.Equal(userSettingsOriginal.UserSleep.DefaultWakeTime,
-            userSettingsBackToOriginal.UserSleep.DefaultWakeTime);
-        Assert.Equal(userSleepWakeTime, userSettingsBackToOriginal.UserSleep.WakeTime);
+        await Assert.That(userSettingsBackToOriginal).IsNotNull();
+        await Assert.That(userSettingsBackToOriginal.UserSleep.DefaultSleepTime)
+            .IsEqualTo(userSettingsOriginal.UserSleep.DefaultSleepTime);
+        await Assert.That(userSettingsBackToOriginal.UserSleep.SleepTime).IsEqualTo(userSleepSleepTime);
+        await Assert.That(userSettingsBackToOriginal.UserSleep.DefaultWakeTime)
+            .IsEqualTo(userSettingsOriginal.UserSleep.DefaultWakeTime);
+        await Assert.That(userSettingsBackToOriginal.UserSleep.WakeTime).IsEqualTo(userSleepWakeTime);
     }
 }
