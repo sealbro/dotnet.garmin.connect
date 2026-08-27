@@ -13,6 +13,8 @@ internal static class GarminSerializer
         Options.Converters.Add(new NullIntConverter());
         Options.Converters.Add(new NullLongConverter());
         Options.Converters.Add(new NullBoolConverter());
+        Options.Converters.Add(new DateTimeConverter());
+        Options.Converters.Add(new DateOnlyConverter());
     }
 
     public static TModel To<TModel>(byte[] json)
