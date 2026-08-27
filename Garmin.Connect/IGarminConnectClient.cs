@@ -63,6 +63,83 @@ public interface IGarminConnectClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Fetch resting heart rate data between specific dates
+    /// </summary>
+    Task<GarminRestingHeartRate> GetRestingHeartRate(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch calories data between specific dates
+    /// </summary>
+    Task<GarminCaloriesDaily[]> GetCaloriesDaily(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch weekly steps aggregates ending on the given date
+    /// </summary>
+    Task<GarminWeeklySteps[]> GetWeeklySteps(DateTime endDate, int weeks = 52,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch weekly stress aggregates ending on the given date
+    /// </summary>
+    Task<GarminWeeklyStress[]> GetWeeklyStress(DateTime endDate, int weeks = 52,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch weekly intensity minutes aggregates between specific dates
+    /// </summary>
+    Task<GarminWeeklyIntensityMinutes[]> GetWeeklyIntensityMinutes(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch available respiration data
+    /// </summary>
+    Task<GarminRespirationData> GetRespirationData(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch available SpO2 (blood oxygen) data
+    /// </summary>
+    Task<GarminSpo2Data> GetSpo2Data(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch available intensity minutes data
+    /// </summary>
+    Task<GarminIntensityMinutesData> GetIntensityMinutesData(DateTime date,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch all-day stress and body battery data
+    /// </summary>
+    Task<GarminAllDayStress> GetAllDayStress(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch all-day events (naps, HRV events, etc.)
+    /// </summary>
+    Task<GarminAllDayEvent[]> GetAllDayEvents(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch fitness age data
+    /// </summary>
+    Task<GarminFitnessAge> GetFitnessAge(DateTime date, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch heart rate zones for all sports
+    /// </summary>
+    Task<GarminHeartRateZone[]> GetHeartRateZones(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch power zones for all sports
+    /// </summary>
+    Task<GarminPowerZone[]> GetPowerZones(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Fetch power zones for a specific sport
+    /// (possible values: cycling, running, ...)
+    /// </summary>
+    Task<GarminPowerZone> GetPowerZonesForSport(string sport, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Fetch personal records by owner display name
     /// </summary>
     Task<GarminPersonalRecord[]> GetPersonalRecord(string ownerDisplayName,

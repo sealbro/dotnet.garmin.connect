@@ -56,6 +56,14 @@ public class DateOnlyConverterTests
     }
 
     [Test]
+    public async Task Read_FallsBackToTimestamp()
+    {
+        var actual = JsonSerializer.Deserialize<DateOnly>("\"2026-04-26T05:32:52.431Z\"", Options);
+
+        await Assert.That(actual).IsEqualTo(new DateOnly(2026, 4, 26));
+    }
+
+    [Test]
     public async Task Read_ThrowsForUnsupportedFormat()
     {
         await Assert.That(() => JsonSerializer.Deserialize<DateOnly>("\"26/04/2026\"", Options))

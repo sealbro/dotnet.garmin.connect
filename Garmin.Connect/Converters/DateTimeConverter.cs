@@ -32,9 +32,25 @@ public class DateTimeConverter : JsonConverter<DateTime>
 
         var value = reader.GetString();
 
-        return string.IsNullOrEmpty(value)
-            ? default
-            : DateTime.ParseExact(value, Formats, CultureInfo.InvariantCulture, Styles);
+        if (string.IsNullOrEmpty(value))
+        {
+            return default;
+        }
+
+        if (DateTime.TryParseExact(value, Formats, CultureInfo.InvariantCulture, Styles, out var parsed))
+        {
+            return parsed;
+        }
+
+        // Not one of Garmin's quirky shapes — fall back to the standard ISO 8601 handling
+        // (trailing `Z`, 7-digit fractions, ...) this converter now replaces globally.
+        if (reader.TryGetDateTime(out var iso))
+        {
+            return iso;
+        }
+
+        throw new FormatException(
+            $"'{value}' does not match any supported date time format: {string.Join(", ", Formats)} or ISO 8601.");
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

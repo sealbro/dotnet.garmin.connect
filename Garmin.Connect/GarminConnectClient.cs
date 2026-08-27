@@ -36,6 +36,19 @@ public partial class GarminConnectClient : IGarminConnectClient
     private const string WorkoutScheduleUrl = "/workout-service/schedule/";
     private const string WorkoutsUrl = "/workout-service/workouts";
     private const string ReportHrvStatusUrl = "/hrv-service/hrv/daily/";
+    private const string RestingHeartRateUrl = "/userstats-service/wellness/daily/";
+    private const string CaloriesDailyUrl = "/usersummary-service/stats/calories/daily/";
+    private const string WeeklyStepsUrl = "/usersummary-service/stats/steps/weekly/";
+    private const string WeeklyStressUrl = "/usersummary-service/stats/stress/weekly/";
+    private const string WeeklyIntensityMinutesUrl = "/usersummary-service/stats/im/weekly/";
+    private const string RespirationDailyUrl = "/wellness-service/wellness/daily/respiration/";
+    private const string Spo2DailyUrl = "/wellness-service/wellness/daily/spo2/";
+    private const string IntensityMinutesDailyUrl = "/wellness-service/wellness/daily/im/";
+    private const string AllDayStressUrl = "/wellness-service/wellness/dailyStress/";
+    private const string AllDayEventsUrl = "/wellness-service/wellness/dailyEvents";
+    private const string FitnessAgeUrl = "/fitnessage-service/fitnessage/";
+    private const string HeartRateZonesUrl = "/biometric-service/heartRateZones";
+    private const string PowerZonesUrl = "/biometric-service/powerZones";
     private const string CalendarYearUrl = "/calendar-service/year/";
     private const string BodyBatteryUrl = "/wellness-service/wellness/bodyBattery/reports/daily/";
     private const string BloodPressureUrl = "/bloodpressure-service/bloodpressure";
@@ -326,6 +339,111 @@ public partial class GarminConnectClient : IGarminConnectClient
         var hydrationUrl = $"{UserSummaryHydrationDataUrl}{date:yyyy-MM-dd}";
 
         return _context.GetAndDeserialize<GarminHydrationData>(hydrationUrl, cancellationToken);
+    }
+
+    public async Task<GarminRestingHeartRate> GetRestingHeartRate(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
+    {
+        var profile = await GetSocialProfile(cancellationToken)
+            ?? throw new InvalidOperationException("Social profile could not be loaded.");
+
+        return await _context.GetAndDeserialize<GarminRestingHeartRate>(
+            $"{RestingHeartRateUrl}{profile.DisplayName}?fromDate={startDate:yyyy-MM-dd}&untilDate={endDate:yyyy-MM-dd}&metricId=60",
+            cancellationToken);
+    }
+
+    public Task<GarminCaloriesDaily[]> GetCaloriesDaily(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
+    {
+        var caloriesUrl = $"{CaloriesDailyUrl}{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminCaloriesDaily[]>(caloriesUrl, cancellationToken);
+    }
+
+    public Task<GarminWeeklySteps[]> GetWeeklySteps(DateTime endDate, int weeks = 52,
+        CancellationToken cancellationToken = default)
+    {
+        var weeklyStepsUrl = $"{WeeklyStepsUrl}{endDate:yyyy-MM-dd}/{weeks}";
+
+        return _context.GetAndDeserialize<GarminWeeklySteps[]>(weeklyStepsUrl, cancellationToken);
+    }
+
+    public Task<GarminWeeklyStress[]> GetWeeklyStress(DateTime endDate, int weeks = 52,
+        CancellationToken cancellationToken = default)
+    {
+        var weeklyStressUrl = $"{WeeklyStressUrl}{endDate:yyyy-MM-dd}/{weeks}";
+
+        return _context.GetAndDeserialize<GarminWeeklyStress[]>(weeklyStressUrl, cancellationToken);
+    }
+
+    public Task<GarminWeeklyIntensityMinutes[]> GetWeeklyIntensityMinutes(DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken = default)
+    {
+        var weeklyIntensityMinutesUrl = $"{WeeklyIntensityMinutesUrl}{startDate:yyyy-MM-dd}/{endDate:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminWeeklyIntensityMinutes[]>(weeklyIntensityMinutesUrl, cancellationToken);
+    }
+
+    public Task<GarminRespirationData> GetRespirationData(DateTime date, CancellationToken cancellationToken = default)
+    {
+        var respirationUrl = $"{RespirationDailyUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminRespirationData>(respirationUrl, cancellationToken);
+    }
+
+    public Task<GarminSpo2Data> GetSpo2Data(DateTime date, CancellationToken cancellationToken = default)
+    {
+        var spo2Url = $"{Spo2DailyUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminSpo2Data>(spo2Url, cancellationToken);
+    }
+
+    public Task<GarminIntensityMinutesData> GetIntensityMinutesData(DateTime date,
+        CancellationToken cancellationToken = default)
+    {
+        var intensityMinutesUrl = $"{IntensityMinutesDailyUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminIntensityMinutesData>(intensityMinutesUrl, cancellationToken);
+    }
+
+    public Task<GarminAllDayStress> GetAllDayStress(DateTime date, CancellationToken cancellationToken = default)
+    {
+        var allDayStressUrl = $"{AllDayStressUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminAllDayStress>(allDayStressUrl, cancellationToken);
+    }
+
+    public Task<GarminAllDayEvent[]> GetAllDayEvents(DateTime date, CancellationToken cancellationToken = default)
+    {
+        var allDayEventsUrl = $"{AllDayEventsUrl}?calendarDate={date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminAllDayEvent[]>(allDayEventsUrl, cancellationToken);
+    }
+
+    public Task<GarminFitnessAge> GetFitnessAge(DateTime date, CancellationToken cancellationToken = default)
+    {
+        var fitnessAgeUrl = $"{FitnessAgeUrl}{date:yyyy-MM-dd}";
+
+        return _context.GetAndDeserialize<GarminFitnessAge>(fitnessAgeUrl, cancellationToken);
+    }
+
+    public Task<GarminHeartRateZone[]> GetHeartRateZones(CancellationToken cancellationToken = default)
+    {
+        return _context.GetAndDeserialize<GarminHeartRateZone[]>(HeartRateZonesUrl, cancellationToken);
+    }
+
+    public Task<GarminPowerZone[]> GetPowerZones(CancellationToken cancellationToken = default)
+    {
+        var powerZonesUrl = $"{PowerZonesUrl}/sports/all";
+
+        return _context.GetAndDeserialize<GarminPowerZone[]>(powerZonesUrl, cancellationToken);
+    }
+
+    public Task<GarminPowerZone> GetPowerZonesForSport(string sport, CancellationToken cancellationToken = default)
+    {
+        var powerZonesUrl = $"{PowerZonesUrl}/sport/{sport}";
+
+        return _context.GetAndDeserialize<GarminPowerZone>(powerZonesUrl, cancellationToken);
     }
 
     public Task<GarminBodyBatteryData[]> GetWelnessBodyBatteryData(DateTime startDate, DateTime endDate,

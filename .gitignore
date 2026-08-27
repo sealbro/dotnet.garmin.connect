@@ -16,6 +16,9 @@
 # Mono auto generated files
 mono_crash.*
 
+# Garmin API discovery output (never commit)
+discovery-output/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

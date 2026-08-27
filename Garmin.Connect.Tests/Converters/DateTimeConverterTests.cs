@@ -79,6 +79,18 @@ public class DateTimeConverterTests
     }
 
     [Test]
+    [Arguments("\"2026-04-26T05:32:52.4310000Z\"")]
+    [Arguments("\"2026-04-26T05:32:52Z\"")]
+    public async Task Read_FallsBackToIso8601(string json)
+    {
+        var actual = JsonSerializer.Deserialize<DateTime>(json, Options);
+
+        await Assert.That(actual.ToUniversalTime())
+            .IsEqualTo(new DateTime(2026, 4, 26, 5, 32, 52, DateTimeKind.Utc).AddMilliseconds(
+                json.Contains(".431") ? 431 : 0));
+    }
+
+    [Test]
     public async Task Read_ThrowsForUnsupportedFormat()
     {
         const string json = "\"26/04/2026\"";
