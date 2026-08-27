@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Garmin.Connect.Models;
@@ -59,40 +58,40 @@ public partial class GarminConnectClient : IGarminConnectClient
     public async Task<GarminActivity[]> GetActivitiesByDate(DateTime startDate, DateTime endDate,
         string activityType, CancellationToken cancellationToken = default)
     {
-        string activitySlug;
+        if (startDate > endDate)
+        {
+            throw new ArgumentException($"{nameof(startDate)} must not be after {nameof(endDate)}.", nameof(startDate));
+        }
 
         var start = 0;
-        var limit = 20;
-
         // mimicking the behavior of the web interface that fetches 20 activities at a time
         // and automatically loads more on scroll
-        if (!string.IsNullOrEmpty(activityType))
-        {
-            activitySlug = "&activityType=" + activityType;
-        }
-        else
-        {
-            activitySlug = "";
-        }
+        const int limit = 20;
+
+        var activitySlug = string.IsNullOrEmpty(activityType) ? "" : "&activityType=" + activityType;
 
         var result = new List<GarminActivity>();
 
-        var returnData = true;
-        while (returnData)
+        while (true)
         {
             var activitiesUrl =
                 $"{ActivitiesUrl}?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&start={start}&limit={limit}{activitySlug}";
 
             var activities = await _context.GetAndDeserialize<GarminActivity[]>(activitiesUrl, cancellationToken);
 
-            if (activities.Any())
+            // null on 204 No Content
+            if (activities is null || activities.Length == 0)
             {
-                result.AddRange(activities);
-                start += limit;
+                break;
             }
-            else
+
+            result.AddRange(activities);
+            start += limit;
+
+            // a short page is the last page — guards against an API that ignores `start`
+            if (activities.Length < limit)
             {
-                returnData = false;
+                break;
             }
         }
 
@@ -160,7 +159,7 @@ public partial class GarminConnectClient : IGarminConnectClient
             _ => throw new ArgumentException($"Unexpected value {format} for dl_fmt")
         };
 
-        var response = await _context.MakeHttpGet(url, cancellationToken: cancellationToken);
+        using var response = await _context.MakeHttpGet(url, cancellationToken: cancellationToken);
 
         return await response.Content.ReadAsByteArrayAsync(cancellationToken);
     }

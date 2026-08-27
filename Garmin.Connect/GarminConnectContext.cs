@@ -78,7 +78,7 @@ public class GarminConnectContext
 
     public async Task<T> GetAndDeserialize<T>(string url, CancellationToken cancellationToken = default)
     {
-        var response = await MakeHttpGet(url, cancellationToken: cancellationToken);
+        using var response = await MakeHttpGet(url, cancellationToken: cancellationToken);
         if (response.StatusCode == HttpStatusCode.NoContent)
         {
             return default;
@@ -105,24 +105,30 @@ public class GarminConnectContext
 
     public Task<HttpResponseMessage> MakeHttpPut<TBody>(string url, TBody body,
         IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
-        MakeHttpRequest(url, HttpMethod.Put, headers, JsonContent.Create(body), cancellationToken);
+        MakeHttpRequest(url, HttpMethod.Put, headers, () => JsonContent.Create(body), cancellationToken);
 
     public Task<HttpResponseMessage> MakeHttpPost<TBody>(string url, TBody body,
         IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
-        MakeHttpRequest(url, HttpMethod.Post, headers, JsonContent.Create(body), cancellationToken);
+        MakeHttpRequest(url, HttpMethod.Post, headers, () => JsonContent.Create(body), cancellationToken);
 
     public Task<HttpResponseMessage> MakeHttpDelete(string url,
         IReadOnlyDictionary<string, string> headers = null, CancellationToken cancellationToken = default) =>
         MakeHttpRequest(url, HttpMethod.Delete, headers, null, cancellationToken);
 
+    /// <param name="contentFactory">
+    /// Builds the request body. A retried attempt needs a fresh <see cref="HttpContent"/>: the
+    /// previous attempt's request message — and with it its content — is already disposed.
+    /// </param>
     internal async Task<HttpResponseMessage> MakeHttpRequest(string url, HttpMethod method,
-        IReadOnlyDictionary<string, string> headers, HttpContent content, CancellationToken cancellationToken)
+        IReadOnlyDictionary<string, string> headers, Func<HttpContent> contentFactory,
+        CancellationToken cancellationToken)
     {
         var force = false;
         Exception exception = null;
 
         for (var i = 0; i < Attempts; i++)
         {
+            HttpResponseMessage response = null;
             try
             {
                 var token = await GetOrRefreshTokenAsync(force, cancellationToken);
@@ -141,9 +147,9 @@ public class GarminConnectContext
                     httpRequestMessage.Headers.Add("cookie", _authParameters.Cookies);
                 httpRequestMessage.Headers.Add("authorization", $"Bearer {token.AccessToken}");
                 httpRequestMessage.Headers.Add("di-backend", DiBackend);
-                httpRequestMessage.Content = content;
+                httpRequestMessage.Content = contentFactory?.Invoke();
 
-                var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+                response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
                 await RaiseForStatus(response, cancellationToken);
 
@@ -151,6 +157,7 @@ public class GarminConnectContext
             }
             catch (GarminConnectRequestException ex)
             {
+                response?.Dispose();
                 exception = ex;
                 if (ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
                 {
@@ -160,6 +167,11 @@ public class GarminConnectContext
                 }
 
                 Debug.WriteLine(ex.Message);
+                throw;
+            }
+            catch
+            {
+                response?.Dispose();
                 throw;
             }
         }

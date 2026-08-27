@@ -15,9 +15,34 @@ public class DateTimeConverter : JsonConverter<DateTime>
     private const string Format5 = "yyyy-MM-dd\\THH:mm:ss.fffzzz";
     private static readonly string[] Formats = [Format2, Format3, Format4, Format5, Format1, Format0];
 
+    // AdjustToUniversal only kicks in for formats carrying an offset (Format5); without it the
+    // result would depend on the machine timezone. Offset-less formats stay Unspecified.
+    private const DateTimeStyles Styles = DateTimeStyles.AdjustToUniversal;
+
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => DateTime.ParseExact(reader.GetString()!, Formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
+    {
+        switch (reader.TokenType)
+        {
+            case JsonTokenType.Null:
+                return default;
+            // Garmin also reports timestamps as GMT milliseconds since epoch.
+            case JsonTokenType.Number:
+                return DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64()).UtcDateTime;
+        }
+
+        var value = reader.GetString();
+
+        return string.IsNullOrEmpty(value)
+            ? default
+            : DateTime.ParseExact(value, Formats, CultureInfo.InvariantCulture, Styles);
+    }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        => writer.WriteStringValue(value.ToUniversalTime().ToString(Format4));
+    {
+        // Unspecified values are written as-is: they carry the caller's wall clock time
+        // (Garmin's `...Local` fields), converting them would shift the timestamp.
+        var utc = value.Kind == DateTimeKind.Local ? value.ToUniversalTime() : value;
+
+        writer.WriteStringValue(utc.ToString(Format4, CultureInfo.InvariantCulture));
+    }
 }

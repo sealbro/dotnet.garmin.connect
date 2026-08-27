@@ -13,7 +13,7 @@ namespace Garmin.Connect;
 
 public partial class GarminConnectClient
 {
-    private readonly string[] _validExtensions =
+    private static readonly string[] ValidExtensions =
     [
         // Garmin Activity Files
         ".fit", ".tcx", ".gpx",
@@ -21,20 +21,23 @@ public partial class GarminConnectClient
         ".csv", ".xls", ".xlsx"
     ];
 
-    public Task SetUserWeight(double weight, CancellationToken cancellationToken = default)
+    public async Task SetUserWeight(double weight, CancellationToken cancellationToken = default)
     {
         var garminSetUserWeight = new GarminSetUserWeight(weight);
-        return _context.MakeHttpPut(UserSettingsUrl, garminSetUserWeight, cancellationToken: cancellationToken);
+        using var response =
+            await _context.MakeHttpPut(UserSettingsUrl, garminSetUserWeight, cancellationToken: cancellationToken);
     }
 
-    public Task SetUserSleepTimes(long? sleepTime, long? wakeTime, CancellationToken cancellationToken = default)
+    public async Task SetUserSleepTimes(long? sleepTime, long? wakeTime,
+        CancellationToken cancellationToken = default)
     {
         var garminUserSettings = new GarminSetUserSleepTimes(sleepTime, wakeTime);
 
-        return _context.MakeHttpPut(UserSettingsUrl, garminUserSettings, cancellationToken: cancellationToken);
+        using var response =
+            await _context.MakeHttpPut(UserSettingsUrl, garminUserSettings, cancellationToken: cancellationToken);
     }
 
-    public Task UpdateWorkout(GarminWorkout workout, CancellationToken cancellationToken = default)
+    public async Task UpdateWorkout(GarminWorkout workout, CancellationToken cancellationToken = default)
     {
         if (workout.WorkoutId == 0)
         {
@@ -45,22 +48,23 @@ public partial class GarminConnectClient
 
         var headers = new Dictionary<string, string> { { "X-Http-Method-Override", "PUT" } };
 
-        return _context.MakeHttpPost(workoutUrl, GarminUpdateWorkout.From(workout), headers, cancellationToken);
+        using var response =
+            await _context.MakeHttpPost(workoutUrl, GarminUpdateWorkout.From(workout), headers, cancellationToken);
     }
 
-    public Task ScheduleWorkout(long workoutId, DateOnly date, CancellationToken cancellationToken = default)
+    public async Task ScheduleWorkout(long workoutId, DateOnly date, CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutScheduleUrl}{workoutId}";
 
-        return _context.MakeHttpPost(workoutUrl, new GarminDateRequest { Date = date },
+        using var response = await _context.MakeHttpPost(workoutUrl, new GarminDateRequest { Date = date },
             cancellationToken: cancellationToken);
     }
 
-    public Task RemoveScheduledWorkout(long calendarId, CancellationToken cancellationToken = default)
+    public async Task RemoveScheduledWorkout(long calendarId, CancellationToken cancellationToken = default)
     {
         var workoutUrl = $"{WorkoutScheduleUrl}{calendarId}";
 
-        return _context.MakeHttpDelete(workoutUrl, cancellationToken: cancellationToken);
+        using var response = await _context.MakeHttpDelete(workoutUrl, cancellationToken: cancellationToken);
     }
 
     public async Task SendWorkoutToDevices(long workoutId, long[] deviceIds,
@@ -107,7 +111,8 @@ public partial class GarminConnectClient
                 GroupName = null,
             }).ToArray();
 
-        await _context.MakeHttpPost(DeviceMessageUrl, sendToDevice, cancellationToken: cancellationToken);
+        using var response =
+            await _context.MakeHttpPost(DeviceMessageUrl, sendToDevice, cancellationToken: cancellationToken);
     }
 
     public async Task<bool> AddBloodPressure(GarminBloodPressure bloodPressureData,
@@ -140,7 +145,8 @@ public partial class GarminConnectClient
             CategoryName = null
         };
 
-        await _context.MakeHttpPost(BloodPressureUrl, request, cancellationToken: cancellationToken);
+        using var response =
+            await _context.MakeHttpPost(BloodPressureUrl, request, cancellationToken: cancellationToken);
 
         return true;
     }
@@ -151,7 +157,7 @@ public partial class GarminConnectClient
         var url =
             $"{BloodPressureUrl}/{bloodPressureIdentifier.MeasurementTimestampGmt:yyyy-MM-dd}/{bloodPressureIdentifier.Version}";
 
-        await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
+        using var response = await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
     }
 
     public async Task<bool> AddWeight(GarminWeight weightData, CancellationToken cancellationToken = default)
@@ -176,7 +182,7 @@ public partial class GarminConnectClient
             Value = weightData.Value
         };
 
-        await _context.MakeHttpPost(WeightUrl, request, cancellationToken: cancellationToken);
+        using var response = await _context.MakeHttpPost(WeightUrl, request, cancellationToken: cancellationToken);
 
         return true;
     }
@@ -185,30 +191,42 @@ public partial class GarminConnectClient
     {
         var url = $"{WeightUrl}/{weightIdentifier.CalendarDate:yyyy-MM-dd}/byversion/{weightIdentifier.SamplePk}";
 
-        await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
+        using var response = await _context.MakeHttpDelete(url, cancellationToken: cancellationToken);
     }
 
     public async Task UploadFile(string filepath, CancellationToken cancellationToken = default)
     {
-        await using var fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+        await using var fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read,
+            bufferSize: 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
 
         await UploadFile(filepath, fileStream, cancellationToken);
     }
 
     public async Task UploadFile(string filename, Stream stream, CancellationToken cancellationToken = default)
     {
-        var extension = Path.GetExtension(filename);
-        if (!_validExtensions.Contains(extension))
+        var extension = Path.GetExtension(filename).ToLowerInvariant();
+        if (!ValidExtensions.Contains(extension))
         {
-            throw new ArgumentException($"File extension {extension} is not supported. Supported extensions are: {string.Join(", ", _validExtensions)}");
+            throw new ArgumentException($"File extension {extension} is not supported. Supported extensions are: {string.Join(", ", ValidExtensions)}");
         }
 
         var url = $"{UploadUrl}/{extension}";
 
-        var fileContent = new StreamContent(stream) { Headers = { ContentType = new MediaTypeHeaderValue("application/octet-stream") } };
+        // Buffered up front so an authentication retry can rebuild the body: the previous
+        // attempt's content is disposed, and the source stream may not be seekable.
+        using var buffer = new MemoryStream();
+        await stream.CopyToAsync(buffer, cancellationToken);
+        var bytes = buffer.ToArray();
+        var name = Path.GetFileName(filename);
 
-        using var formData = new MultipartFormDataContent { { fileContent, "userfile", Path.GetFileName(filename) } };
+        using var response = await _context.MakeHttpRequest(url, HttpMethod.Post, null, () =>
+        {
+            var fileContent = new ByteArrayContent(bytes)
+            {
+                Headers = { ContentType = new MediaTypeHeaderValue("application/octet-stream") }
+            };
 
-        await _context.MakeHttpRequest(url, HttpMethod.Post, null, formData, cancellationToken);
+            return new MultipartFormDataContent { { fileContent, "userfile", name } };
+        }, cancellationToken);
     }
 }

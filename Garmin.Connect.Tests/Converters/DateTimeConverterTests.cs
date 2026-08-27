@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Garmin.Connect.Converters;
@@ -25,14 +26,56 @@ public class DateTimeConverterTests
     }
 
     [Test]
-    public async Task Read_ParsesFormatWithTimezoneOffset()
+    public async Task Read_ParsesFormatWithTimezoneOffsetAsUtc()
     {
         const string json = "\"2026-04-26T05:32:52.431+02:00\"";
 
         var actual = JsonSerializer.Deserialize<DateTime>(json, Options);
 
-        var expected = new DateTimeOffset(2026, 4, 26, 5, 32, 52, 431, TimeSpan.FromHours(2)).LocalDateTime;
+        var expected = new DateTimeOffset(2026, 4, 26, 5, 32, 52, 431, TimeSpan.FromHours(2)).UtcDateTime;
         await Assert.That(actual).IsEqualTo(expected);
+        await Assert.That(actual.Kind).IsEqualTo(DateTimeKind.Utc);
+    }
+
+    [Test]
+    [Arguments("null")]
+    [Arguments("\"\"")]
+    public async Task Read_ReturnsDefaultForMissingValue(string json)
+    {
+        var actual = JsonSerializer.Deserialize<DateTime>(json, Options);
+
+        await Assert.That(actual).IsEqualTo(default(DateTime));
+    }
+
+    [Test]
+    public async Task Read_ParsesUnixMilliseconds()
+    {
+        const string json = "1777181572431";
+
+        var actual = JsonSerializer.Deserialize<DateTime>(json, Options);
+
+        await Assert.That(actual).IsEqualTo(DateTimeOffset.FromUnixTimeMilliseconds(1777181572431).UtcDateTime);
+    }
+
+    [Test]
+    public async Task Write_KeepsUnspecifiedValueUnshifted()
+    {
+        var value = new DateTime(2026, 4, 26, 5, 32, 52, 431, DateTimeKind.Unspecified);
+
+        var actual = JsonSerializer.Serialize(value, Options);
+
+        await Assert.That(actual).IsEqualTo("\"2026-04-26T05:32:52.431\"");
+    }
+
+    [Test]
+    public async Task Write_ConvertsLocalValueToUtc()
+    {
+        var value = new DateTime(2026, 4, 26, 5, 32, 52, 431, DateTimeKind.Local);
+
+        var actual = JsonSerializer.Serialize(value, Options);
+
+        var expected = value.ToUniversalTime().ToString("yyyy-MM-dd\\THH:mm:ss.fff", CultureInfo.InvariantCulture);
+        await Assert.That(actual).IsEqualTo($"\"{expected}\"");
     }
 
     [Test]
