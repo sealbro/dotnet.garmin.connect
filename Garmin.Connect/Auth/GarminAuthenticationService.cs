@@ -33,7 +33,7 @@ internal class GarminAuthenticationService
         _httpClient = httpClient;
     }
 
-    public async Task<OAuth2Token> RefreshGarminAuthenticationAsync(CancellationToken cancellationToken)
+    public async Task<(OAuth1Token OAuth1Token, OAuth2Token OAuth2Token)> RefreshGarminAuthenticationAsync(CancellationToken cancellationToken)
     {
         _authParameters.Cookies = await RequestCookies(cancellationToken);
         _authParameters.Csrf = await RequestCsrfToken(cancellationToken);
@@ -45,14 +45,23 @@ internal class GarminAuthenticationService
 
         try
         {
-            return await GetOAuth2TokenAsync(auth1Token, consumerCredentials, cancellationToken);
+            var auth2Token = await GetOAuth2TokenAsync(auth1Token, consumerCredentials, cancellationToken);
+            return (auth1Token, auth2Token);
         }
-        catch (Exception e)
+        catch (Exception e) when (e is not GarminConnectAuthenticationException)
         {
             throw new GarminConnectAuthenticationException("Auth appeared successful but failed to get the OAuth2 token.", e)
             { Code = Code.OAuth2TokenNotFound };
         }
     }
+
+    /// <summary>
+    /// Renews an OAuth2 access token from a previously cached, still-valid OAuth1 token.
+    /// Skips the cookie/CSRF/ticket dance entirely, so it is both cheaper and far less
+    /// likely to hit Garmin's Cloudflare rate limiting than a full re-login.
+    /// </summary>
+    public Task<OAuth2Token> ExchangeOAuth1TokenAsync(OAuth1Token oAuth1Token, CancellationToken cancellationToken) =>
+        GetOAuth2TokenAsync(oAuth1Token, _authParameters.ConsumerCredentials, cancellationToken);
 
     private async Task<string> RequestCookies(CancellationToken cancellationToken)
     {
@@ -415,6 +424,19 @@ internal class GarminAuthenticationService
         var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
-        return JsonSerializer.Deserialize<OAuth2Token>(content);
+
+        if (!responseMessage.IsSuccessStatusCode)
+            throw new GarminConnectAuthenticationException(
+                    $"Failed to exchange OAuth1 token for OAuth2 token. {responseMessage.StatusCode}: {content}")
+            { Code = Code.OAuth2TokenNotFound };
+
+        var token = JsonSerializer.Deserialize<OAuth2Token>(content);
+
+        if (string.IsNullOrWhiteSpace(token?.AccessToken))
+            throw new GarminConnectAuthenticationException(
+                    $"Auth appeared successful but returned OAuth2 access token is null. content: {content}")
+            { Code = Code.OAuth2TokenNotFound };
+
+        return token;
     }
 }

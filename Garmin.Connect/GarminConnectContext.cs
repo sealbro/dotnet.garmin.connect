@@ -64,9 +64,25 @@ public class GarminConnectContext
                     return cached;
             }
 
-            var token = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
-            await _tokenCache.SetOAuth2Token(token, cancellationToken);
-            return token;
+            var cachedOAuth1Token = await _tokenCache.GetOAuth1Token(cancellationToken);
+            if (cachedOAuth1Token is not null)
+            {
+                try
+                {
+                    var renewed = await _garminAuthenticationService.ExchangeOAuth1TokenAsync(cachedOAuth1Token, cancellationToken);
+                    await _tokenCache.SetOAuth2Token(renewed, cancellationToken);
+                    return renewed;
+                }
+                catch (GarminConnectAuthenticationException)
+                {
+                    // cached OAuth1 token is no longer valid — fall back to a full login
+                }
+            }
+
+            var (oAuth1Token, oAuth2Token) = await _garminAuthenticationService.RefreshGarminAuthenticationAsync(cancellationToken);
+            await _tokenCache.SetOAuth1Token(oAuth1Token, cancellationToken);
+            await _tokenCache.SetOAuth2Token(oAuth2Token, cancellationToken);
+            return oAuth2Token;
         }
         finally
         {
