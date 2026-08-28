@@ -25,5 +25,6 @@ public enum Code : byte
     OAuth1TokenNotFound = 4,
     OAuth2TokenNotFound = 5,
     MfaBlockedCloudflare = 6,
-    MfaInvalidCode = 7
+    MfaInvalidCode = 7,
+    OAuth1TokenRejected = 8
 }

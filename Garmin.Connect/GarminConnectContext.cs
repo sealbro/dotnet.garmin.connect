@@ -65,7 +65,9 @@ public class GarminConnectContext
             }
 
             var cachedOAuth1Token = await _tokenCache.GetOAuth1Token(cancellationToken);
-            if (cachedOAuth1Token is not null)
+            if (cachedOAuth1Token is not null
+                && !string.IsNullOrWhiteSpace(cachedOAuth1Token.Token)
+                && !string.IsNullOrWhiteSpace(cachedOAuth1Token.TokenSecret))
             {
                 try
                 {
@@ -73,9 +75,11 @@ public class GarminConnectContext
                     await _tokenCache.SetOAuth2Token(renewed, cancellationToken);
                     return renewed;
                 }
-                catch (GarminConnectAuthenticationException)
+                catch (GarminConnectAuthenticationException ex) when (ex.Code == Code.OAuth1TokenRejected)
                 {
-                    // cached OAuth1 token is no longer valid — fall back to a full login
+                    // cached OAuth1 token was rejected outright (401/403) — fall back to a full login.
+                    // Any other failure (429, 5xx, malformed response) is transient and propagates
+                    // instead, so a rate-limited exchange doesn't compound into a full login too.
                 }
             }
 

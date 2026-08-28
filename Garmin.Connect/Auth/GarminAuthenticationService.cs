@@ -426,9 +426,13 @@ internal class GarminAuthenticationService
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
         if (!responseMessage.IsSuccessStatusCode)
+        {
+            var isRejected = responseMessage.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+
             throw new GarminConnectAuthenticationException(
                     $"Failed to exchange OAuth1 token for OAuth2 token. {responseMessage.StatusCode}: {content}")
-            { Code = Code.OAuth2TokenNotFound };
+            { Code = isRejected ? Code.OAuth1TokenRejected : Code.OAuth2TokenNotFound };
+        }
 
         var token = JsonSerializer.Deserialize<OAuth2Token>(content);
 
