@@ -16,10 +16,13 @@ public static class LazyContext
 
         var mfaCode = new NotImplementedMfaCode();
 
-        var fileTokenCache = new FileTokenCache(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".garmin_token.json"));
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var fileTokenCache = new FileTokenCache(Path.Combine(userProfile, ".garmin_token.json"));
+        var loggingTokenCache = new LoggingTokenCache(fileTokenCache, Path.Combine(userProfile, ".garmin_token_refresh.log"));
+
         return new GarminConnectContext(httpClient,
             new BasicAuthParameters(
                 TestEnvironment.GetRequired("GARMIN_LOGIN"),
-                TestEnvironment.GetRequired("GARMIN_PASSWORD")), mfaCode, fileTokenCache);
+                TestEnvironment.GetRequired("GARMIN_PASSWORD")), mfaCode, loggingTokenCache);
     });
 }
