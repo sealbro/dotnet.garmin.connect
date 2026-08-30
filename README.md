@@ -58,7 +58,7 @@ public class StaticMfaCode : IMfaCodeProvider
 
 ### Token caching
 
-To avoid re-authenticating on every startup, pass an `ITokenCache` implementation. The OAuth2 token is reused until it expires.
+To avoid re-authenticating on every startup, pass an `ITokenCache` implementation. The OAuth2 token is reused until it expires; once it does, the client renews it by re-exchanging the cached OAuth1 token instead of doing a full login, which is both cheaper and far less likely to hit Garmin's rate limiting. A full login only happens if there is no cached OAuth1 token or Garmin rejects it.
 
 **In-memory cache** (default, cleared on restart):
 
@@ -90,6 +90,18 @@ public class RedisTokenCache : ITokenCache
     public async Task SetOAuth2Token(OAuth2Token token, CancellationToken cancellationToken)
     {
         // write token to Redis with TTL of token.ExpiresIn seconds
+    }
+
+    // Optional — omitting these two falls back to a full login every time the OAuth2
+    // token expires, which is what earlier versions of this interface always did.
+    public async Task<OAuth1Token> GetOAuth1Token(CancellationToken cancellationToken)
+    {
+        // read and return the long-lived OAuth1 token from Redis, or null if missing
+    }
+
+    public async Task SetOAuth1Token(OAuth1Token token, CancellationToken cancellationToken)
+    {
+        // write the OAuth1 token to Redis (no TTL — it outlives the OAuth2 token)
     }
 }
 ```
