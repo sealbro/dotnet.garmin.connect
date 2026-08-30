@@ -416,12 +416,24 @@ internal class GarminAuthenticationService
             credentials.ConsumerSecret, oAuth1Token.Token, oAuth1Token.TokenSecret);
         oauth2Client.RequestUrl = $"https://connectapi.{_authParameters.Domain}/oauth-service/oauth/exchange/user/2.0";
 
-        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, oauth2Client.RequestUrl);
-        httpRequestMessage.Headers.Add("User-Agent", _authParameters.UserAgent);
-        httpRequestMessage.Headers.Add("Authorization", oauth2Client.GetAuthorizationHeader());
+        HttpResponseMessage responseMessage;
+        var i = 0;
+        const int TooManyRequestsAttempts = 5;
+        do
+        {
+            using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, oauth2Client.RequestUrl);
+            httpRequestMessage.Headers.Add("User-Agent", _authParameters.UserAgent);
+            httpRequestMessage.Headers.Add("Authorization", oauth2Client.GetAuthorizationHeader());
+            httpRequestMessage.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>()]);
 
-        httpRequestMessage.Content = new FormUrlEncodedContent([new KeyValuePair<string, string>()]);
-        var responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+            responseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
+            if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests)
+            {
+                break;
+            }
+            i++;
+            await Task.Delay(TimeSpan.FromSeconds(3 * i), cancellationToken);
+        } while (i < TooManyRequestsAttempts);
 
         var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
 
