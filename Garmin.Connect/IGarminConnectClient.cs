@@ -251,6 +251,36 @@ public interface IGarminConnectClient
     Task SetUserSleepTimes(long? sleepTime, long? wakeTime, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Updates activity with new values. Only non-null values will be updated.
+    /// </summary>
+    Task UpdateActivity(GarminUpdateActivity activity, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Adds image to activity.
+    /// </summary>
+    Task<ActivityImage> AddImageToActivity(long activityId, Stream imageStream, string filename, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes image from activity.
+    /// </summary>
+    Task RemoveImageFromActivity(long activityId, string imageId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Unlinks gear from activity.
+    /// </summary>
+    Task<GarminGear> UnlinkActivityGear(long activityId, string gearUid, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Links gear to activity.
+    /// </summary>
+    Task<GarminGear> LinkActivityGear(long activityId, string gearUid, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes activity.
+    /// </summary>
+    Task DeleteActivity(long activityId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// [Experimental] Update workout from exists.
     /// </summary>
     Task UpdateWorkout(GarminWorkout workout, CancellationToken cancellationToken = default);

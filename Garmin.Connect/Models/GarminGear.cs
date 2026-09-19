@@ -25,6 +25,9 @@ public record GarminGear
     [JsonPropertyName("gearTypeName")]
     public string GearTypeName { get; init; }
 
+    [JsonPropertyName("gearStatusName")]
+    public string GearStatusName { get; init; }
+
     [JsonPropertyName("displayName")]
     public string DisplayName { get; init; }
 

@@ -14,6 +14,9 @@ public record GarminExerciseSets
     [JsonPropertyName("activityName")]
     public string ActivityName { get; init; }
 
+    [JsonPropertyName("description")]
+    public string Description { get; init; }
+
     [JsonPropertyName("userProfileId")]
     public long UserProfileId { get; init; }
 
@@ -69,7 +72,7 @@ public record ActivityTypeDto
     public bool IsHidden { get; init; }
 
     [JsonPropertyName("sortOrder")]
-    public object SortOrder { get; init; }
+    public long? SortOrder { get; init; }
 
     [JsonPropertyName("restricted")]
     public bool Restricted { get; init; }
@@ -144,7 +147,7 @@ public record MetadataDto
     public Sensor[] Sensors { get; init; }
 
     [JsonPropertyName("activityImages")]
-    public string[] ActivityImages { get; init; }
+    public ActivityImage[] ActivityImages { get; init; }
 
     [JsonPropertyName("manufacturer")]
     public string Manufacturer { get; init; }
@@ -250,6 +253,33 @@ public record Sensor
 
     [JsonPropertyName("batteryStatus")]
     public string BatteryStatus { get; init; }
+}
+
+public record ActivityImage
+{
+    [JsonPropertyName("imageId")]
+    public string ImageId { get; init; }
+
+    [JsonPropertyName("url")]
+    public string Url { get; init; }
+
+    [JsonPropertyName("smallUrl")]
+    public string SmallUrl { get; init; }
+
+    [JsonPropertyName("mediumUrl")]
+    public string MediumUrl { get; init; }
+
+    [JsonPropertyName("expirationTimestamp")]
+    public long ExpirationTimestamp { get; init; }
+
+    [JsonPropertyName("latitude")]
+    public double? Latitude { get; init; }
+
+    [JsonPropertyName("longitude")]
+    public double? Longitude { get; init; }
+
+    [JsonPropertyName("photoDate")]
+    public DateTime? PhotoDate { get; init; }
 }
 
 public record UserInfoDto

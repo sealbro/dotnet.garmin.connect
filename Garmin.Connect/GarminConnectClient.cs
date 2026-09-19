@@ -111,8 +111,7 @@ public partial class GarminConnectClient : IGarminConnectClient
         return result.ToArray();
     }
 
-    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId,
-        CancellationToken cancellationToken = default)
+    public Task<GarminExerciseSets> GetActivityExerciseSets(long activityId, CancellationToken cancellationToken = default)
     {
         var exerciseSetsUrl = $"{ActivityUrl}{activityId}";
 

@@ -25,4 +25,10 @@
       <ProjectReference Include="..\Garmin.Connect\Garmin.Connect.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="TestData\activity-image.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
